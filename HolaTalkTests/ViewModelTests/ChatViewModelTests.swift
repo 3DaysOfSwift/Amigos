@@ -6,15 +6,6 @@ import Testing
 struct ChatViewModelTests {
     private let context = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
 
-    @Test("The chat header shows the feature's current streak and week")
-    func streakMatchesFeature() async {
-        let manager = await makeTestConversationManager()
-        let viewModel = ChatViewModel(conversations: manager)
-        #expect(viewModel.currentStreak == manager.currentStreak)
-        #expect(viewModel.currentWeek.map(\.id) == manager.currentWeek.map(\.id))
-        #expect(viewModel.currentWeek.map(\.practiced) == manager.currentWeek.map(\.practiced))
-    }
-
     @Test("A failed reply leaves the draft available for retry")
     func failedReplyRetainsDraft() async {
         let manager = await makeTestConversationManager(reply: .failure(TestFailure.unavailable))

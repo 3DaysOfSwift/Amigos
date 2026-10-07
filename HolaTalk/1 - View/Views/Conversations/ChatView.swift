@@ -98,12 +98,6 @@ struct ChatView: View {
                 }
             }
         }
-        .safeAreaInset(edge: .top, spacing: 0) {
-            StreakBar(days: viewModel.currentWeek)
-            .padding(.horizontal, 18)
-            .padding(.vertical, 8)
-            .background(palette.surface)
-        }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if !conversation.finished { composer }
         }
@@ -112,24 +106,6 @@ struct ChatView: View {
         .toolbarBackground(palette.surface, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button { destination = .progress } label: {
-                    HStack(spacing: 7) {
-                        Image(systemName: "flame.fill")
-                        Text("\(viewModel.currentStreak)")
-                            .monospacedDigit()
-                            .fixedSize(horizontal: true, vertical: false)
-                    }
-                    .font(.headline)
-                    .foregroundStyle(palette.accent)
-                    .padding(.horizontal, 14)
-                    .frame(minHeight: 44)
-                    .background(palette.background, in: Capsule())
-                    .fixedSize(horizontal: true, vertical: false)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(viewModel.currentStreak) day streak. Show your progress")
-            }
             ToolbarItem(placement: .principal) {
                 VStack(spacing: 2) {
                     Text(context.title).font(.headline)
@@ -140,7 +116,6 @@ struct ChatView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    Button("Choose a friend", systemImage: "person.2") { destination = .friends }
                     Button("Role Play", systemImage: "theatermasks") { destination = .rolePlay }
                     Divider()
                     Button("Your progress", systemImage: "chart.bar") { destination = .progress }
@@ -156,7 +131,6 @@ struct ChatView: View {
         }
         .navigationDestination(item: $destination) { destination in
             switch destination {
-            case .friends: ConversationsView()
             case .rolePlay: RolePlayView()
             case .progress: PracticeProgressView()
             case .wallet: WalletView()
@@ -212,7 +186,7 @@ struct ChatView: View {
 }
 
 private enum ChatDestination: Hashable, Identifiable {
-    case friends, rolePlay, progress, wallet, settings
+    case rolePlay, progress, wallet, settings
 
     var id: Self { self }
 }
@@ -226,14 +200,14 @@ private struct ChatIntroduction: View {
             Group {
                 if let scenario = context.scenario {
                     Image(systemName: scenario.symbol)
+                        .frame(width: 58, height: 58)
+                        .background(themeManager.currentTheme.palette.surface, in: Circle())
                 } else {
-                    Text(String(context.amigo.name.prefix(1)))
+                    AmigoPortrait(amigo: context.amigo, size: 58)
                 }
             }
             .font(.title2.weight(.semibold))
             .foregroundStyle(themeManager.currentTheme.palette.accent)
-            .frame(width: 58, height: 58)
-            .background(themeManager.currentTheme.palette.surface, in: Circle())
             Text(context.title)
                 .font(.system(.title2, design: .serif))
             Text(context.scenario?.context.capitalized ?? context.amigo.identity)

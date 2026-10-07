@@ -30,14 +30,12 @@ struct Amigo: Identifiable, Hashable, Sendable {
     let identity: String
     let voice: String
 
-    static let firstFriend = Amigo(
-        id: "alma", name: "Alma",
-        identity: "A photographer in Mexico City who notices the little things.",
-        voice: "warm, observant and lightly funny; asks about ordinary moments in the learner's day"
-    )
-
     static let catalogue = [
-        firstFriend,
+        Amigo(
+            id: "alma", name: "Alma",
+            identity: "A photographer in Mexico City who notices the little things.",
+            voice: "warm, observant and lightly funny; asks about ordinary moments in the learner's day"
+        ),
         Amigo(
             id: "nico", name: "Nico",
             identity: "A home cook in Oaxaca who loves markets and good food.",

@@ -27,7 +27,6 @@ final class ConversationManager: ConversationFeature {
     var doubloons: Int { archive.doubloons }
     var typedWordCount: Int { archive.typedWordCount ?? 0 }
     var uniqueWordCount: Int { archive.typedWords?.count ?? 0 }
-    var initialChatContext: ChatContext { ChatContext(amigo: .firstFriend, scenario: nil) }
 
     func loadSavedPractice() async {
         guard !isLoaded else { return }

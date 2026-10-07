@@ -11,7 +11,6 @@ protocol ConversationFeature: AnyObject {
     var daysSinceFirstUse: Int { get }
     var currentWeek: [PracticeDay] { get }
     var rolePlayOptions: [RolePlayOption] { get }
-    var initialChatContext: ChatContext { get }
     var loadError: String? { get }
     func loadSavedPractice() async
     func conversation(for context: ChatContext) -> Conversation

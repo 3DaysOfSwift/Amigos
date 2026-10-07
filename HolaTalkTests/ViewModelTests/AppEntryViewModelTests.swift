@@ -4,7 +4,7 @@ import Testing
 @Suite("Application entry screen")
 @MainActor
 struct AppEntryViewModelTests {
-    @Test("Saved practice must load before the chat appears")
+    @Test("Saved practice must load before the chat list appears")
     func waitsForSavedPractice() async {
         let manager = ConversationManager(
             repository: MemoryConversationRepository(archive: nil),
@@ -14,6 +14,5 @@ struct AppEntryViewModelTests {
         #expect(!viewModel.isLoaded)
         await manager.loadSavedPractice()
         #expect(viewModel.isLoaded)
-        #expect(viewModel.initialChatContext.amigo.id == Amigo.firstFriend.id)
     }
 }

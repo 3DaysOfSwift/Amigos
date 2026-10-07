@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Amigo-nico.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

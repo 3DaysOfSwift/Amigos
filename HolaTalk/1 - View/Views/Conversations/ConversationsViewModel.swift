@@ -11,4 +11,11 @@ final class ConversationsViewModel {
 
     var doubloons: Int { conversations.doubloons }
     var amigos: [Amigo] { Amigo.catalogue }
+    var currentStreak: Int { conversations.currentStreak }
+    var currentWeek: [PracticeDay] { conversations.currentWeek }
+
+    func preview(for amigo: Amigo) -> String {
+        let context = ChatContext(amigo: amigo, scenario: nil)
+        return conversations.conversation(for: context).messages.last?.text ?? "Start a conversation"
+    }
 }

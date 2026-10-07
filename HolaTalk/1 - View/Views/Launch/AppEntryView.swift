@@ -17,9 +17,7 @@ struct AppEntryView: View {
                 }
                 .padding()
             } else {
-                NavigationStack {
-                    ChatView(context: viewModel.initialChatContext)
-                }
+                RootTabView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

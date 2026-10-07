@@ -21,13 +21,11 @@ struct ConversationManagerTests {
         return (manager, repository)
     }
 
-    @Test("Amigos have distinct conversations and a consistent first contact")
+    @Test("Amigos have distinct conversations")
     func amigoCatalogue() async {
-        let (manager, _) = await makeManager()
         let ids = Amigo.catalogue.map(\.id)
         #expect(ids.count == 4)
         #expect(Set(ids).count == ids.count)
-        #expect(manager.initialChatContext.amigo == Amigo.firstFriend)
         #expect(Set(Amigo.catalogue.map { ChatContext(amigo: $0, scenario: nil).id }).count == ids.count)
     }
 

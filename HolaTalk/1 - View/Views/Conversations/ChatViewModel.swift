@@ -19,9 +19,6 @@ final class ChatViewModel {
     }
 
     var doubloons: Int { conversations.doubloons }
-    var currentStreak: Int { conversations.currentStreak }
-    var currentWeek: [PracticeDay] { conversations.currentWeek }
-
     func canSend(in context: ChatContext) -> Bool {
         !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             && !isSending && !conversations.isResponding

@@ -22,16 +22,11 @@ struct ConversationsView: View {
                         .accessibilityLabel("\(viewModel.doubloons) doubloons")
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("A conversation starts here.")
-                        .font(.system(.largeTitle, design: .serif))
-                    Text("Practise messaging a Spanish-speaking friend. Start with a real moment from your life, or step into a role play.")
-                        .foregroundStyle(palette.mutedText)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                StreakBar(days: viewModel.currentWeek)
+                    .padding(.vertical, 8)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Your amigos")
+                    Text("Your chats")
                         .font(.system(.title, design: .serif))
                     Text("Choose who you would like to talk to.")
                         .font(.subheadline)
@@ -44,16 +39,12 @@ struct ConversationsView: View {
                             ChatView(context: ChatContext(amigo: amigo, scenario: nil))
                         } label: {
                             HStack(spacing: 16) {
-                                Text(String(amigo.name.prefix(1)))
-                                    .font(.title2.weight(.semibold))
-                                    .foregroundStyle(palette.accent)
-                                    .frame(width: 48, height: 48)
-                                    .background(palette.accent.opacity(0.12), in: Circle())
+                                AmigoPortrait(amigo: amigo, size: 48)
                                 VStack(alignment: .leading, spacing: 5) {
                                     Text(amigo.name)
                                         .font(.headline)
                                         .foregroundStyle(.primary)
-                                    Text(amigo.identity)
+                                    Text(viewModel.preview(for: amigo))
                                         .font(.subheadline)
                                         .foregroundStyle(palette.mutedText)
                                         .lineLimit(2)
@@ -102,5 +93,36 @@ struct ConversationsView: View {
         }
         .navigationTitle("Amigos")
         .background(palette.background.ignoresSafeArea())
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                NavigationLink {
+                    PracticeProgressView()
+                } label: {
+                    HStack(spacing: 7) {
+                        Image(systemName: "flame.fill")
+                        Text("\(viewModel.currentStreak)")
+                            .monospacedDigit()
+                    }
+                    .font(.headline)
+                    .foregroundStyle(palette.accent)
+                    .padding(.horizontal, 14)
+                    .frame(minHeight: 44)
+                    .fixedSize(horizontal: true, vertical: false)
+                }
+                .accessibilityLabel("\(viewModel.currentStreak) day streak. Show your progress")
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    NavigationLink("Your progress", destination: PracticeProgressView())
+                    NavigationLink("Doubloons", destination: WalletView())
+                    NavigationLink("Settings", destination: SettingsView())
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .font(.headline)
+                        .frame(width: 44, height: 44)
+                }
+                .accessibilityLabel("Open app menu")
+            }
+        }
     }
 }
