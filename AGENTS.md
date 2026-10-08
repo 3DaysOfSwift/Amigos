@@ -29,7 +29,7 @@ Assets.xcassets/
 ```
 
 Each screen owns an adjacent `@MainActor @Observable` ViewModel. Views describe
-the interface and forward intent. `ConversationManager` owns the paid practice
+the interface and forward intent. `ConversationFeature` owns the paid practice
 workflow: chats, wallet charges, role play progression and rewards. The local
 repository owns saved JSON and migration from the original UserDefaults archive.
 `AppModel.shared` is the production composition root; isolated tests construct
@@ -45,5 +45,14 @@ their own graph. `ThemeManager` is presentation state supplied through SwiftUI.
 - Test feature decisions and ViewModel state through public behaviour.
 - Keep a single app-owned persistent store when SwiftData is introduced.
 - Keep wallet rules independent of Views, within the Conversations feature.
+
+## CFA terminology
+
+Use **Feature** for the application capability exposed to screens and in all
+developer-facing documentation. `ConversationFeature` and `ProfileFeature` are
+the app's feature boundaries. Do not describe these capabilities as “managers”
+in new documentation or product architecture diagrams; concrete implementation
+type names are an internal refactor concern and should not leak into the
+architecture language.
 
 The target bundle identifier is `com.3DaysOfSwiftConcurrency.Amigos`.

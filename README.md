@@ -76,27 +76,32 @@ makes the route from an interaction to durable data easy to follow for people
 and coding agents alike.
 
 ```text
-View → ViewModel → Feature API → Feature Manager → Repository
+View → ViewModel → Feature → Repository
 ```
 
-For a chat, that becomes:
+For a live chat, that becomes:
 
 ```text
-ChatView → ChatViewModel → ConversationFeature → ConversationManager
-                                                       ├── OnDeviceSpanishChat
-                                                       └── LocalConversationRepository
+ChatView → ChatViewModel → ConversationFeature
+                              ├── OnDeviceSpanishChat
+                              └── LocalConversationRepository
 ```
+
+`ConversationFeature` is the feature boundary through which `ChatViewModel`
+owns chat intent, durable conversation state, rewards, Role Play admission and
+persistence coordination. Its live implementation stays private to the app's
+composition root; tests replace the feature with an isolated implementation.
 
 Explore the [CFA toolkit and skills](https://github.com/3DaysOfSwift/cooperative-feature-architecture).
 
 ### Feature ownership
 
-| Area | Owner |
+| Area | Feature owner |
 | --- | --- |
-| Chat history, Role Play admission, rewards, wallet and streaks | `ConversationManager` |
+| Chat history, Role Play admission, rewards, wallet and streaks | `ConversationFeature` |
 | On-device bilingual responses and response validation | `OnDeviceSpanishChat` |
 | Local chat archive and one-time HolaTalk migration | `LocalConversationRepository` |
-| Learner display name and profile persistence | `ProfileManager` / `LocalProfileRepository` |
+| Learner display name and profile persistence | `ProfileFeature` / `LocalProfileRepository` |
 | Colour theme and wallpaper selection | `ThemeManager` |
 | Production dependency graph | `AppModel.shared` |
 
