@@ -1,6 +1,6 @@
-# HolaTalk CFA behaviour contract
+# Amigos CFA behaviour contract
 
-This contract records the behaviour found in the original single-file HolaTalk app and the intended standalone chat experience. The initial project did not build because Xcode copied `Info.plist` twice; its original unit tests could not be run as a baseline. The source of the original behaviour was `HolaTalk/1 - View/HolaTalkApp.swift` before the CFA conversion.
+This contract records the behaviour found in the original single-file HolaTalk app and the intended standalone chat experience. The initial project did not build because Xcode copied `Info.plist` twice; its original unit tests could not be run as a baseline. The source of the original behaviour was the app entry point before the CFA conversion.
 
 | ID | User-visible requirement | Original evidence | Status | CFA protection | Result |
 | --- | --- | --- | --- | --- | --- |
@@ -12,6 +12,7 @@ This contract records the behaviour found in the original single-file HolaTalk a
 | BEH-006 | A failed AI reply does not spend doubloons or erase the learner's draft. | Original error text claimed no payment, but `send` deducted before calling the AI | Conflicting; corrected for this standalone app | `ConversationManagerTests.failedReplyDoesNotCharge`; `ChatViewModelTests.failedReplyRetainsDraft` | Passed. |
 | BEH-007 | A failed save does not make an exchange or reward appear successful. | Original `persist()` swallowed encoding or storage failure after mutating visible state | Existing defect corrected | `ConversationManagerTests.failedSaveDoesNotPublish` | Passed. |
 | BEH-008 | Practice streak and typed-word progress remain available without blocking entry to chat. | Original `DailyLaunchView`, `currentStreak`, `currentWeek`; chat-first launch requested 7 October 2026 | Intended approved change | `PracticeProgressViewModelTests` plus manual UI check | Progress moved to a secondary screen; manual visual check pending. |
+| BEH-009 | Each AI response saves its English counterpart with the Spanish message; tapping a reply only reveals saved content and never starts a second model request. | Product decision, 8 October 2026 | Intended approved change | `ConversationManagerTests.responsePersistsEnglishCounterpart`; `ChatViewModelTests.translationToggle` | Spanish and English are generated together and stored in the conversation archive. |
 
 The CFA route is `screen → adjacent ViewModel → AppModel.shared.conversationsManager → ConversationRepository / SpanishChatResponding`. `ConversationManager` is the sole owner of conversations, wallet charges, role play progress and the daily reward because those values form one paid practice workflow. `LocalConversationRepository` owns the JSON file and reads the old UserDefaults archive when no file exists. `ThemeManager` owns only presentation preference. The application entry screen owns loading presentation; chat is the launch destination.
 

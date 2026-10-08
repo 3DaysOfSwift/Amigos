@@ -2,9 +2,9 @@
 
 Amigos uses the Cooperative Feature Architecture (CFA) Toolkit for all new
 work. The toolkit's Swift coding guide is the engineering standard. The Xcode
-project, bundle identifier, and saved-data directory retain their original
-HolaTalk identifiers while the product name and contact cast are prototyped;
-do not rename those identities without planning data continuity.
+project, bundle identifier, and saved-data directory use the Amigos identity.
+The repositories retain a one-time read-and-copy migration from the original
+HolaTalk saved-data directory; preserve it unless its retention is reviewed.
 
 ## Architecture
 
@@ -46,4 +46,4 @@ their own graph. `ThemeManager` is presentation state supplied through SwiftUI.
 - Keep a single app-owned persistent store when SwiftData is introduced.
 - Keep wallet rules independent of Views, within the Conversations feature.
 
-The target bundle identifier is `com.3DaysOfSwiftConcurrency.HolaTalk`.
+The target bundle identifier is `com.3DaysOfSwiftConcurrency.Amigos`.
