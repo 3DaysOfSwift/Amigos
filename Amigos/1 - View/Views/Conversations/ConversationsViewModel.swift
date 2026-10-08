@@ -15,14 +15,8 @@ final class ConversationsViewModel {
     var currentStreak: Int { conversations.currentStreak }
     var streakDescription: String { "\(currentStreak) \(currentStreak == 1 ? "day" : "days")" }
     var currentWeek: [PracticeDay] { conversations.currentWeek }
-    var isSearching = false
     var searchText = ""
     var visibleAmigos: [Amigo] { conversations.amigos(matching: searchText) }
-
-    func toggleSearch() {
-        isSearching.toggle()
-        if !isSearching { searchText = "" }
-    }
 
     func preview(for amigo: Amigo) -> String {
         let context = ChatContext(amigo: amigo, scenario: nil)

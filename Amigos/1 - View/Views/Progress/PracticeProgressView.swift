@@ -8,40 +8,41 @@ struct PracticeProgressView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 30) {
-                HStack(alignment: .center) {
-                    AmigosWordmark(fontSize: 27)
-                    Spacer()
-                    HStack(spacing: 6) {
-                        DoubloonIcon(size: 24)
-                        Text("\(viewModel.doubloons)")
+            VStack(alignment: .leading, spacing: 22) {
+                HStack(alignment: .center, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 7) {
+                        Text("CURRENT DAY STREAK")
+                            .font(.caption.weight(.bold))
+                            .tracking(1.8)
+                            .foregroundStyle(palette.mutedText)
+                        HStack(alignment: .firstTextBaseline, spacing: 12) {
+                            Text("\(viewModel.currentStreak)")
+                                .font(.system(size: 112, weight: .bold, design: .rounded))
+                                .minimumScaleFactor(0.55)
+                                .lineLimit(1)
+                                .monospacedDigit()
+                                .foregroundStyle(palette.streak)
+                            Text(viewModel.currentStreak == 1 ? "day" : "days")
+                                .font(.title2.weight(.semibold))
+                                .foregroundStyle(palette.mutedText)
+                        }
                     }
-                        .font(.headline)
-                        .accessibilityLabel("\(viewModel.doubloons) doubloons")
-                }
-
-                VStack(alignment: .leading, spacing: 7) {
-                    Text("CURRENT DAY STREAK")
-                        .font(.caption.weight(.bold))
-                        .tracking(1.8)
-                        .foregroundStyle(palette.mutedText)
-                    HStack(alignment: .firstTextBaseline, spacing: 12) {
-                        Text("\(viewModel.currentStreak)")
-                            .font(.system(size: 112, weight: .bold, design: .rounded))
-                            .minimumScaleFactor(0.55)
-                            .lineLimit(1)
-                            .monospacedDigit()
-                            .foregroundStyle(palette.streak)
-                        Text(viewModel.currentStreak == 1 ? "day" : "days")
-                            .font(.title2.weight(.semibold))
+                    Spacer(minLength: 0)
+                    VStack(spacing: 7) {
+                        LearnerPortrait(size: 88)
+                            .clipShape(Circle())
+                            .overlay(Circle().strokeBorder(palette.accent, lineWidth: 3))
+                        Text("You")
+                            .font(.caption.weight(.bold))
                             .foregroundStyle(palette.mutedText)
                     }
-                    Text(viewModel.practicedToday
-                         ? "You have already practised today. Keep the conversation going."
-                         : "One real conversation keeps your streak going today.")
-                        .foregroundStyle(palette.mutedText)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                Text(viewModel.practicedToday
+                     ? "You have already practised today. Keep the conversation going."
+                     : "One real conversation keeps your streak going today.")
+                    .foregroundStyle(palette.mutedText)
 
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Your week")
@@ -53,6 +54,17 @@ struct PracticeProgressView: View {
                 .background(palette.surface, in: RoundedRectangle(cornerRadius: 26))
 
                 VStack(alignment: .leading, spacing: 8) {
+                    if let firstJoinedAt = viewModel.firstJoinedAt {
+                        Text("YOU JOINED AMIGOS")
+                            .font(.caption.weight(.bold))
+                            .tracking(1.8)
+                            .foregroundStyle(palette.mutedText)
+                        Text(firstJoinedAt.formatted(date: .long, time: .omitted))
+                            .font(.title3.weight(.semibold))
+                        Divider()
+                            .padding(.vertical, 8)
+                    }
+
                     Text("Days since you joined Amigos")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(palette.mutedText)
@@ -91,9 +103,15 @@ struct PracticeProgressView: View {
                     .foregroundStyle(palette.mutedText)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(24)
+            .padding(.horizontal, 18)
+            .tabBarScrollClearance()
         }
-        .navigationTitle("Day Streak")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                AmigosScreenTitle(title: "Day Streak", fontSize: 19)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
         .background(palette.background.ignoresSafeArea())
     }
 }

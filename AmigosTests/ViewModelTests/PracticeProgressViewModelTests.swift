@@ -13,5 +13,6 @@ struct PracticeProgressViewModelTests {
         #expect(viewModel.currentWeek.count == 7)
         #expect(viewModel.doubloons == manager.doubloons)
         #expect(viewModel.daysSinceFirstUse == manager.daysSinceFirstUse)
+        #expect(viewModel.firstJoinedAt == manager.firstJoinedAt)
     }
 }

@@ -9,6 +9,7 @@ protocol ConversationFeature: AnyObject {
     var uniqueWordCount: Int { get }
     var currentStreak: Int { get }
     var daysSinceFirstUse: Int { get }
+    var firstJoinedAt: Date? { get }
     var currentWeek: [PracticeDay] { get }
     var rolePlayOptions: [RolePlayOption] { get }
     var amigos: [Amigo] { get }

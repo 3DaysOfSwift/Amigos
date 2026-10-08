@@ -31,18 +31,15 @@ struct ConversationsViewModelTests {
         #expect(viewModel.preview(for: amigo) == "¡Qué gusto verte!")
     }
 
-    @Test("Search narrows the chat list and closing it restores every amigo")
+    @Test("Search narrows the chat list and clearing it restores every amigo")
     func searchesAmigos() async {
         let manager = await makeTestConversationManager()
         let viewModel = ConversationsViewModel(conversations: manager)
 
-        viewModel.toggleSearch()
         viewModel.searchText = "inÉS"
         #expect(viewModel.visibleAmigos.map(\.id) == ["ines"])
 
-        viewModel.toggleSearch()
-        #expect(!viewModel.isSearching)
-        #expect(viewModel.searchText.isEmpty)
+        viewModel.searchText = ""
         #expect(viewModel.visibleAmigos.count == Amigo.catalogue.count)
     }
 

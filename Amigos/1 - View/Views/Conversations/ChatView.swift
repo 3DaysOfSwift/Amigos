@@ -93,9 +93,6 @@ struct ChatView: View {
                     withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
                 }
             }
-            .overlay(alignment: .top) {
-                ChatTopScrollFade()
-            }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if !conversation.finished {
@@ -153,8 +150,6 @@ struct ChatView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .hidesAppTabBar()
-        .toolbarBackground(palette.surface, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 NavigationLink {
@@ -174,13 +169,14 @@ struct ChatView: View {
                 .accessibilityLabel("About \(context.amigo.name)")
             }
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink {
-                    WalletView()
-                } label: {
+                HStack(spacing: 5) {
                     DoubloonIcon(size: 27)
-                        .frame(width: 44, height: 44)
-                        .accessibilityLabel("Show doubloons")
+                    Text("\(viewModel.doubloons)")
+                        .font(.subheadline.weight(.semibold))
+                        .monospacedDigit()
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("\(viewModel.doubloons) doubloons")
             }
         }
     }
@@ -353,22 +349,5 @@ private struct ChatBubbleShape: Shape {
         }
         path.closeSubpath()
         return path
-    }
-}
-
-private struct ChatTopScrollFade: View {
-    var body: some View {
-        Rectangle()
-            .fill(.ultraThinMaterial)
-            .mask {
-                LinearGradient(
-                    colors: [.black, .black.opacity(0.72), .clear],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            }
-            .frame(height: 54)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
     }
 }

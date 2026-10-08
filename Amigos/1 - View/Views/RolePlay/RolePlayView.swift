@@ -8,17 +8,7 @@ struct RolePlayView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                Label("SPECIAL PRACTICE", systemImage: "theatermasks.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(palette.accent)
-
-                Text("Practise what happens next.")
-                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
-
-                Text("Choose a familiar situation. Every conversation unfolds differently as you write in Spanish.")
-                    .foregroundStyle(palette.mutedText)
-
+            VStack(alignment: .leading, spacing: 16) {
                 HStack(spacing: 10) {
                     DoubloonIcon(size: 26)
                     Text("\(viewModel.doubloons) doubloons")
@@ -28,10 +18,11 @@ struct RolePlayView: View {
                         .foregroundStyle(palette.mutedText)
                 }
                 .font(.subheadline)
-                .padding(18)
+                .padding(.vertical, 14)
+                .padding(.horizontal, 18)
                 .background(palette.surface, in: RoundedRectangle(cornerRadius: 20))
 
-                LazyVStack(spacing: 14) {
+                LazyVStack(spacing: 12) {
                     ForEach(viewModel.options) { option in
                         if option.isUnlocked {
                             NavigationLink { ChatView(context: option.context) } label: {
@@ -44,9 +35,15 @@ struct RolePlayView: View {
                     }
                 }
             }
-            .padding(22)
+            .padding(.horizontal, 18)
+            .tabBarScrollClearance()
         }
-        .navigationTitle("Role Play")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                AmigosScreenTitle(title: "Role Play", fontSize: 19)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
         .background(palette.background.ignoresSafeArea())
     }
 }
@@ -97,8 +94,10 @@ private struct RolePlayCell: View {
                     .foregroundStyle(palette.mutedText)
             }
         }
-        .padding(18)
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(palette.surface.opacity(option.isUnlocked ? 1 : 0.55), in: RoundedRectangle(cornerRadius: 22))
+        .grayscale(option.isUnlocked ? 0 : 1)
+        .opacity(option.isUnlocked ? 1 : 0.52)
     }
 }

@@ -10,9 +10,8 @@ struct SettingsView: View {
         @Bindable var themeManager = themeManager
 
         ScrollView {
-            VStack(alignment: .leading, spacing: 26) {
+            VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 8) {
-                    AmigosWordmark(fontSize: 36)
                     Text("Make it yours.")
                         .font(.system(.title2, design: .rounded, weight: .bold))
                     Text("A little Spanish, every day, with friends who always have something to say.")
@@ -129,10 +128,15 @@ struct SettingsView: View {
                     .multilineTextAlignment(.center)
                     .padding(.top, 14)
             }
-            .padding(22)
-            .padding(.bottom, 100)
+            .padding(.horizontal, 18)
+            .padding(.top, 10)
+            .tabBarScrollClearance()
         }
-        .navigationTitle("Settings")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                AmigosScreenTitle(title: "Settings", fontSize: 19)
+            }
+        }
         .background(palette.background.ignoresSafeArea())
     }
 

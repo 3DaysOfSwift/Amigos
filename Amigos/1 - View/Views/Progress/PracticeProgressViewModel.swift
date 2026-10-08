@@ -1,4 +1,5 @@
 import Observation
+import Foundation
 
 @MainActor
 @Observable
@@ -13,9 +14,9 @@ final class PracticeProgressViewModel {
     var currentStreak: Int { conversations.currentStreak }
     var streakDescription: String { "\(currentStreak) \(currentStreak == 1 ? "day" : "days")" }
     var daysSinceFirstUse: Int { conversations.daysSinceFirstUse }
+    var firstJoinedAt: Date? { conversations.firstJoinedAt }
     var currentWeek: [PracticeDay] { conversations.currentWeek }
     var uniqueWordCount: Int { conversations.uniqueWordCount }
     var typedWordCount: Int { conversations.typedWordCount }
     var practicedToday: Bool { currentWeek.contains { $0.today && $0.practiced } }
-
 }

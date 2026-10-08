@@ -238,6 +238,8 @@ final class ConversationManager: ConversationFeature {
         return max(0, calendar.dateComponents([.day], from: firstDay, to: today).day ?? 0)
     }
 
+    var firstJoinedAt: Date? { archive.firstOpenedAt }
+
     var currentWeek: [PracticeDay] {
         let calendar = Calendar(identifier: .gregorian)
         let today = calendar.startOfDay(for: currentDate())
