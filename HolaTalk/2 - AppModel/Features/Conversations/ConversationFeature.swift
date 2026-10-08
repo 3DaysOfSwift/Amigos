@@ -11,9 +11,12 @@ protocol ConversationFeature: AnyObject {
     var daysSinceFirstUse: Int { get }
     var currentWeek: [PracticeDay] { get }
     var rolePlayOptions: [RolePlayOption] { get }
+    var amigos: [Amigo] { get }
     var loadError: String? { get }
     func loadSavedPractice() async
     func conversation(for context: ChatContext) -> Conversation
+    func messagesShared(with amigo: Amigo) -> Int
+    func amigos(matching query: String) -> [Amigo]
     func canStart(_ context: ChatContext) -> Bool
     func isConversationActive(_ context: ChatContext) -> Bool
     func send(_ draft: String, in context: ChatContext) async throws

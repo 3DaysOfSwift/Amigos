@@ -27,6 +27,13 @@ final class ConversationManager: ConversationFeature {
     var doubloons: Int { archive.doubloons }
     var typedWordCount: Int { archive.typedWordCount ?? 0 }
     var uniqueWordCount: Int { archive.typedWords?.count ?? 0 }
+    var amigos: [Amigo] { Amigo.catalogue }
+
+    func amigos(matching query: String) -> [Amigo] {
+        let search = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !search.isEmpty else { return amigos }
+        return amigos.filter { $0.name.localizedCaseInsensitiveContains(search) }
+    }
 
     func loadSavedPractice() async {
         guard !isLoaded else { return }
@@ -56,6 +63,11 @@ final class ConversationManager: ConversationFeature {
 
     func conversation(for context: ChatContext) -> Conversation {
         archive.conversations[context.id] ?? Conversation()
+    }
+
+    func messagesShared(with amigo: Amigo) -> Int {
+        let context = ChatContext(amigo: amigo, scenario: nil)
+        return conversation(for: context).messages.filter { $0.role == .learner }.count
     }
 
     func canStart(_ context: ChatContext) -> Bool {

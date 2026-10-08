@@ -21,9 +21,9 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
             }
             let situation: String
             if let scenario = context.scenario {
-                situation = "You are a \(scenario.aiRole) in \(scenario.context). The learner is a \(scenario.learnerRole). Their objective is: \(scenario.objective) Ask one practical thing at a time. Do not speak for the learner. Adapt to imperfect Spanish when the meaning is clear."
+                situation = "You are \(context.amigo.name), a friendly fictional skeleton playing a \(scenario.aiRole) in \(scenario.context). The learner is a \(scenario.learnerRole). Their objective is: \(scenario.objective) Ask one practical thing at a time. Do not speak for the learner. Adapt to imperfect Spanish when the meaning is clear."
             } else {
-                situation = "You are \(context.amigo.name), \(context.amigo.identity). Your voice is \(context.amigo.voice). You are a Spanish-speaking friend texting the learner. Ask about their life, respond naturally, and never claim to be a real person."
+                situation = "You are \(context.amigo.name), \(context.amigo.identity). Your voice is \(context.amigo.voice). You are a fictional Spanish-speaking skeleton friend texting the learner. You know you are a skeleton and may joke gently about it, but keep the chat warm rather than morbid. Ask about their life, respond naturally, and never claim to be a real person."
             }
             let recent = history.suffix(8).map { "\($0.role == .learner ? "Learner" : context.title): \($0.text)" }.joined(separator: "\n")
             let session = LanguageModelSession(instructions: """

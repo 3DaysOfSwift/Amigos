@@ -3,126 +3,201 @@ import SwiftUI
 struct ConversationsView: View {
     @Environment(ThemeManager.self) private var themeManager
     @State private var viewModel = ConversationsViewModel()
+    @State private var selectedAmigo: Amigo?
 
     private var palette: AppPalette { themeManager.currentTheme.palette }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                HStack {
-                    Label("Amigos · Chat", systemImage: "bubble.left.and.bubble.right.fill")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(palette.accent)
-                    Spacer()
-                    HStack(spacing: 6) {
-                        DoubloonIcon(size: 24)
-                        Text("\(viewModel.doubloons)")
+            VStack(alignment: .leading, spacing: 26) {
+                brandHeader
+                    .padding(.horizontal, 18)
+                chatsHeading
+                    .padding(.horizontal, 18)
+
+                if viewModel.isSearching {
+                    TextField("Search amigos", text: $viewModel.searchText)
+                        .textInputAutocapitalization(.never)
+                        .padding(14)
+                        .background(palette.surface, in: RoundedRectangle(cornerRadius: 16))
+                        .padding(.horizontal, 18)
+                        .accessibilityLabel("Search amigos")
+                }
+
+                LazyVStack(spacing: 0) {
+                    if !viewModel.visibleAmigos.isEmpty {
+                        Rectangle()
+                            .fill(palette.mutedText.opacity(0.17))
+                            .frame(height: 1)
                     }
-                        .font(.headline)
-                        .accessibilityLabel("\(viewModel.doubloons) doubloons")
-                }
 
-                StreakBar(days: viewModel.currentWeek)
-                    .padding(.vertical, 8)
-
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Your chats")
-                        .font(.system(.title, design: .serif))
-                    Text("Choose who you would like to talk to.")
-                        .font(.subheadline)
-                        .foregroundStyle(palette.mutedText)
-                }
-
-                LazyVStack(spacing: 12) {
-                    ForEach(viewModel.amigos) { amigo in
+                    ForEach(viewModel.visibleAmigos) { amigo in
                         NavigationLink {
                             ChatView(context: ChatContext(amigo: amigo, scenario: nil))
                         } label: {
-                            HStack(spacing: 16) {
-                                AmigoPortrait(amigo: amigo, size: 48)
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(amigo.name)
-                                        .font(.headline)
-                                        .foregroundStyle(.primary)
-                                    Text(viewModel.preview(for: amigo))
-                                        .font(.subheadline)
-                                        .foregroundStyle(palette.mutedText)
-                                        .lineLimit(2)
-                                }
-                                Spacer(minLength: 4)
-                                Image(systemName: "chevron.right")
-                                    .font(.caption.bold())
+                            amigoRow(amigo)
+                        }
+                        .buttonStyle(ConversationRowButtonStyle(pressedBackground: palette.surface))
+                        .accessibilityLabel("Open chat with \(amigo.name)")
+
+                        Rectangle()
+                            .fill(palette.mutedText.opacity(0.17))
+                            .frame(height: 1)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+
+                if viewModel.visibleAmigos.isEmpty {
+                    Text("No amigos found")
+                        .foregroundStyle(palette.mutedText)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 30)
+                        .padding(.horizontal, 18)
+                }
+
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("SPECIAL PRACTICE")
+                        .font(.caption.weight(.semibold))
+                        .tracking(2)
+                        .foregroundStyle(palette.mutedText)
+                        .padding(.horizontal, 18)
+
+                    NavigationLink {
+                        RolePlayView()
+                            .toolbar(.hidden, for: .tabBar)
+                    } label: {
+                        HStack(spacing: 18) {
+                            Image("Amigos-Ayudante")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 74, height: 74)
+                                .frame(width: 70, height: 70)
+                                .clipShape(Circle())
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Role Play")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                Text("Practise real moments in Spanish")
+                                    .font(.subheadline)
                                     .foregroundStyle(palette.mutedText)
                             }
-                            .padding(18)
-                            .background(palette.surface, in: RoundedRectangle(cornerRadius: 22))
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                NavigationLink {
-                    RolePlayView()
-                } label: {
-                    HStack(alignment: .top, spacing: 16) {
-                        Image(systemName: "theatermasks.fill")
-                            .font(.title2)
-                            .foregroundStyle(palette.accent)
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Role Play Real Life")
-                                .font(.system(.title2, design: .serif))
-                                .foregroundStyle(.primary)
-                            Text("Order a coffee, meet a neighbour, or handle a little moment in Spanish.")
-                                .font(.subheadline)
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.bold))
                                 .foregroundStyle(palette.mutedText)
                         }
-                        Spacer(minLength: 0)
-                        Image(systemName: "arrow.up.right")
-                            .foregroundStyle(palette.accent)
+                        .padding(.vertical, 16)
+                        .padding(.horizontal, 32)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
+                        .overlay {
+                            Rectangle()
+                                .strokeBorder(palette.mutedText.opacity(0.17), lineWidth: 1)
+                                .allowsHitTesting(false)
+                        }
                     }
-                    .padding(22)
-                    .background(palette.surface, in: RoundedRectangle(cornerRadius: 24))
+                    .buttonStyle(ConversationRowButtonStyle(pressedBackground: palette.surface))
                 }
-                .buttonStyle(.plain)
 
-                Text("Your partners are AI, not real people. Conversations run on your device with Apple Intelligence.")
+                Text("Your amigos are AI characters. Conversations stay on this device.")
                     .font(.footnote)
                     .foregroundStyle(palette.mutedText)
+                    .padding(.horizontal, 18)
             }
-            .padding(22)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 20)
+            .padding(.bottom, 28)
         }
-        .navigationTitle("Amigos")
         .background(palette.background.ignoresSafeArea())
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                NavigationLink {
-                    PracticeProgressView()
-                } label: {
-                    HStack(spacing: 7) {
-                        Image(systemName: "flame.fill")
-                        Text("\(viewModel.currentStreak)")
-                            .monospacedDigit()
-                    }
-                    .font(.headline)
-                    .foregroundStyle(palette.accent)
-                    .padding(.horizontal, 14)
-                    .frame(minHeight: 44)
-                    .fixedSize(horizontal: true, vertical: false)
-                }
-                .accessibilityLabel("\(viewModel.currentStreak) day streak. Show your progress")
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    NavigationLink("Your progress", destination: PracticeProgressView())
-                    NavigationLink("Doubloons", destination: WalletView())
-                    NavigationLink("Settings", destination: SettingsView())
-                } label: {
-                    Image(systemName: "line.3.horizontal")
-                        .font(.headline)
-                        .frame(width: 44, height: 44)
-                }
-                .accessibilityLabel("Open app menu")
-            }
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(item: $selectedAmigo) { amigo in
+            ChatView(context: ChatContext(amigo: amigo, scenario: nil))
         }
+    }
+
+    private var brandHeader: some View {
+        HStack(alignment: .center, spacing: 12) {
+            AmigosWordmark(fontSize: 38)
+
+            Spacer(minLength: 0)
+
+            HStack(spacing: 7) {
+                Image(systemName: "flame.fill")
+                    .font(.title3)
+                    .foregroundStyle(palette.accent)
+                Text(viewModel.streakDescription)
+                    .font(.subheadline.weight(.semibold))
+                    .monospacedDigit()
+                    .fixedSize()
+                StreakBar(days: viewModel.currentWeek)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("\(viewModel.streakDescription) streak")
+        }
+    }
+
+    private var chatsHeading: some View {
+        HStack(spacing: 12) {
+            Text("Chats")
+                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .foregroundStyle(.primary)
+            Spacer()
+            Button(action: viewModel.toggleSearch) {
+                Image(systemName: viewModel.isSearching ? "xmark" : "magnifyingglass")
+                    .font(.title3.weight(.medium))
+                    .frame(width: 48, height: 48)
+                    .background(palette.surface, in: Circle())
+            }
+            .accessibilityLabel(viewModel.isSearching ? "Close search" : "Search chats")
+
+            Menu {
+                ForEach(viewModel.amigos) { amigo in
+                    Button(amigo.name) { selectedAmigo = amigo }
+                }
+            } label: {
+                Image(systemName: "square.and.pencil")
+                    .font(.title3.weight(.medium))
+                    .frame(width: 48, height: 48)
+                    .background(palette.surface, in: Circle())
+            }
+            .accessibilityLabel("Choose an amigo to chat with")
+        }
+        .foregroundStyle(.primary)
+    }
+
+    private func amigoRow(_ amigo: Amigo) -> some View {
+        HStack(spacing: 18) {
+            AmigoPortrait(amigo: amigo, size: 72)
+            VStack(alignment: .leading, spacing: 7) {
+                Text(amigo.name)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                Text(viewModel.preview(for: amigo))
+                    .font(.subheadline)
+                    .foregroundStyle(palette.mutedText)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(palette.mutedText)
+                .accessibilityHidden(true)
+        }
+        .padding(.horizontal, 32)
+        .padding(.vertical, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+    }
+}
+
+private struct ConversationRowButtonStyle: ButtonStyle {
+    let pressedBackground: Color
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(configuration.isPressed ? pressedBackground : .clear)
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }

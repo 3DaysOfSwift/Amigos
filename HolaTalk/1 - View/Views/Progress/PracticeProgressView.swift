@@ -11,9 +11,7 @@ struct PracticeProgressView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 30) {
                 HStack(alignment: .center) {
-                    Label("Amigos", systemImage: "bubble.left.and.bubble.right.fill")
-                        .font(.title2.bold())
-                        .foregroundStyle(palette.accent)
+                    AmigosWordmark(fontSize: 27)
                     Spacer()
                     HStack(spacing: 6) {
                         DoubloonIcon(size: 24)
@@ -51,13 +49,13 @@ struct PracticeProgressView: View {
                         .foregroundStyle(palette.accent)
 
                     Text(showingWords ? "Your words" : "Your streak")
-                        .font(.system(.largeTitle, design: .serif))
+                        .font(.system(.largeTitle, design: .rounded, weight: .bold))
 
-                    Text(showingWords ? "\(viewModel.uniqueWordCount) words" : "\(viewModel.currentStreak) days")
+                    Text(showingWords ? "\(viewModel.uniqueWordCount) words" : viewModel.streakDescription)
                         .font(.system(size: 58, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.7)
                         .lineLimit(1)
-                        .foregroundStyle(showingWords ? palette.accent : .yellow)
+                        .foregroundStyle(showingWords ? palette.accent : palette.streak)
 
                     Text(showingWords
                          ? "\(viewModel.typedWordCount) words typed across your Spanish conversations."
@@ -84,7 +82,7 @@ struct PracticeProgressView: View {
             }
             .padding(24)
         }
-        .navigationTitle("Your progress")
+        .navigationTitle("Day Streak")
         .background(palette.background.ignoresSafeArea())
     }
 }
@@ -99,10 +97,10 @@ private struct WeeklyCalendar: View {
                 VStack(spacing: 12) {
                     Text(day.label)
                         .font(.caption.weight(day.today ? .bold : .medium))
-                        .foregroundStyle(day.today ? themeManager.currentTheme.palette.accent : themeManager.currentTheme.palette.mutedText)
+                        .foregroundStyle(day.today ? themeManager.currentTheme.palette.streak : themeManager.currentTheme.palette.mutedText)
                     Image(systemName: day.practiced ? "checkmark.circle.fill" : "circle")
                         .font(.title2)
-                        .foregroundStyle(day.practiced ? themeManager.currentTheme.palette.accent : themeManager.currentTheme.palette.mutedText)
+                        .foregroundStyle(day.practiced ? themeManager.currentTheme.palette.streak : themeManager.currentTheme.palette.mutedText)
                         .frame(maxWidth: .infinity)
                 }
                 .accessibilityElement(children: .combine)

@@ -4,7 +4,6 @@ struct ChatView: View {
     @Environment(ThemeManager.self) private var themeManager
     let context: ChatContext
     @State private var viewModel = ChatViewModel()
-    @State private var destination: ChatDestination?
 
     private var palette: AppPalette { themeManager.currentTheme.palette }
 
@@ -101,40 +100,40 @@ struct ChatView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if !conversation.finished { composer }
         }
-        .background(palette.background.ignoresSafeArea())
+        .background {
+            ChatWallpaperView(wallpaper: themeManager.currentWallpaper, palette: palette)
+                .ignoresSafeArea()
+        }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(palette.surface, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                VStack(spacing: 2) {
-                    Text(context.title).font(.headline)
-                    Text(context.scenario == nil ? "Spanish friend" : "Role Play")
-                        .font(.caption)
-                        .foregroundStyle(palette.mutedText)
+                NavigationLink {
+                    AmigoBioView(amigo: context.amigo)
+                } label: {
+                    HStack(spacing: 9) {
+                        AmigoPortrait(amigo: context.amigo, size: 34)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(context.amigo.name).font(.headline)
+                            Text(context.scenario?.title ?? "Your amigo")
+                                .font(.caption)
+                                .foregroundStyle(palette.mutedText)
+                        }
+                    }
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("About \(context.amigo.name)")
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button("Role Play", systemImage: "theatermasks") { destination = .rolePlay }
-                    Divider()
-                    Button("Your progress", systemImage: "chart.bar") { destination = .progress }
-                    Button("Doubloons") { destination = .wallet }
-                    Button("Settings", systemImage: "gearshape") { destination = .settings }
+                NavigationLink {
+                    WalletView()
                 } label: {
-                    Image(systemName: "line.3.horizontal")
-                        .font(.headline)
+                    DoubloonIcon(size: 27)
                         .frame(width: 44, height: 44)
-                        .accessibilityLabel("Open app menu")
+                        .accessibilityLabel("Show doubloons")
                 }
-            }
-        }
-        .navigationDestination(item: $destination) { destination in
-            switch destination {
-            case .rolePlay: RolePlayView()
-            case .progress: PracticeProgressView()
-            case .wallet: WalletView()
-            case .settings: SettingsView()
             }
         }
     }
@@ -157,6 +156,9 @@ struct ChatView: View {
                     .foregroundStyle(.yellow)
             }
             HStack(alignment: .bottom, spacing: 12) {
+                LearnerPortrait(size: 32)
+                    .padding(.bottom, 5)
+
                 TextField("Message in Spanish", text: $viewModel.draft, axis: .vertical)
                     .lineLimit(1...4)
                     .onSubmit { Task { await viewModel.send(in: context) } }
@@ -185,31 +187,23 @@ struct ChatView: View {
     }
 }
 
-private enum ChatDestination: Hashable, Identifiable {
-    case rolePlay, progress, wallet, settings
-
-    var id: Self { self }
-}
-
 private struct ChatIntroduction: View {
     @Environment(ThemeManager.self) private var themeManager
     let context: ChatContext
 
     var body: some View {
         VStack(spacing: 12) {
-            Group {
-                if let scenario = context.scenario {
-                    Image(systemName: scenario.symbol)
-                        .frame(width: 58, height: 58)
-                        .background(themeManager.currentTheme.palette.surface, in: Circle())
-                } else {
-                    AmigoPortrait(amigo: context.amigo, size: 58)
+            NavigationLink {
+                AmigoBioView(amigo: context.amigo)
+            } label: {
+                VStack(spacing: 12) {
+                    AmigoPortrait(amigo: context.amigo, size: 76)
+                    Text(context.amigo.name)
+                        .font(.system(.title2, design: .rounded, weight: .bold))
                 }
             }
-            .font(.title2.weight(.semibold))
-            .foregroundStyle(themeManager.currentTheme.palette.accent)
-            Text(context.title)
-                .font(.system(.title2, design: .serif))
+            .buttonStyle(.plain)
+            .accessibilityLabel("About \(context.amigo.name)")
             Text(context.scenario?.context.capitalized ?? context.amigo.identity)
                 .font(.subheadline)
                 .foregroundStyle(themeManager.currentTheme.palette.mutedText)

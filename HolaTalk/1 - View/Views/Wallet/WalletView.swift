@@ -6,11 +6,13 @@ struct WalletView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 26) {
-            Text("Your doubloons").font(.system(.largeTitle, design: .serif))
+            Text("Your doubloons").font(.system(.largeTitle, design: .rounded, weight: .bold))
             WalletBalance(doubloons: viewModel.doubloons)
                 .padding(20).background(themeManager.currentTheme.palette.surface, in: RoundedRectangle(cornerRadius: 22))
             VStack(alignment: .leading, spacing: 12) {
-                Label("How they work", systemImage: "info.circle.fill").font(.headline).foregroundStyle(.mint)
+                Label("How they work", systemImage: "info.circle.fill")
+                    .font(.headline)
+                    .foregroundStyle(themeManager.currentTheme.palette.accent)
                 Text("One doubloon starts a friend conversation. Two doubloons start a Role Play. A paid conversation remains available for ten minutes, even if the app is closed.")
                 Text("Amigos begins with ten welcome doubloons. Complete one real conversation each day to earn one more.")
                     .foregroundStyle(.secondary)
@@ -20,6 +22,7 @@ struct WalletView: View {
         }
         .padding(22)
         .navigationTitle("Doubloons")
+        .toolbar(.hidden, for: .tabBar)
         .background(themeManager.currentTheme.palette.background)
     }
 }

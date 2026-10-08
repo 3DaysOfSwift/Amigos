@@ -9,12 +9,12 @@ struct RolePlayView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                Label("Role Play · Real Life", systemImage: "theatermasks.fill")
+                Label("SPECIAL PRACTICE", systemImage: "theatermasks.fill")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(palette.accent)
 
                 Text("Practise what happens next.")
-                    .font(.system(.largeTitle, design: .serif))
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
 
                 Text("Choose a familiar situation. Every conversation unfolds differently as you write in Spanish.")
                     .foregroundStyle(palette.mutedText)
@@ -59,11 +59,7 @@ private struct RolePlayCell: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            Image(systemName: option.scenario?.symbol ?? "bubble.left")
-                .font(.title3)
-                .foregroundStyle(palette.accent)
-                .frame(width: 48, height: 48)
-                .background(palette.accent.opacity(0.12), in: Circle())
+            AmigoPortrait(amigo: option.context.amigo, size: 52)
 
             VStack(alignment: .leading, spacing: 7) {
                 Text(option.context.title)

@@ -24,9 +24,18 @@ struct ConversationManagerTests {
     @Test("Amigos have distinct conversations")
     func amigoCatalogue() async {
         let ids = Amigo.catalogue.map(\.id)
-        #expect(ids.count == 4)
+        #expect(ids.count == 8)
         #expect(Set(ids).count == ids.count)
+        #expect(Set(Amigo.catalogue.map(\.name)).count == ids.count)
         #expect(Set(Amigo.catalogue.map { ChatContext(amigo: $0, scenario: nil).id }).count == ids.count)
+    }
+
+    @Test("Searching amigos is case-insensitive and a blank query returns everyone")
+    func amigoSearch() async {
+        let (manager, _) = await makeManager()
+        #expect(manager.amigos(matching: " INÉS ").map(\.id) == ["ines"])
+        #expect(manager.amigos(matching: " LUCÍA ").map(\.id) == ["lucia"])
+        #expect(manager.amigos(matching: " ").count == manager.amigos.count)
     }
 
     @Test("An active paid conversation remains available for ten minutes")

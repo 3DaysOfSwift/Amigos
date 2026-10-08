@@ -8,11 +8,14 @@ struct AppModelTests {
     func launchLoadsOnce() async {
         let repository = CountingConversationRepository()
         let manager = ConversationManager(repository: repository, responder: StubSpanishChat(reply: .success("Hola")))
-        let appModel = AppModel(conversationsManager: manager)
+        let profileRepository = MemoryProfileRepository()
+        let profileManager = ProfileManager(repository: profileRepository)
+        let appModel = AppModel(conversationsManager: manager, profileManager: profileManager)
         await appModel.applicationDidFinishLaunching()
         await appModel.applicationDidFinishLaunching()
         #expect(manager.isLoaded)
         #expect(await repository.loadCount == 1)
+        #expect(await profileRepository.loadCount == 1)
     }
 }
 

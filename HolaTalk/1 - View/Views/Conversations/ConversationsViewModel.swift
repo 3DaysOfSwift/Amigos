@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 
 @MainActor
@@ -10,9 +11,18 @@ final class ConversationsViewModel {
     }
 
     var doubloons: Int { conversations.doubloons }
-    var amigos: [Amigo] { Amigo.catalogue }
+    var amigos: [Amigo] { conversations.amigos }
     var currentStreak: Int { conversations.currentStreak }
+    var streakDescription: String { "\(currentStreak) \(currentStreak == 1 ? "day" : "days")" }
     var currentWeek: [PracticeDay] { conversations.currentWeek }
+    var isSearching = false
+    var searchText = ""
+    var visibleAmigos: [Amigo] { conversations.amigos(matching: searchText) }
+
+    func toggleSearch() {
+        isSearching.toggle()
+        if !isSearching { searchText = "" }
+    }
 
     func preview(for amigo: Amigo) -> String {
         let context = ChatContext(amigo: amigo, scenario: nil)
