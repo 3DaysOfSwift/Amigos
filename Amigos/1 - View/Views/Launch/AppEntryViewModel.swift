@@ -11,7 +11,7 @@ final class AppEntryViewModel {
 
     var isLoaded: Bool { conversations.isLoaded }
     var loadError: String? { conversations.loadError }
-    func retryLoading() {
-        Task { await conversations.loadSavedPractice() }
+    func retryLoading() async {
+        await conversations.loadSavedPractice()
     }
 }

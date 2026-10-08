@@ -10,7 +10,9 @@ struct AppEntryView: View {
                 VStack(spacing: 16) {
                     if let error = viewModel.loadError {
                         Text(error).multilineTextAlignment(.center)
-                        Button("Try again", action: viewModel.retryLoading)
+                        Button("Try again") {
+                            Task { await viewModel.retryLoading() }
+                        }
                     } else {
                         ProgressView("Opening your conversations…")
                     }
