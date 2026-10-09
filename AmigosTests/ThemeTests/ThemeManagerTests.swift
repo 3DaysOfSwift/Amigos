@@ -41,16 +41,4 @@ struct ThemeManagerTests {
         #expect(manager.currentWallpaper == .amigos)
     }
 
-    @Test("A selected HolaTalk theme is migrated to the Amigos preference key")
-    func migratesLegacyThemeSelection() throws {
-        let suiteName = "AmigosThemeMigrationTests.\(UUID().uuidString)"
-        let defaults = try #require(UserDefaults(suiteName: suiteName))
-        defer { defaults.removePersistentDomain(forName: suiteName) }
-        defaults.set(AppColourTheme.daylight.rawValue, forKey: "holaTalk.selectedColourTheme")
-
-        let manager = ThemeManager(defaults: defaults)
-
-        #expect(manager.currentTheme == .daylight)
-        #expect(defaults.string(forKey: "amigos.selectedColourTheme") == AppColourTheme.daylight.rawValue)
-    }
 }

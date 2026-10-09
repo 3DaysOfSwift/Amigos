@@ -6,20 +6,28 @@ final class AppModel {
 
     let conversationsManager: ConversationManager
     let profileManager: ProfileManager
+    let messageNotificationsManager: MessageNotificationsManager
     private var didFinishLaunching = false
 
-    init(conversationsManager: ConversationManager, profileManager: ProfileManager) {
+    init(conversationsManager: ConversationManager, profileManager: ProfileManager,
+         messageNotificationsManager: MessageNotificationsManager = MessageNotificationsManager()) {
         self.conversationsManager = conversationsManager
         self.profileManager = profileManager
+        self.messageNotificationsManager = messageNotificationsManager
     }
 
     static func live() -> AppModel {
-        AppModel(
+        let profileManager = ProfileManager(repository: LocalProfileRepository())
+        let notifications = MessageNotificationsManager()
+        return AppModel(
             conversationsManager: ConversationManager(
                 repository: LocalConversationRepository(),
-                responder: OnDeviceSpanishChat()
+                responder: OnDeviceSpanishChat(),
+                profileFeature: profileManager,
+                notifications: notifications
             ),
-            profileManager: ProfileManager(repository: LocalProfileRepository())
+            profileManager: profileManager,
+            messageNotificationsManager: notifications
         )
     }
 

@@ -4,6 +4,20 @@ import Testing
 @Suite("Profile screen")
 @MainActor
 struct ProfileViewModelTests {
+    @Test("Profile fields can be edited and cleared from the screen")
+    func editsDetails() async {
+        let manager = ProfileManager(repository: MemoryProfileRepository())
+        await manager.loadSavedProfile()
+        let viewModel = ProfileViewModel(profileFeature: manager)
+        viewModel.draftDetails[.firstName] = "Sam"
+        viewModel.draftDetails[.homeCountry] = "Mexico"
+        await viewModel.save()
+        #expect(manager.profile.value(for: .homeCountry) == "Mexico")
+        viewModel.draftDetails[.homeCountry] = ""
+        await viewModel.save()
+        #expect(manager.profile.value(for: .homeCountry).isEmpty)
+        #expect(manager.profile.value(for: .firstName) == "Sam")
+    }
     @Test("Saving a name updates the profile and confirms success")
     func saveName() async {
         let manager = ProfileManager(repository: MemoryProfileRepository())

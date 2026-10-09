@@ -100,7 +100,7 @@ Explore the [CFA toolkit and skills](https://github.com/3DaysOfSwift/cooperative
 | --- | --- |
 | Chat history, Role Play admission, rewards, wallet and streaks | `ConversationFeature` |
 | On-device bilingual responses and response validation | `OnDeviceSpanishChat` |
-| Local chat archive and one-time HolaTalk migration | `LocalConversationRepository` |
+| Local chat archive | `LocalConversationRepository` |
 | Learner display name and profile persistence | `ProfileFeature` / `LocalProfileRepository` |
 | Colour theme and wallpaper selection | `ThemeManager` |
 | Production dependency graph | `AppModel.shared` |
@@ -135,13 +135,40 @@ cannot provide a real on-device language-model conversation.
 - The English version of an AI reply is saved together with its Spanish text.
   Revealing it in the UI is instantaneous and does not call the model again.
 - Conversation data, progress, profile and visual preferences are stored on
-  the device. Existing HolaTalk local data is copied forward once into Amigos
-  storage.
-
-The maintained requirements and outstanding device checks are recorded in
-[`MIGRATION_BEHAVIOUR_CONTRACT.md`](MIGRATION_BEHAVIOUR_CONTRACT.md).
+  the device using Amigos storage.
 
 ## Privacy and accessibility
+
+### Conversational onboarding and profile
+
+Chats and the tab bar are available immediately. On a new, empty chat archive,
+Alma sends a saved bilingual welcome after Chats has been ready for one second.
+Alma explains the ghost story and invites natural, varied conversation. After
+the first earned doubloon, a saved message explains the daily 10/40-exchange
+reward rules and spending on Role Play. Nico then asks about notifications with
+native Enable notifications and Not now buttons inside his chat. Either choice
+introduces Inés; replying to each latest introduction brings Dani, Lucía, Rafa
+and Sol in order. Tavo is left for the user to discover. Introductions and the
+reward explanation are recorded to prevent duplicates and never count as
+reward-earning exchanges.
+
+Local notifications use Apple's native foreground banner presentation and
+require notification permission. Tapping one opens that amigo's chat. Denying
+permission does not prevent messages appearing in Chats. Permission is requested
+only after tapping Enable notifications, never when Alma first arrives. System
+notification settings govern delivery; Inés is the first post-choice welcome.
+
+Ordinary AI replies can include structured profile facts with evidence from the
+latest learner message. Explicit corrections can update the form of address,
+names, age, full date of birth, favourite colour, visited countries, education
+and home country. Inés asks how the user heard about Amigos; that optional
+referral source is also stored locally in the editable profile, not submitted
+to an analytics service. Sex is separate from the preferred form of address and must
+be explicitly supplied. Role-play replies never update the profile. All fields
+are optional and editable or removable in Settings → Your profile. The model is
+instructed not to infer facts; extraction quality still needs on-device testing.
+Profile changes are confirmed in chat only after a successful save. A profile
+save failure does not discard the saved conversation or cause a duplicate send.
 
 Amigos does not use accounts, analytics, advertising SDKs or a backend. Chats,
 rewards, profile details and themes remain on the device and may be included in
@@ -161,9 +188,8 @@ The test suite is organised by CFA boundary:
 - `AmigosTests/ViewModelTests` — one focused suite per screen ViewModel.
 - `AmigosTests/FeatureTests` — conversation, reward, admission and profile
   business rules.
-- `AmigosTests/PersistenceTests` — local archive and legacy migration behaviour.
-- `AmigosTests/ThemeTests` — theme persistence and the HolaTalk-to-Amigos
-  preference migration.
+- `AmigosTests/PersistenceTests` — local archive persistence and failure handling.
+- `AmigosTests/ThemeTests` — theme and wallpaper preference persistence.
 
 Run the **Amigos** scheme tests before changing chat, wallet or persistence
 rules. On-device AI output and visual animation still require manual validation

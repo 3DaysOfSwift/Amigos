@@ -3,13 +3,21 @@ import SwiftUI
 struct RootTabView: View {
     @Environment(ThemeManager.self) private var themeManager
     @State private var selectedTab: AppTab = .chats
+    @Binding private var launchChatContext: ChatContext?
 
     private var palette: AppPalette { themeManager.currentTheme.palette }
+
+    init(launchChatContext: Binding<ChatContext?>) {
+        _launchChatContext = launchChatContext
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack {
                 ConversationsView()
+                    .navigationDestination(item: $launchChatContext) { context in
+                        ChatView(context: context)
+                    }
             }
             .tabItem {
                 Label(AppTab.chats.title, systemImage: AppTab.chats.symbol)
@@ -41,6 +49,9 @@ struct RootTabView: View {
             .tag(AppTab.settings)
         }
         .tint(palette.accent)
+        .onChange(of: launchChatContext) { _, context in
+            if context != nil { selectedTab = .chats }
+        }
     }
 }
 

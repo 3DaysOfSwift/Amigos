@@ -6,6 +6,7 @@ struct ChatMessage: Codable, Identifiable, Sendable, Equatable {
     let role: Role
     let text: String
     let englishText: String?
+    var startsNewConversation: Bool? = nil
 
     init(id: UUID = UUID(), role: Role, text: String, englishText: String? = nil) {
         self.id = id
@@ -18,9 +19,11 @@ struct ChatMessage: Codable, Identifiable, Sendable, Equatable {
 struct SpanishChatReply: Sendable, Equatable {
     let spanish: String
     let english: String
+    var profileFacts: [ProfileFact] = []
 }
 
 struct Conversation: Codable, Sendable, Equatable {
+    var lastGreetingDay: String? = nil
     var messages: [ChatMessage] = []
     var paidAt: Date? = nil
     var finished = false
@@ -127,22 +130,30 @@ struct RolePlayScenario: Identifiable, Hashable, Sendable {
 struct ChatContext: Hashable, Sendable {
     let amigo: Amigo
     let scenario: RolePlayScenario?
+    var startsWithGreeting: Bool = false
     var id: String { scenario.map { "role-play:\($0.id)" } ?? "chat:\(amigo.id)" }
     var cost: Int { scenario == nil ? 0 : 2 }
     var title: String { scenario?.title ?? amigo.name }
 }
 
 struct PracticeArchive: Codable, Sendable {
+    var introducedAmigoIDs: [String]? = nil
+    var hasExplainedDoubloons: Bool? = nil
+    var hasAnsweredNotificationInvitation: Bool? = nil
     var firstOpenedAt: Date? = nil
     var doubloons: Int = 10
     var conversations: [String: Conversation] = [:]
     var completedRolePlays: [String: Int] = [:]
-    var lastDailyChatRewardDay: String? = nil
-    var rewardedAmigoDays: [String: String]? = nil
     var dailyAmigoChatProgress: [String: DailyAmigoChatProgress]? = nil
     var typedWords: Set<String>? = nil
     var typedWordCount: Int? = nil
     var practiceDays: Set<String>? = nil
+    var streakTimeZoneIdentifier: String? = nil
+}
+
+struct DailyAmigoInvitation: Sendable, Equatable {
+    let amigo: Amigo
+    let streak: Int
 }
 
 struct DailyAmigoChatProgress: Codable, Sendable, Equatable {

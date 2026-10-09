@@ -3,6 +3,31 @@ import Foundation
 
 enum TestFailure: Error { case unavailable }
 
+@MainActor
+final class RecordingAmigoNotifications: AmigoMessageNotifying {
+    private(set) var amigoIDs: [String] = []
+    private(set) var permissionRequests = 0
+    var permissionGranted = true
+    func requestPermission() async throws -> Bool {
+        permissionRequests += 1
+        return permissionGranted
+    }
+    func notify(amigo: Amigo, message: ChatMessage) async { amigoIDs.append(amigo.id) }
+}
+
+actor ProfileAwareSpanishChat: SpanishChatResponding {
+    private(set) var receivedProfile: LearnerProfile?
+    let facts: [ProfileFact]
+    init(facts: [ProfileFact]) { self.facts = facts }
+    func reply(to message: String, context: ChatContext, history: [ChatMessage]) -> SpanishChatReply {
+        SpanishChatReply(spanish: "¡Hola! ¿Qué tal?", english: "Hello! How are you?", profileFacts: facts)
+    }
+    func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?) -> SpanishChatReply {
+        receivedProfile = profile
+        return reply(to: message, context: context, history: history)
+    }
+}
+
 actor MemoryConversationRepository: ConversationRepository {
     private var archive: PracticeArchive?
     private var shouldFailSave = false

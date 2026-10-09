@@ -19,6 +19,8 @@ final class ChatViewModel {
     var draft = ""
     private(set) var error: String?
     private(set) var isSending = false
+    private(set) var isAnsweringNotificationInvitation = false
+    private(set) var greetingFailed = false
     private(set) var pendingMessage: ChatMessage?
     private(set) var admissionPhase: AdmissionPhase = .ready
     private(set) var admissionSuccess = 0
@@ -35,7 +37,31 @@ final class ChatViewModel {
         conversations.conversation(for: context)
     }
 
+    func startSuggestedChat(_ context: ChatContext) async {
+        greetingFailed = false
+        error = nil
+        do { try await conversations.startSuggestedChat(context) }
+        catch is CancellationError { }
+        catch {
+            greetingFailed = true
+            self.error = error.localizedDescription
+        }
+    }
+
     var doubloons: Int { conversations.doubloons }
+    var profileNotice: String? { conversations.profileNotice }
+    func offersNotificationPermission(in context: ChatContext) -> Bool {
+        conversations.offersNotificationPermission(in: context)
+    }
+
+    func answerNotificationInvitation(enable: Bool) async {
+        guard !isAnsweringNotificationInvitation else { return }
+        isAnsweringNotificationInvitation = true
+        defer { isAnsweringNotificationInvitation = false }
+        error = nil
+        do { try await conversations.answerNotificationInvitation(enable: enable) }
+        catch { self.error = error.localizedDescription }
+    }
     func canSend(in context: ChatContext) -> Bool {
         !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             && !isSending && !conversations.isResponding
@@ -122,13 +148,14 @@ final class ChatViewModel {
         error = nil
         isSending = true
         pendingMessage = ChatMessage(role: .learner, text: message)
+        draft = ""
         defer { isSending = false; pendingMessage = nil }
         do {
             try await conversations.send(message, in: context)
-            draft = ""
         } catch is CancellationError {
-            // A cancelled response leaves the draft ready to send again.
+            draft = draft.isEmpty ? message : message + "\n" + draft
         } catch {
+            draft = draft.isEmpty ? message : message + "\n" + draft
             self.error = error.localizedDescription
         }
     }

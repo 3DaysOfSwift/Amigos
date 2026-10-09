@@ -3,8 +3,8 @@
 Amigos uses the Cooperative Feature Architecture (CFA) Toolkit for all new
 work. The toolkit's Swift coding guide is the engineering standard. The Xcode
 project, bundle identifier, and saved-data directory use the Amigos identity.
-The repositories retain a one-time read-and-copy migration from the original
-HolaTalk saved-data directory; preserve it unless its retention is reviewed.
+Amigos is pre-release. Use the current Amigos storage paths and preference
+keys; do not add prototype-data migrations unless explicitly requested.
 
 ## Architecture
 
@@ -31,7 +31,7 @@ Assets.xcassets/
 Each screen owns an adjacent `@MainActor @Observable` ViewModel. Views describe
 the interface and forward intent. `ConversationFeature` owns the paid practice
 workflow: chats, wallet charges, role play progression and rewards. The local
-repository owns saved JSON and migration from the original UserDefaults archive.
+repository owns the current Amigos saved JSON.
 `AppModel.shared` is the production composition root; isolated tests construct
 their own graph. `ThemeManager` is presentation state supplied through SwiftUI.
 

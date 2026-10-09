@@ -11,6 +11,180 @@ struct ConversationManagerTests {
         ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
     }
 
+    @Test("Alma welcomes once, then Nico arrives after the first earned doubloon")
+    func messagingOnboarding() async throws {
+        let repository = MemoryConversationRepository(archive: PracticeArchive())
+        let notifications = RecordingAmigoNotifications()
+        let manager = ConversationManager(repository: repository, responder: StubSpanishChat(reply: .success("Hola")), notifications: notifications)
+        await manager.loadSavedPractice()
+        try await manager.introduceFirstAmigo()
+        try await manager.introduceFirstAmigo()
+        #expect(notifications.amigoIDs == ["alma"])
+        #expect(manager.conversation(for: friend).messages.count == 1)
+        #expect(manager.doubloons == 10)
+        try await manager.send("Me llamo Matt", in: friend)
+        #expect(notifications.amigoIDs == ["alma"])
+        #expect(notifications.permissionRequests == 0)
+        for _ in 0..<9 { try await manager.send("Hola", in: friend) }
+        #expect(manager.doubloons == 11)
+        #expect(manager.conversation(for: friend).messages.last?.text == AmigoWelcome.doubloonExplanation.spanish)
+        #expect(notifications.amigoIDs == ["alma", "nico"])
+        #expect(await repository.savedArchive()?.introducedAmigoIDs == ["alma", "nico"])
+        try await manager.send("Hola otra vez", in: friend)
+        #expect(notifications.amigoIDs == ["alma", "nico"])
+    }
+
+    @Test("Notification choice advances through Sol without automatically introducing Tavo", arguments: [true, false])
+    func notificationChoiceAndRemainingIntroductions(enable: Bool) async throws {
+        var archive = PracticeArchive()
+        archive.introducedAmigoIDs = ["alma", "nico"]
+        let repository = MemoryConversationRepository(archive: archive)
+        let notifications = RecordingAmigoNotifications()
+        let manager = ConversationManager(repository: repository, responder: StubSpanishChat(reply: .success("Hola")), notifications: notifications)
+        await manager.loadSavedPractice()
+        let nico = ChatContext(amigo: Amigo.catalogue[1], scenario: nil)
+        #expect(manager.offersNotificationPermission(in: nico))
+        try await manager.send("Hola", in: nico)
+        #expect(notifications.amigoIDs.isEmpty)
+        try await manager.answerNotificationInvitation(enable: enable)
+        try await manager.answerNotificationInvitation(enable: enable)
+        #expect(notifications.permissionRequests == (enable ? 1 : 0))
+        #expect(notifications.amigoIDs == ["ines"])
+        #expect(!manager.offersNotificationPermission(in: nico))
+        for amigo in Amigo.catalogue where ["ines", "dani", "lucia", "rafa", "sol"].contains(amigo.id) {
+            try await manager.send("Hola", in: ChatContext(amigo: amigo, scenario: nil))
+        }
+        #expect(notifications.amigoIDs == ["ines", "dani", "lucia", "rafa", "sol"])
+        #expect(await repository.savedArchive()?.introducedAmigoIDs?.contains("tavo") == false)
+    }
+
+    @Test("Denied permission still introduces Inés, and failed saves leave the choice retryable")
+    func deniedNotificationPermissionAndSaveRetry() async throws {
+        var archive = PracticeArchive()
+        archive.introducedAmigoIDs = ["alma", "nico"]
+        let repository = MemoryConversationRepository(archive: archive)
+        let notifications = RecordingAmigoNotifications()
+        notifications.permissionGranted = false
+        let manager = ConversationManager(repository: repository, responder: StubSpanishChat(reply: .success("Hola")), notifications: notifications)
+        await manager.loadSavedPractice()
+        let nico = ChatContext(amigo: Amigo.catalogue[1], scenario: nil)
+        await repository.failNextSave()
+        await #expect(throws: TestFailure.self) { try await manager.answerNotificationInvitation(enable: true) }
+        #expect(manager.offersNotificationPermission(in: nico))
+        #expect(notifications.amigoIDs.isEmpty)
+        try await manager.answerNotificationInvitation(enable: true)
+        #expect(notifications.amigoIDs == ["ines"])
+        #expect(manager.conversation(for: nico).messages.last?.englishText?.contains("No problem") == true)
+    }
+
+    @Test("A referral shared in chat is saved in the editable profile")
+    func referralSource() async throws {
+        let profiles = ProfileManager(repository: MemoryProfileRepository())
+        await profiles.loadSavedProfile()
+        let responder = ProfileAwareSpanishChat(facts: [ProfileFact(field: .referralSource, value: "Instagram", evidence: "Instagram")])
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: PracticeArchive()), responder: responder, profileFeature: profiles)
+        await manager.loadSavedPractice()
+        try await manager.send("Instagram", in: ChatContext(amigo: Amigo.catalogue[2], scenario: nil))
+        #expect(profiles.profile.value(for: .referralSource) == "Instagram")
+    }
+
+    @Test("A failed welcome save sends no notification and retry does not duplicate it")
+    func failedWelcome() async throws {
+        let repository = MemoryConversationRepository(archive: PracticeArchive())
+        let notifications = RecordingAmigoNotifications()
+        let manager = ConversationManager(repository: repository, responder: StubSpanishChat(reply: .success("Hola")), notifications: notifications)
+        await manager.loadSavedPractice()
+        await repository.failNextSave()
+        await #expect(throws: TestFailure.self) { try await manager.introduceFirstAmigo() }
+        #expect(notifications.amigoIDs.isEmpty)
+        #expect(manager.conversation(for: friend).messages.isEmpty)
+        try await manager.introduceFirstAmigo()
+        #expect(notifications.amigoIDs == ["alma"])
+    }
+
+    @Test("Chat facts update the shared profile while role-play facts do not")
+    func conversationalProfile() async throws {
+        let profiles = ProfileManager(repository: MemoryProfileRepository())
+        await profiles.loadSavedProfile()
+        let responder = ProfileAwareSpanishChat(facts: [ProfileFact(field: .firstName, value: "Matt", evidence: "Matt")])
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: PracticeArchive()), responder: responder, profileFeature: profiles)
+        await manager.loadSavedPractice()
+        let rolePlay = ChatContext(amigo: friend.amigo, scenario: RolePlayScenario.catalogue[0])
+        #expect(manager.authorizeRolePlay(rolePlay))
+        try await manager.send("Me llamo Matt", in: rolePlay)
+        #expect(profiles.profile.value(for: .firstName).isEmpty)
+        try await manager.send("Me llamo Matt", in: friend)
+        #expect(profiles.profile.value(for: .firstName) == "Matt")
+        #expect(manager.profileNotice != nil)
+        try await manager.send("Hola Matt", in: friend)
+        #expect(await responder.receivedProfile?.value(for: .firstName) == "Matt")
+    }
+
+    @Test("A profile write failure does not undo or duplicate a successful chat reply")
+    func profileWriteFailureKeepsReply() async throws {
+        let repository = MemoryProfileRepository()
+        let profiles = ProfileManager(repository: repository)
+        await profiles.loadSavedProfile()
+        let responder = ProfileAwareSpanishChat(facts: [ProfileFact(field: .firstName, value: "Matt", evidence: "Matt")])
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: PracticeArchive()), responder: responder, profileFeature: profiles)
+        await manager.loadSavedPractice()
+        await repository.failNextSave()
+        try await manager.send("Matt", in: friend)
+        #expect(manager.conversation(for: friend).messages.count == 2)
+        #expect(profiles.profile.value(for: .firstName).isEmpty)
+        #expect(manager.profileNotice?.contains("could not be updated") == true)
+    }
+
+    @Test("Suggested greetings persist once per day without rewards or learner messages")
+    func suggestedGreeting() async throws {
+        let (manager, repository) = await makeManager()
+        let context = ChatContext(amigo: friend.amigo, scenario: nil, startsWithGreeting: true)
+        try await manager.send("Hola", in: friend)
+        try await manager.startSuggestedChat(context)
+        try await manager.startSuggestedChat(context)
+        let messages = manager.conversation(for: context).messages
+        #expect(messages.count == 3)
+        #expect(messages.last?.role == .storyteller)
+        #expect(messages.last?.englishText == "Hello")
+        #expect(messages.last?.startsNewConversation == true)
+        #expect(manager.doubloons == 10)
+        #expect(await repository.savedArchive()?.dailyAmigoChatProgress?[friend.amigo.id]?.successfulExchanges == 1)
+        let reloaded = ConversationManager(repository: repository, responder: StubSpanishChat(reply: .success("Hola")), currentDate: { today })
+        await reloaded.loadSavedPractice()
+        try await reloaded.startSuggestedChat(context)
+        #expect(reloaded.conversation(for: context).messages.count == 3)
+    }
+
+    @Test("A failed greeting save leaves the feed unchanged and can be retried")
+    func greetingSaveFailure() async throws {
+        let (manager, repository) = await makeManager()
+        let context = ChatContext(amigo: friend.amigo, scenario: nil, startsWithGreeting: true)
+        await repository.failNextSave()
+        await #expect(throws: TestFailure.self) { try await manager.startSuggestedChat(context) }
+        #expect(manager.conversation(for: context).messages.isEmpty)
+        try await manager.startSuggestedChat(context)
+        #expect(manager.conversation(for: context).messages.count == 1)
+        #expect(manager.conversation(for: context).messages.first?.startsNewConversation == false)
+    }
+
+    @Test("Daily suggestions cycle through eight different amigos")
+    func dailySuggestionRotation() async throws {
+        var date = today
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: PracticeArchive()), responder: StubSpanishChat(reply: .success("Hola")), currentDate: { date })
+        await manager.loadSavedPractice()
+        var suggestedIDs: Set<String> = []
+        for _ in 0..<8 {
+            for _ in 0..<10 { try await manager.send("Hola", in: friend) }
+            manager.prepareStreakLaunch()
+            let invitation = try #require(manager.dailyAmigoInvitation)
+            suggestedIDs.insert(invitation.amigo.id)
+            manager.prepareStreakLaunch()
+            #expect(manager.dailyAmigoInvitation?.amigo.id == invitation.amigo.id)
+            date = date.addingTimeInterval(86_400)
+        }
+        #expect(suggestedIDs.count == 8)
+    }
+
     private func makeManager(
         archive: PracticeArchive = PracticeArchive(),
         reply: Result<String, Error> = .success("¡Hola! ¿Cómo estás?")
@@ -72,23 +246,52 @@ struct ConversationManagerTests {
         #expect(await repository.savedArchive()?.doubloons == nil)
     }
 
-    @Test("Older saved conversations establish the earliest known start date")
-    func olderArchiveStartDate() async {
+    @Test("The saved join date is retained when loading practice")
+    func savedJoinDate() async {
         let earlier = today.addingTimeInterval(-3 * 86_400)
         var archive = PracticeArchive()
-        archive.conversations[friend.id] = Conversation(paidAt: earlier)
+        archive.firstOpenedAt = earlier
         let (manager, repository) = await makeManager(archive: archive)
         #expect(manager.daysSinceFirstUse == 3)
         #expect(await repository.savedArchive()?.firstOpenedAt == earlier)
     }
 
-    @Test("Older practice days are retained when establishing the earliest known start")
-    func olderPracticeDayStartDate() async {
+    @Test("Saved practice days are retained when loading practice")
+    func savedPracticeDays() async {
         var archive = PracticeArchive()
         archive.practiceDays = ["2026-05-20"]
         let (manager, repository) = await makeManager(archive: archive)
-        #expect(manager.daysSinceFirstUse > 0)
+        #expect(manager.daysSinceFirstUse == 0)
         #expect(await repository.savedArchive()?.practiceDays == ["2026-05-20"])
+    }
+
+    @Test("A continuing streak offers an Amigo whenever a streak launch is prepared")
+    func continuingStreakOffersDailyAmigo() async throws {
+        var archive = PracticeArchive()
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy-MM-dd"
+        archive.practiceDays = [formatter.string(from: today)]
+        archive.streakTimeZoneIdentifier = TimeZone.current.identifier
+
+        let repository = MemoryConversationRepository(archive: archive)
+        let manager = ConversationManager(
+            repository: repository,
+            responder: StubSpanishChat(reply: .success("Hola")),
+            currentDate: { today }
+        )
+        await manager.loadSavedPractice()
+
+        #expect(manager.launchStreak == 1)
+        #expect(manager.hasCompletedDayStreak)
+        let invitation = try #require(manager.dailyAmigoInvitation)
+        #expect(invitation.streak == 1)
+        #expect(Amigo.catalogue.contains(invitation.amigo))
+
+        manager.prepareStreakLaunch()
+        #expect(manager.launchStreak == 1)
+        #expect(manager.dailyAmigoInvitation != nil)
     }
 
     @Test("Friend chats are free and the first two exchanges do not earn a doubloon")
@@ -224,17 +427,6 @@ struct ConversationManagerTests {
         #expect(reloaded.doubloons == 11)
     }
 
-    @Test("An earlier one-exchange reward is preserved without paying again at ten")
-    func legacyReward() async throws {
-        var archive = PracticeArchive(doubloons: 11)
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.dateFormat = "yyyy-MM-dd"
-        archive.rewardedAmigoDays = [friend.amigo.id: formatter.string(from: today)]
-        let (manager, _) = await makeManager(archive: archive)
-        for _ in 0..<9 { try await manager.send("Hola", in: friend) }
-        #expect(manager.doubloons == 11)
-    }
 
     @Test("Role plays unlock in order after three exchanges")
     func rolePlayProgression() async throws {

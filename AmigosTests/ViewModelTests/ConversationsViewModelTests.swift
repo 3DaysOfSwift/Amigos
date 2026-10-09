@@ -5,6 +5,39 @@ import Testing
 @Suite("Conversations screen")
 @MainActor
 struct ConversationsViewModelTests {
+    @Test("The daily countdown follows the closest amigo and completes after ten exchanges")
+    func dailyCountdown() async throws {
+        let manager = await makeTestConversationManager()
+        let viewModel = ConversationsViewModel(conversations: manager)
+        let alma = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
+        let nico = ChatContext(amigo: Amigo.catalogue[1], scenario: nil)
+        #expect(viewModel.streakStatusDescription == "10 messages required")
+        try await manager.send("Hola", in: alma)
+        #expect(viewModel.streakStatusDescription == "9 messages required")
+        try await manager.send("Hola", in: nico)
+        #expect(viewModel.streakStatusDescription == "9 messages required")
+        for _ in 0..<8 { try await manager.send("Hola", in: alma) }
+        #expect(viewModel.streakStatusDescription == "1 message required")
+        try await manager.send("Hola", in: alma)
+        #expect(viewModel.streakStatusDescription == "Complete")
+        #expect(manager.messagesRemainingForDayStreak == 0)
+    }
+
+    @Test("Yesterday's progress does not reduce today's countdown")
+    func countdownResetsForNewDay() async {
+        var archive = PracticeArchive()
+        archive.dailyAmigoChatProgress = ["alma": DailyAmigoChatProgress(day: "2000-01-01", successfulExchanges: 9, awardedDoubloons: 0)]
+        let manager = await makeTestConversationManager(archive: archive)
+        #expect(manager.messagesRemainingForDayStreak == 10)
+    }
+
+    @Test("Failed replies do not reduce the countdown")
+    func failedReplyDoesNotCount() async {
+        let manager = await makeTestConversationManager(reply: .failure(TestFailure.unavailable))
+        let context = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
+        await #expect(throws: TestFailure.self) { try await manager.send("Hola", in: context) }
+        #expect(manager.messagesRemainingForDayStreak == 10)
+    }
     @Test("The screen exposes the available friends and current wallet")
     func presentsFriendsAndBalance() async {
         let manager = await makeTestConversationManager()
@@ -54,5 +87,6 @@ struct ConversationsViewModelTests {
         let manager = await makeTestConversationManager(archive: archive)
         let viewModel = ConversationsViewModel(conversations: manager)
         #expect(viewModel.streakDescription == "1 day")
+        #expect(viewModel.hasCompletedDayStreak)
     }
 }

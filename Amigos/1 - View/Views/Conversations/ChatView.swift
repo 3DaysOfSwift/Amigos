@@ -5,6 +5,7 @@ struct ChatView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let context: ChatContext
     @State private var viewModel = ChatViewModel()
+    @FocusState private var isComposerFocused: Bool
     @Namespace private var admissionCoinAnimation
 
     private var palette: AppPalette { themeManager.currentTheme.palette }
@@ -25,7 +26,7 @@ struct ChatView: View {
                         .padding(16)
                         .background(palette.surface, in: RoundedRectangle(cornerRadius: 18))
 
-                    if conversation.messages.isEmpty {
+                    if conversation.messages.isEmpty && !context.startsWithGreeting {
                         VStack(alignment: .leading, spacing: 10) {
                             Label(context.scenario?.title ?? "Say hello", systemImage: context.scenario?.symbol ?? "bubble.left.fill")
                                 .font(.headline)
@@ -49,6 +50,11 @@ struct ChatView: View {
                     }
 
                     ForEach(conversation.messages) { message in
+                        if message.startsNewConversation == true {
+                            Divider()
+                                .padding(.vertical, 8)
+                                .accessibilityLabel("New conversation")
+                        }
                         ChatBubble(message: message, translation: viewModel.translationDisplay(for: message)) {
                             viewModel.toggleTranslation(for: message)
                         }
@@ -56,6 +62,19 @@ struct ChatView: View {
                     }
                     if let pending = viewModel.pendingMessage {
                         ChatBubble(message: pending, translation: .hidden, onTap: nil).opacity(0.7)
+                    }
+                    if viewModel.offersNotificationPermission(in: context) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Button("Enable notifications") {
+                                Task { await viewModel.answerNotificationInvitation(enable: true) }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            Button("Not now") {
+                                Task { await viewModel.answerNotificationInvitation(enable: false) }
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                        .disabled(viewModel.isAnsweringNotificationInvitation || viewModel.isSending)
                     }
                     if viewModel.isResponding() {
                         HStack {
@@ -83,6 +102,16 @@ struct ChatView: View {
                     }
                     if let error = viewModel.error {
                         Text(error).font(.footnote).foregroundStyle(.red)
+                        if viewModel.greetingFailed {
+                            Button("Retry greeting") {
+                                Task { await viewModel.startSuggestedChat(context) }
+                            }
+                        }
+                    }
+                    if let notice = viewModel.profileNotice {
+                        Text(notice)
+                            .font(.footnote)
+                            .foregroundStyle(palette.mutedText)
                     }
                 }
                 .padding(18)
@@ -94,10 +123,14 @@ struct ChatView: View {
                 }
             }
         }
+        .task(id: context) {
+            if context.startsWithGreeting { await viewModel.startSuggestedChat(context) }
+        }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if !conversation.finished {
                 if viewModel.showsRolePlayAdmission(context) {
                     admissionBar
+                        .padding(.bottom, 200)
                         .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
                 } else {
                     composer
@@ -175,6 +208,7 @@ struct ChatView: View {
                         .font(.subheadline.weight(.semibold))
                         .monospacedDigit()
                 }
+                .padding(.horizontal, 8)
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("\(viewModel.doubloons) doubloons")
             }
@@ -193,6 +227,9 @@ struct ChatView: View {
                     .padding(.bottom, 5)
 
                 TextField("Message in Spanish", text: $viewModel.draft, axis: .vertical)
+                    .focused($isComposerFocused)
+                    .onAppear { isComposerFocused = true }
+                    .onDisappear { isComposerFocused = false }
                     .lineLimit(1...4)
                     .onSubmit { Task { await viewModel.send(in: context) } }
                     .padding(.vertical, 10)

@@ -7,4 +7,6 @@ protocol ProfileFeature: AnyObject {
     var isLoaded: Bool { get }
     func loadSavedProfile() async
     func saveDisplayName(_ name: String) async throws
+    func saveProfile(displayName: String, details: [ProfileField: String]) async throws
+    func remember(_ facts: [ProfileFact], from message: String) async throws -> [ProfileField]
 }

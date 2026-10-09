@@ -11,11 +11,8 @@ struct RolePlayView: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(spacing: 10) {
                     DoubloonIcon(size: 26)
-                    Text("\(viewModel.doubloons) doubloons")
+                    Text("\(viewModel.doubloons) doubloons available")
                         .fontWeight(.semibold)
-                    Spacer()
-                    Text("2 per role play")
-                        .foregroundStyle(palette.mutedText)
                 }
                 .font(.subheadline)
                 .padding(.vertical, 14)
@@ -28,7 +25,7 @@ struct RolePlayView: View {
                             NavigationLink { ChatView(context: option.context) } label: {
                                 RolePlayCell(option: option)
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(RolePlayRowButtonStyle(highlight: palette.streak))
                         } else {
                             RolePlayCell(option: option)
                         }
@@ -45,6 +42,20 @@ struct RolePlayView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .background(palette.background.ignoresSafeArea())
+    }
+}
+
+private struct RolePlayRowButtonStyle: ButtonStyle {
+    let highlight: Color
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .overlay {
+                RoundedRectangle(cornerRadius: 22)
+                    .fill(highlight.opacity(configuration.isPressed ? 0.26 : 0))
+                    .allowsHitTesting(false)
+            }
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 

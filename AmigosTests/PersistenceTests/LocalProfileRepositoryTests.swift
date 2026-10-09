@@ -29,17 +29,4 @@ struct LocalProfileRepositoryTests {
         #expect(try Data(contentsOf: fileURL) == original)
     }
 
-    @Test("A profile in the original HolaTalk directory is copied into Amigos")
-    func migratesOriginalProfileDirectory() async throws {
-        let directory = FileManager.default.temporaryDirectory.appending(path: "ProfileTests-\(UUID().uuidString)")
-        defer { try? FileManager.default.removeItem(at: directory) }
-        let legacyFileURL = directory.appending(path: "HolaTalk/profile.json")
-        let fileURL = directory.appending(path: "Amigos/profile.json")
-        try FileManager.default.createDirectory(at: legacyFileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try JSONEncoder().encode(LearnerProfile(displayName: "Alex")).write(to: legacyFileURL)
-
-        let repository = LocalProfileRepository(fileURL: fileURL, legacyFileURL: legacyFileURL)
-        #expect(try await repository.load()?.displayName == "Alex")
-        #expect(FileManager.default.fileExists(atPath: fileURL.path))
-    }
 }

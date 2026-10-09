@@ -6,6 +6,7 @@ import Observation
 final class ProfileViewModel {
     private let profileFeature: any ProfileFeature
     var draftName: String
+    var draftDetails: [ProfileField: String]
     private(set) var isSaving = false
     private(set) var error: String?
     private(set) var didSave = false
@@ -15,12 +16,14 @@ final class ProfileViewModel {
     init(profileFeature: any ProfileFeature = AppModel.shared.profileManager) {
         self.profileFeature = profileFeature
         draftName = profileFeature.profile.displayName
+        draftDetails = profileFeature.profile.details ?? [:]
     }
 
     func retryLoading() async {
         await profileFeature.loadSavedProfile()
         if profileFeature.isLoaded {
             draftName = profileFeature.profile.displayName
+            draftDetails = profileFeature.profile.details ?? [:]
             error = nil
         }
     }
@@ -33,8 +36,9 @@ final class ProfileViewModel {
         defer { isSaving = false }
 
         do {
-            try await profileFeature.saveDisplayName(draftName)
+            try await profileFeature.saveProfile(displayName: draftName, details: draftDetails)
             draftName = profileFeature.profile.displayName
+            draftDetails = profileFeature.profile.details ?? [:]
             didSave = true
         } catch {
             self.error = error.localizedDescription

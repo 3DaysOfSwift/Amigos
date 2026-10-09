@@ -32,9 +32,31 @@ struct ProfileView: View {
                         .background(palette.surface, in: RoundedRectangle(cornerRadius: 18))
                         .accessibilityLabel("Your display name")
 
-                    Text("Only your name is saved on this device. No account is needed.")
+                    Text("Your amigos can remember details you explicitly share in ordinary chats. Everything is optional and saved on this device. Edit or clear any field here. Role-play answers are never saved to your profile.")
                         .font(.footnote)
                         .foregroundStyle(palette.mutedText)
+                }
+
+                VStack(alignment: .leading, spacing: 18) {
+                    ForEach(ProfileField.allCases) { field in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(field.title).font(.subheadline.weight(.semibold))
+                            if field == .preferredAddress {
+                                Picker(field.title, selection: detailBinding(field)) {
+                                    Text("Not specified").tag("")
+                                    Text("Amigo").tag("amigo")
+                                    Text("Amiga").tag("amiga")
+                                    Text("Neutral wording").tag("neutral")
+                                }
+                                .pickerStyle(.menu)
+                            } else {
+                                TextField("Optional", text: detailBinding(field))
+                                    .keyboardType(field == .age ? .numberPad : .default)
+                                    .padding(12)
+                                    .background(palette.surface, in: RoundedRectangle(cornerRadius: 12))
+                            }
+                        }
+                    }
                 }
 
                 if let loadError = viewModel.loadError {
@@ -50,14 +72,14 @@ struct ProfileView: View {
                 Button {
                     Task { await viewModel.save() }
                 } label: {
-                    Text(viewModel.isSaving ? "Saving…" : "Save name")
+                    Text(viewModel.isSaving ? "Saving…" : "Save profile")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(!viewModel.canSave)
 
                 if viewModel.didSave {
-                    Label("Name saved", systemImage: "checkmark.circle.fill")
+                    Label("Profile saved", systemImage: "checkmark.circle.fill")
                         .foregroundStyle(palette.online)
                 }
                 if let error = viewModel.error {
@@ -70,5 +92,10 @@ struct ProfileView: View {
         .navigationTitle("Your profile")
         .hidesAppTabBar()
         .background(palette.background.ignoresSafeArea())
+    }
+
+    private func detailBinding(_ field: ProfileField) -> Binding<String> {
+        Binding(get: { viewModel.draftDetails[field] ?? "" },
+                set: { viewModel.draftDetails[field] = $0 })
     }
 }

@@ -6,6 +6,25 @@ import Testing
 struct ChatViewModelTests {
     private let context = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
 
+    @Test("Sending clears the composer before the reply and preserves a new draft")
+    func composerClearsWhileAwaitingReply() async {
+        let responder = SuspendedSpanishChat()
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: nil), responder: responder)
+        await manager.loadSavedPractice()
+        let viewModel = ChatViewModel(conversations: manager)
+        viewModel.draft = "Hola"
+        let sending = Task { await viewModel.send(in: context) }
+        await responder.waitUntilStarted()
+        #expect(viewModel.draft.isEmpty)
+        #expect(viewModel.pendingMessage?.text == "Hola")
+        #expect(viewModel.isSending)
+        viewModel.draft = "¿Qué tal?"
+        await responder.complete(with: "¡Hola!")
+        await sending.value
+        #expect(viewModel.draft == "¿Qué tal?")
+        #expect(viewModel.pendingMessage == nil)
+    }
+
     @Test("A failed reply leaves the draft available for retry")
     func failedReplyRetainsDraft() async {
         let manager = await makeTestConversationManager(reply: .failure(TestFailure.unavailable))

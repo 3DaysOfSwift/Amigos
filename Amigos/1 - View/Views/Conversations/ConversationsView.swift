@@ -3,15 +3,34 @@ import SwiftUI
 struct ConversationsView: View {
     @Environment(ThemeManager.self) private var themeManager
     @State private var viewModel = ConversationsViewModel()
-    @State private var selectedAmigo: Amigo?
 
     private var palette: AppPalette { themeManager.currentTheme.palette }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                chatsHeader
+                Group {
+                    if viewModel.isLoaded {
+                        chatsHeader
+                    } else if let error = viewModel.loadError {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(error)
+                            Button("Try again", action: viewModel.retryLoading)
+                                .disabled(viewModel.isRetrying)
+                        }
+                    } else {
+                        ProgressView("Loading chats…")
+                    }
+                }
+                .padding(.horizontal, 18)
+
+                if let error = viewModel.introductionError {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(error).font(.footnote)
+                        Button("Retry welcome") { Task { await viewModel.introduceAmigos() } }
+                    }
                     .padding(.horizontal, 18)
+                }
 
                 LazyVStack(spacing: 0) {
                     if !viewModel.visibleAmigos.isEmpty {
@@ -26,7 +45,8 @@ struct ConversationsView: View {
                         } label: {
                             amigoRow(amigo)
                         }
-                        .buttonStyle(ConversationRowButtonStyle(pressedBackground: palette.surface))
+                        .buttonStyle(ConversationRowButtonStyle(pressedBackground: palette.streak.opacity(0.20)))
+                        .disabled(!viewModel.isLoaded)
                         .accessibilityLabel("Open chat with \(amigo.name)")
 
                         Rectangle()
@@ -44,7 +64,7 @@ struct ConversationsView: View {
                         .padding(.horizontal, 18)
                 }
 
-                Text("Your amigos are AI characters. Conversations stay on this device.")
+                Text("Your amigos are ghosts, but their personalities and stories are still here and live on through your conversation. Each conversation gives you another way to practice messaging in Spanish. Your amigos are AI characters. Conversations stay local on your device.")
                     .font(.footnote)
                     .foregroundStyle(palette.mutedText)
                     .padding(.horizontal, 18)
@@ -54,25 +74,13 @@ struct ConversationsView: View {
             .tabBarScrollClearance()
         }
         .background(palette.background.ignoresSafeArea())
+        .task(id: viewModel.isLoaded) { await viewModel.introduceAmigos() }
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $viewModel.searchText, prompt: "Search amigos")
         .toolbar {
             ToolbarItem(placement: .principal) {
                 AmigosScreenTitle(title: "Chats", fontSize: 19)
             }
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                Menu {
-                    ForEach(viewModel.amigos) { amigo in
-                        Button(amigo.name) { selectedAmigo = amigo }
-                    }
-                } label: {
-                    Image(systemName: "square.and.pencil")
-                }
-                .accessibilityLabel("Choose an amigo to chat with")
-            }
-        }
-        .navigationDestination(item: $selectedAmigo) { amigo in
-            ChatView(context: ChatContext(amigo: amigo, scenario: nil))
         }
     }
 
@@ -90,16 +98,30 @@ struct ConversationsView: View {
             HStack(spacing: 7) {
                 Image(systemName: "flame.fill")
                     .font(.headline)
-                    .foregroundStyle(palette.accent)
+                    .foregroundStyle(streakStatusColor)
                 Text(viewModel.streakDescription)
                     .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
                     .fixedSize()
                 StreakBar(days: viewModel.currentWeek)
+                Spacer(minLength: 0)
+                Text(viewModel.streakStatusDescription)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(streakStatusColor)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .overlay {
+                Capsule()
+                    .stroke(streakStatusColor, lineWidth: 1.5)
             }
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("\(viewModel.streakDescription) streak")
+            .accessibilityLabel("\(viewModel.streakDescription) streak, \(viewModel.streakStatusDescription)")
         }
+    }
+
+    private var streakStatusColor: Color {
+        viewModel.hasCompletedDayStreak ? palette.online : .orange
     }
 
     private func amigoRow(_ amigo: Amigo) -> some View {
