@@ -20,6 +20,7 @@ struct SpanishChatReply: Sendable, Equatable {
     let spanish: String
     let english: String
     var profileFacts: [ProfileFact] = []
+    var discardedProfileFactCount: Int = 0
 }
 
 struct Conversation: Codable, Sendable, Equatable {

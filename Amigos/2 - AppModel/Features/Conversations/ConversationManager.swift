@@ -1,9 +1,11 @@
 import Foundation
 import Observation
+import OSLog
 
 @MainActor
 @Observable
 final class ConversationManager: ConversationFeature {
+    private static let logger = Logger(subsystem: "com.3DaysOfSwiftConcurrency.Amigos", category: "ChatProfile")
     private let repository: any ConversationRepository
     private let responder: any SpanishChatResponding
     private let currentDate: @MainActor () -> Date
@@ -187,15 +189,20 @@ final class ConversationManager: ConversationFeature {
         try await repository.save(updated)
         archive = updated
         if needsPayment { authorizedRolePlayID = nil }
-        profileNotice = nil
+        profileNotice = reply.discardedProfileFactCount > 0
+            ? "Some profile details couldn't be remembered. You can add them in Settings → Your profile."
+            : nil
         if context.scenario == nil, !reply.profileFacts.isEmpty, let profileFeature {
             do {
                 let fields = try await profileFeature.remember(reply.profileFacts, from: message)
                 if !fields.isEmpty {
-                    profileNotice = "Profile updated: \(fields.map(\.title).joined(separator: ", ")). You can edit or remove these details in Settings → Your profile."
+                    let savedNotice = "Profile updated: \(fields.map(\.title).joined(separator: ", ")). You can edit or remove these details in Settings → Your profile."
+                    profileNotice = [profileNotice, savedNotice].compactMap { $0 }.joined(separator: " ")
                 }
             } catch {
-                profileNotice = "Your message was saved, but your profile could not be updated. You can edit it in Settings. \(error.localizedDescription)"
+                let failureType = String(reflecting: type(of: error))
+                Self.logger.error("stage=profile_update failureType=\(failureType, privacy: .public)")
+                profileNotice = "Your message was saved, but your profile could not be updated. You can edit it in Settings."
             }
         }
         // The reply is committed before introducing another friend. A welcome never counts as an exchange.

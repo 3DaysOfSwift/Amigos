@@ -11,6 +11,37 @@ struct ConversationManagerTests {
         ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
     }
 
+    @Test("Recovery saves one exchange and charges Role Play once")
+    func recoveredReplyCommitsOnce() async throws {
+        let generated = GeneratedAmigoReply(spanish: "¡Hola! ¿Qué quieres tomar?", english: "Hi! What would you like to drink?", profileFacts: [])
+        let generator = ScriptedAmigoGenerator([.failure(.structuredOutput), .success(generated)])
+        let repository = MemoryConversationRepository(archive: PracticeArchive())
+        let manager = ConversationManager(repository: repository, responder: OnDeviceSpanishChat(generator: generator))
+        await manager.loadSavedPractice()
+        let context = ChatContext(amigo: friend.amigo, scenario: RolePlayScenario.catalogue[0])
+        #expect(manager.authorizeRolePlay(context))
+        try await manager.send("Can I have coffee?", in: context)
+        #expect(await generator.calls == 2)
+        #expect(manager.doubloons == 8)
+        #expect(manager.conversation(for: context).messages.count == 2)
+        #expect(await repository.savedArchive()?.doubloons == 8)
+    }
+
+    @Test("Recovery at the first reward threshold counts only one successful exchange")
+    func recoveredReplyEarnsOnce() async throws {
+        let generated = GeneratedAmigoReply(spanish: "¡Hola!", english: "Hello!", profileFacts: [])
+        let outcomes: [Result<GeneratedAmigoReply, OnDeviceChatError>] = Array(repeating: .success(generated), count: 9) + [.failure(.structuredOutput), .success(generated)]
+        let generator = ScriptedAmigoGenerator(outcomes)
+        let repository = MemoryConversationRepository(archive: PracticeArchive())
+        let manager = ConversationManager(repository: repository, responder: OnDeviceSpanishChat(generator: generator), currentDate: { today })
+        await manager.loadSavedPractice()
+        for _ in 0..<10 { try await manager.send("Hola", in: friend) }
+        #expect(await generator.calls == 11)
+        #expect(manager.doubloons == 11)
+        #expect(await repository.savedArchive()?.dailyAmigoChatProgress?[friend.amigo.id]?.successfulExchanges == 10)
+        #expect(manager.conversation(for: friend).messages.filter { $0.role == .learner }.count == 10)
+    }
+
     @Test("Alma welcomes once, then Nico arrives after the first earned doubloon")
     func messagingOnboarding() async throws {
         let repository = MemoryConversationRepository(archive: PracticeArchive())

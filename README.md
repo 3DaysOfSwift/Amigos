@@ -181,6 +181,31 @@ themes with light and dark appearances, and visible non-colour state feedback.
 Hands-on device validation remains important for Apple Intelligence availability
 and the final visual experience at extreme text sizes.
 
+### Chat response reliability
+
+Apple guided generation supplies typed Spanish, English and optional profile
+facts in one response; the app no longer parses hand-written XML tags or JSON.
+English and mixed-language learner messages are accepted, while the amigo
+responds in Spanish with a saved English translation. Unsupported or ungrounded
+profile facts are discarded independently of a valid chat reply, with an app
+notice rather than fictional character dialogue claiming a successful save.
+
+Empty replies, missing translations, length violations, transcript leakage,
+schema decoding, context limits, availability, safety/refusal and busy errors
+have distinct diagnostic categories. Recoverable output/context failures receive
+at most one fresh, compact attempt; safety, refusal, cancellation and unavailable
+models are not automatically retried. Persistence, charges and rewards happen
+only after the final validated reply, never per generation attempt.
+
+For debugging, filter device/Xcode logs by subsystem
+`com.3DaysOfSwiftConcurrency.Amigos`, categories `ChatGeneration` and `ChatProfile`.
+Logs contain request IDs, attempt counts, failure categories and discarded-fact
+counts—not conversation text, profile values or raw model errors. No analytics
+upload is added. Reproduce the English clarification case on an Apple
+Intelligence-capable device; historical screenshots cannot identify the original
+rejected output. Verify translation reveal, profile correction, interruption,
+long histories and repeated failure without duplicate rewards before release.
+
 ## Tests
 
 The test suite is organised by CFA boundary:
