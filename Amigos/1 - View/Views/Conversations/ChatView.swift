@@ -62,6 +62,7 @@ struct ChatView: View {
                     }
                     if let pending = viewModel.pendingMessage {
                         ChatBubble(message: pending, translation: .hidden, onTap: nil).opacity(0.7)
+                            .id(pending.id)
                     }
                     if viewModel.offersNotificationPermission(in: context) {
                         VStack(alignment: .leading, spacing: 12) {
@@ -117,9 +118,18 @@ struct ChatView: View {
                 .padding(18)
             }
             .defaultScrollAnchor(.bottom, for: .sizeChanges)
-            .onChange(of: conversation.messages.count) { _, _ in
-                if let last = conversation.messages.last {
-                    withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
+            .onChange(of: conversation.messages.last?.id, initial: true) { _, messageID in
+                if let messageID {
+                    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
+                        proxy.scrollTo(messageID)
+                    }
+                }
+            }
+            .onChange(of: viewModel.pendingMessage?.id) { _, pendingID in
+                if let messageID = pendingID ?? conversation.messages.last?.id {
+                    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
+                        proxy.scrollTo(messageID)
+                    }
                 }
             }
         }
