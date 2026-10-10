@@ -22,6 +22,26 @@ struct GeneratedAmigoReply: Sendable {
     var discussionLearnerEvidence: String = ""
     @Guide(description: "Exact supporting quote from this new Spanish reply, or empty.")
     var discussionReplyEvidence: String = ""
+    @Guide(description: "none, correction (meaning clear), or clarification (meaning uncertain).")
+    var writingHelpKind: String = "none"
+    @Guide(description: "Optional polished alternatives to the latest learner message. One meaning-preserving correction or up to three plausible clarification choices. Empty when unnecessary.", .maximumCount(3))
+    var writingSuggestions: [GeneratedWritingSuggestion] = []
+    @Guide(description: "Up to three short optional learner replies to your NEW Spanish message, each with faithful English. Different plausible choices, not facts about the learner. Empty when saying goodbye or offering writing clarification choices.", .maximumCount(3))
+    var suggestedReplies: [GeneratedSuggestedReply] = []
+}
+
+@Generable
+struct GeneratedSuggestedReply: Sendable {
+    var spanish: String
+    var english: String
+}
+
+@Generable
+struct GeneratedWritingSuggestion: Sendable {
+    var spanish: String
+    var english: String
+    @Guide(description: "Brief English explanation of the spelling, accent, punctuation or grammar, at most 180 characters.")
+    var explanation: String
 }
 
 @Generable

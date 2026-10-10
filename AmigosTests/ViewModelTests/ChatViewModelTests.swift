@@ -6,6 +6,36 @@ import Testing
 struct ChatViewModelTests {
     private let context = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
 
+    @Test("Suggested replies fill the draft without sending and hide while typing")
+    func suggestedReplyDraft() async throws {
+        let option = SuggestedReply(spanish: "Tuve un día tranquilo.", english: "I had a quiet day.")
+        var message = ChatMessage(role: .storyteller, text: "¿Cómo fue tu día?")
+        let another = SuggestedReply(spanish: "Fue un día ocupado.", english: "It was a busy day.")
+        message.suggestedReplies = [option, another]
+        var archive = PracticeArchive()
+        archive.conversations[context.id] = Conversation(messages: [message])
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: archive),
+            responder: StubSpanishChat(reply: .failure(TestFailure.unavailable)))
+        await manager.loadSavedPractice()
+        let viewModel = ChatViewModel(conversations: manager)
+        #expect(viewModel.suggestedReplies(in: context) == [option, another])
+        viewModel.useSuggestedReply(option, in: context)
+        #expect(viewModel.draft == option.spanish)
+        #expect(!viewModel.suggestedReplies(in: context).isEmpty)
+        viewModel.useNextReplyIdea(in: context)
+        #expect(viewModel.draft == another.spanish)
+        viewModel.useNextReplyIdea(in: context)
+        #expect(viewModel.draft == option.spanish)
+        #expect(manager.conversation(for: context).messages == [message])
+        #expect(manager.doubloons == archive.doubloons)
+        viewModel.draft = "My own words"
+        #expect(viewModel.suggestedReplies(in: context).isEmpty)
+        viewModel.useSuggestedReply(option, in: context)
+        #expect(viewModel.draft == "My own words")
+        viewModel.draft = ""
+        #expect(viewModel.suggestedReplies(in: context) == [option, another])
+    }
+
     @Test("Sending clears the composer before the reply and preserves a new draft")
     func composerClearsWhileAwaitingReply() async {
         let responder = SuspendedSpanishChat()

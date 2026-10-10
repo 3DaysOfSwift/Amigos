@@ -72,6 +72,26 @@ final class ConversationManager: ConversationFeature {
         archive.conversations[context.id] ?? Conversation()
     }
 
+    func startNewConversation(_ context: ChatContext) async throws {
+        guard isLoaded, !isMutating else { throw ConversationError.responseInProgress }
+        guard context.scenario == nil else { return }
+        isMutating = true
+        defer { isMutating = false }
+        var updated = archive
+        var conversation = conversation(for: context)
+        // Recovery does not depend on another successful model generation.
+        var greeting = ChatMessage(role: .storyteller, text: "¡Hola! ¿Cómo te va hoy?",
+                                   englishText: "Hi! How are things going today?")
+        greeting.startsNewConversation = !conversation.messages.isEmpty
+        conversation.messages.append(greeting)
+        conversation.contextStartMessageID = greeting.id
+        conversation.sessionSummary = nil
+        updated.conversations[context.id] = conversation
+        updated.discussionProgress?.activeTopics.removeValue(forKey: context.amigo.id)
+        try await repository.save(updated)
+        archive = updated
+    }
+
     func startSuggestedChat(_ context: ChatContext) async throws {
         guard context.startsWithGreeting, context.scenario == nil, isLoaded else { return }
         let today = streakDayKey(for: currentDate(), archive: archive)
@@ -82,11 +102,12 @@ final class ConversationManager: ConversationFeature {
         isResponding = true
         defer { isMutating = false; isResponding = false }
         var session = existing.sessionSummary?.forDay(today) ?? ConversationSessionSummary(day: today)
-        let reply = try await responder.greeting(context: context, history: existing.messages, profile: profileFeature?.profile, session: session)
+        let reply = try await responder.greeting(context: context, history: existing.activeMessages, profile: profileFeature?.profile, session: session)
         try Task.checkCancellation()
         var updated = archive
         var conversation = existing
         var greeting = ChatMessage(role: .storyteller, text: reply.spanish, englishText: reply.english)
+        greeting.suggestedReplies = reply.suggestedReplies
         greeting.startsNewConversation = !existing.messages.isEmpty
         conversation.messages.append(greeting)
         conversation.lastGreetingDay = today
@@ -125,6 +146,43 @@ final class ConversationManager: ConversationFeature {
         conversation(for: context).canContinue(until: currentDate())
     }
 
+    /// Revises one accepted exchange, never a second reward or admission purchase.
+    func acceptWritingSuggestion(_ suggestion: WritingSuggestion, messageID: UUID, in context: ChatContext) async throws {
+        guard !isMutating, isLoaded else { throw ConversationError.responseInProgress }
+        let current = conversation(for: context)
+        guard !current.finished,
+              let index = current.messages.lastIndex(where: { $0.role == .learner }),
+              current.messages[index].id == messageID,
+              let help = current.messages[index].writingHelp,
+              help.suggestions.contains(suggestion),
+              current.messages.count > index + 1 else { throw ConversationError.correctionUnavailable }
+        isMutating = true
+        isResponding = help.kind == .clarification
+        defer { isMutating = false; isResponding = false }
+        let original = current.messages[index]
+        var replacement = ChatMessage(id: original.id, role: .learner, text: suggestion.spanish, englishText: suggestion.english)
+        replacement.originalText = original.originalText ?? original.text
+        var revised = current
+        revised.messages[index] = replacement
+        if help.kind == .clarification {
+            // Only replace the immediate clarification, leaving app notices untouched.
+            guard current.messages[index + 1].role == .storyteller else { throw ConversationError.correctionUnavailable }
+            let reply = try await responder.reply(to: suggestion.spanish, context: context,
+                history: Array(revised.activeMessages.dropLast(revised.messages.count - index - 1)), profile: profileFeature?.profile)
+            try Task.checkCancellation()
+            revised.messages[index + 1] = ChatMessage(id: current.messages[index + 1].id,
+                role: .storyteller, text: reply.spanish, englishText: reply.english)
+            revised.messages[index + 1].suggestedReplies = reply.suggestedReplies
+            // Unconfirmed interpretations must not become durable continuity facts.
+            revised.sessionSummary?.recap = reply.sessionRecap ?? ""
+        }
+        try Task.checkCancellation()
+        var updated = archive
+        updated.conversations[context.id] = revised
+        try await repository.save(updated)
+        archive = updated
+    }
+
     func send(_ draft: String, in context: ChatContext) async throws {
         let message = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !message.isEmpty else { throw ConversationError.emptyMessage }
@@ -141,7 +199,7 @@ final class ConversationManager: ConversationFeature {
         isResponding = true
         defer { isMutating = false; isResponding = false }
 
-        let learnerMessage = ChatMessage(role: .learner, text: message)
+        var learnerMessage = ChatMessage(role: .learner, text: message)
         let sessionDay = streakDayKey(for: currentDate(), archive: archive)
         var session = current.sessionSummary?.forDay(sessionDay) ?? ConversationSessionSummary(day: sessionDay)
         let discussionProgress = archive.discussionProgress ?? DiscussionProgress()
@@ -150,7 +208,7 @@ final class ConversationManager: ConversationFeature {
         let recoveryTopic = context.scenario == nil ? discussionFeature?.requestTopic(
             for: context.amigo.id, day: sessionDay, progress: discussionProgress, excluding: topic?.id) : nil
         let reply = try await responder.directedReply(to: message, context: context,
-            history: current.messages + [learnerMessage], profile: profileFeature?.profile,
+            history: current.activeMessages + [learnerMessage], profile: profileFeature?.profile,
             session: session, topic: topic, recoveryTopic: recoveryTopic)
         try Task.checkCancellation()
 
@@ -168,8 +226,11 @@ final class ConversationManager: ConversationFeature {
             updated.doubloons -= context.cost
             conversation.paidAt = currentDate()
         }
+        learnerMessage.writingHelp = reply.writingHelp
         conversation.messages.append(learnerMessage)
-        conversation.messages.append(ChatMessage(role: .storyteller, text: reply.spanish, englishText: reply.english))
+        var amigoMessage = ChatMessage(role: .storyteller, text: reply.spanish, englishText: reply.english)
+        amigoMessage.suggestedReplies = reply.suggestedReplies
+        conversation.messages.append(amigoMessage)
         session.record(reply)
         conversation.sessionSummary = session
         updated.conversations[context.id] = conversation

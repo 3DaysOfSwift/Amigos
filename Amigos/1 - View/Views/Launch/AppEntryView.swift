@@ -71,7 +71,7 @@ private struct DayStreakLaunchView: View {
                     .monospacedDigit()
                 Text("day streak")
                     .font(.title3.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
 
                 Button(action: startChat) {
                     HStack(spacing: 14) {

@@ -25,6 +25,7 @@ protocol ConversationFeature: AnyObject {
     func loadSavedPractice() async
     func prepareStreakLaunch()
     func startSuggestedChat(_ context: ChatContext) async throws
+    func startNewConversation(_ context: ChatContext) async throws
     func conversation(for context: ChatContext) -> Conversation
     func messagesShared(with amigo: Amigo) -> Int
     func hasEarnedDoubloonToday(with amigo: Amigo) -> Bool
@@ -34,6 +35,7 @@ protocol ConversationFeature: AnyObject {
     func authorizeRolePlay(_ context: ChatContext) -> Bool
     func isConversationActive(_ context: ChatContext) -> Bool
     func send(_ draft: String, in context: ChatContext) async throws
+    func acceptWritingSuggestion(_ suggestion: WritingSuggestion, messageID: UUID, in context: ChatContext) async throws
     func finishRolePlay(_ context: ChatContext) async throws
     func canFinishRolePlay(_ context: ChatContext) -> Bool
     func practiseAgain(_ context: ChatContext) async throws

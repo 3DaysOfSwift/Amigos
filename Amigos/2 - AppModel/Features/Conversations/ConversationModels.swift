@@ -7,6 +7,9 @@ struct ChatMessage: Codable, Identifiable, Sendable, Equatable {
     let text: String
     let englishText: String?
     var startsNewConversation: Bool? = nil
+    var originalText: String? = nil
+    var writingHelp: WritingHelp? = nil
+    var suggestedReplies: [SuggestedReply]? = nil
 
     init(id: UUID = UUID(), role: Role, text: String, englishText: String? = nil) {
         self.id = id
@@ -14,6 +17,30 @@ struct ChatMessage: Codable, Identifiable, Sendable, Equatable {
         self.text = text
         self.englishText = englishText
     }
+}
+
+struct WritingSuggestion: Codable, Sendable, Equatable {
+    let spanish: String
+    let english: String
+    let explanation: String
+}
+
+struct SuggestedReply: Codable, Sendable, Equatable {
+    let spanish: String
+    let english: String
+
+    // Safe learning prompts when a saved or generated reply has no contextual options.
+    static let learningHelp: [SuggestedReply] = [
+        SuggestedReply(spanish: "¿Puedes darme un ejemplo?", english: "Can you give me an example?"),
+        SuggestedReply(spanish: "¿Puedes explicarlo de otra manera?", english: "Can you explain it another way?"),
+        SuggestedReply(spanish: "No sé cómo responder en español. ¿Me ayudas?", english: "I don't know how to reply in Spanish. Can you help me?")
+    ]
+}
+
+struct WritingHelp: Codable, Sendable, Equatable {
+    enum Kind: String, Codable, Sendable { case correction, clarification }
+    let kind: Kind
+    let suggestions: [WritingSuggestion]
 }
 
 struct SpanishChatReply: Sendable, Equatable {
@@ -24,9 +51,17 @@ struct SpanishChatReply: Sendable, Equatable {
     var sessionRecap: String? = nil
     var suggestedActivity = false
     var discussionUpdate: DiscussionUpdate? = nil
+    var suggestedReplies: [SuggestedReply] = []
+    var writingHelp: WritingHelp? = nil
 }
 
 struct Conversation: Codable, Sendable, Equatable {
+    var contextStartMessageID: UUID? = nil
+    var activeMessages: [ChatMessage] {
+        guard let contextStartMessageID,
+              let start = messages.firstIndex(where: { $0.id == contextStartMessageID }) else { return messages }
+        return Array(messages[start...])
+    }
     var sessionSummary: ConversationSessionSummary? = nil
     var lastGreetingDay: String? = nil
     var messages: [ChatMessage] = []
@@ -185,10 +220,12 @@ struct RolePlayOption: Identifiable {
 }
 
 enum ConversationError: LocalizedError {
+    case correctionUnavailable
     case emptyMessage, messageTooLong, messageNotFound, insufficientDoubloons, rolePlayNotAuthorized, unfinishedRolePlay, conversationFinished, responseInProgress
 
     var errorDescription: String? {
         switch self {
+        case .correctionUnavailable: "This suggestion is no longer available. You can clarify in a new message."
         case .emptyMessage: "Type a message in Spanish first."
         case .messageTooLong: "Keep your message under 500 characters."
         case .messageNotFound: "This message is no longer available to translate."

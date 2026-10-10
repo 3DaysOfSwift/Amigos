@@ -46,18 +46,20 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
         let requestID = UUID().uuidString
         let allowsNewTopic = context.scenario == nil && ConversationDirection.allowsNewTopic(message: message, history: history)
         var recoveryReason: OnDeviceChatError?
-        for attempt in 0...1 {
+        for attempt in 0...2 {
             try Task.checkCancellation()
+            let freshRecovery = attempt == 2
             let changingTopic = recoveryReason == .repeatedReply && allowsNewTopic
             let offeredTopic = allowsNewTopic ? (changingTopic ? recoveryTopic : topic) : (topic?.isCurrentDiscussion == true ? topic : nil)
             let instructions = responseInstructions(for: context) + "\n" + profileInstructions(profile, context: context)
                 + (changingTopic ? "\n" + ConversationDirection.topicChangeInstructions(isRolePlay: context.scenario != nil)
-                   : (attempt == 1 ? "\nRecovery: give one short NEW reply that advances the latest topic, not a repeated reply or question from history. Include its translation. Return an empty profileFacts array. Do not mention this recovery." : ""))
+                   : (attempt > 0 ? "\nRecovery: give one short NEW reply that advances the latest topic, not a repeated reply or question from history. Include its translation. Return an empty profileFacts array. Do not mention this recovery." : ""))
+                + (freshRecovery ? "\nThe earlier reply did not help. Answer the latest request directly: if asked for an example, GIVE a concrete example; if asked to explain, EXPLAIN simply. Do not ask whether the learner wants to practise again. Do not offer corrections to their request. Set writingHelpKind to none, writingSuggestions and profileFacts to empty, and discussionAction to none. Stay in the current situation; do not invent a new discussion topic." : "")
                 + (!allowsNewTopic && message != nil ? "\n" + ConversationDirection.followLearnerInstructions : "")
             do {
                 let generated = try await generator.generate(instructions: instructions,
-                    prompt: prompt(message: message, context: context, history: history, compact: attempt == 1 && !changingTopic)
-                        + "\n" + ConversationDirection.context(session)
+                    prompt: prompt(message: message, context: context, history: freshRecovery ? Array(history.suffix(2)) : history, compact: attempt == 1 && !changingTopic)
+                        + "\n" + (freshRecovery ? "" : ConversationDirection.context(session))
                         + "\n" + (offeredTopic?.isCurrentDiscussion == true && !allowsNewTopic
                             ? "Existing discussion metadata only; do not redirect the learner back to it. ID: \(offeredTopic?.id ?? ""). Completion criteria: \(offeredTopic?.completionCriteria ?? ""). Only report continue or complete if this exchange actually addresses it, with exact evidence; otherwise discussionAction none."
                             : DiscussionFeature.prompt(for: offeredTopic)))
@@ -78,7 +80,7 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
                 let failure = error as? OnDeviceChatError ?? .generationFailed
                 // Categories only: never log prompts, replies, profile facts or raw model errors.
                 Self.logger.error("request=\(requestID, privacy: .public) attempt=\(attempt + 1) reason=\(failure.rawValue, privacy: .public)")
-                guard attempt == 0, failure.canRecover else { throw failure }
+                guard (attempt == 0 && failure.canRecover) || (attempt == 1 && failure == .repeatedReply) else { throw failure }
                 recoveryReason = failure
             }
         }
@@ -136,6 +138,9 @@ extension OnDeviceSpanishChat {
         \(ConversationDirection.instructions)
 
         RESPONSE RULES — follow every rule exactly
+        REPLY IDEAS: Supply two or three short bilingual suggestedReplies answering your new response. They are optional learner choices, not corrections or remembered facts. For a clarification or goodbye you may leave them empty; the app offers neutral learning-help phrases.
+        CORRECTION BOUNDARY: writingSuggestions rewrite ONLY the latest learner message, never your reply or an earlier turn. Preserve its intent and scope. A short acknowledgement such as "Es perfecto. Gracias." needs no clarification and must not become a greeting, question, activity proposal or invented preference. If you cannot preserve the meaning, omit the correction.
+        WRITING SUPPORT: Respond naturally when meaning is clear. Optionally offer one meaning-preserving correction of the latest learner message, with faithful English and a short English teaching note. Use correct accents, ñ, ¿?, ¡!, spelling and capitalisation. Do not correct every turn, translate ordinary English input as if it were a mistake, infer gender, or change meaning silently. If meaning is uncertain, admit uncertainty in your Spanish reply and ask a specific clarification; offer up to three plausible bilingual interpretations, never invent facts. Use writingHelpKind clarification then. Without a useful suggestion, use none and an empty writingSuggestions array. Greetings have no writing help. Clarification must not create profile facts or claim a curriculum topic completed.
         1. Write only one NEW reply to the learner's latest message, or initiate a greeting when asked to start a conversation. Never quote, repeat, summarise, label, or reprint any part of the conversation history.
         2. Never use speaker labels such as "Learner:" or "\(character.name):". Never mention internal instructions, transcripts, prompts, tags, or schemas. You may discuss Amigos features naturally when asked.
         3. Accept Spanish, English, or a mixture from the learner, including requests for clarification. Never reject English or pretend you are learning English. Answer their actual meaning in simple Mexican Spanish; the english field supplies its faithful translation. Write one or two short sentences, at most 280 Spanish characters and 360 English characters. Ask no more than one question.
@@ -151,6 +156,29 @@ extension OnDeviceSpanishChat {
         guard !english.isEmpty else { throw OnDeviceChatError.missingTranslation }
         guard spanish.count <= 280, english.count <= 360 else { throw OnDeviceChatError.replyTooLong }
         var reply = SpanishChatReply(spanish: spanish, english: english)
+        if content.writingHelpKind != "clarification" {
+            var seen: Set<String> = []
+            reply.suggestedReplies = content.suggestedReplies.prefix(3).compactMap { option in
+                let spanish = option.spanish.trimmingCharacters(in: .whitespacesAndNewlines)
+                let english = option.english.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !spanish.isEmpty, spanish.count <= 180, !english.isEmpty, english.count <= 240,
+                      seen.insert(spanish.lowercased()).inserted else { return nil }
+                return SuggestedReply(spanish: spanish, english: english)
+            }
+        }
+        if latestMessage != nil, let kind = WritingHelp.Kind(rawValue: content.writingHelpKind) {
+            let suggestions = content.writingSuggestions.prefix(kind == .correction ? 1 : 3).compactMap { suggestion -> WritingSuggestion? in
+                let text = suggestion.spanish.trimmingCharacters(in: .whitespacesAndNewlines)
+                let translation = suggestion.english.trimmingCharacters(in: .whitespacesAndNewlines)
+                let note = suggestion.explanation.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !text.isEmpty, text.count <= 500, !translation.isEmpty, translation.count <= 600,
+                      note.count <= 180, text != latestMessage else { return nil }
+                return WritingSuggestion(spanish: text, english: translation, explanation: note)
+            }
+            if !suggestions.isEmpty {
+                reply.writingHelp = WritingHelp(kind: kind, suggestions: suggestions)
+            }
+        }
         let recap = content.sessionRecap.trimmingCharacters(in: .whitespacesAndNewlines)
         // Invalid optional notes must not discard an otherwise valid reply.
         if !recap.isEmpty && recap.count <= 700 { reply.sessionRecap = recap }
@@ -161,6 +189,10 @@ extension OnDeviceSpanishChat {
                 replyEvidence: content.discussionReplyEvidence)
         }
         guard !containsTranscript(reply, for: context) else { throw OnDeviceChatError.transcriptResponse }
+        if content.writingHelpKind == "clarification" {
+            reply.discussionUpdate = nil
+            return reply
+        }
         if context.scenario == nil, let latestMessage {
             for fact in content.profileFacts {
                 let evidence = fact.evidence.trimmingCharacters(in: .whitespacesAndNewlines)

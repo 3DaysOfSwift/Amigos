@@ -16,7 +16,16 @@ final class ChatViewModel {
     private let admissionPause: @MainActor (Duration) async throws -> Void
     private var admissionTask: Task<Void, Never>?
     private var visibleTranslationIDs: Set<UUID> = []
-    var draft = ""
+    private var insertedReplyIdea: String?
+    private var replyIdeaMessageID: UUID?
+    var draft = "" {
+        didSet {
+            if draft != insertedReplyIdea {
+                insertedReplyIdea = nil
+                replyIdeaMessageID = nil
+            }
+        }
+    }
     private(set) var error: String?
     private(set) var isSending = false
     private(set) var isAnsweringNotificationInvitation = false
@@ -49,6 +58,58 @@ final class ChatViewModel {
     }
 
     var doubloons: Int { conversations.doubloons }
+    var isDisplayingReplyIdea: Bool {
+        insertedReplyIdea != nil && draft == insertedReplyIdea
+    }
+    func suggestedReplies(in context: ChatContext) -> [SuggestedReply] {
+        let conversation = conversations.conversation(for: context)
+        guard !isSending, !conversations.isResponding,
+              !conversation.finished, !showsRolePlayAdmission(context),
+              let last = conversation.messages.last, last.role == .storyteller else { return [] }
+        guard draft.isEmpty || (draft == insertedReplyIdea && replyIdeaMessageID == last.id) else { return [] }
+        let replies = last.suggestedReplies ?? []
+        return replies.isEmpty ? SuggestedReply.learningHelp : replies
+    }
+
+    func useSuggestedReply(_ suggestion: SuggestedReply, in context: ChatContext) {
+        guard suggestedReplies(in: context).contains(suggestion) else { return }
+        insertedReplyIdea = suggestion.spanish
+        replyIdeaMessageID = conversations.conversation(for: context).messages.last?.id
+        draft = suggestion.spanish
+    }
+
+    func useNextReplyIdea(in context: ChatContext) {
+        let replies = suggestedReplies(in: context)
+        guard !replies.isEmpty else { return }
+        let nextIndex: Int
+        if let currentIndex = replies.firstIndex(where: { $0.spanish == draft }) {
+            nextIndex = (currentIndex + 1) % replies.count
+        } else {
+            nextIndex = 0
+        }
+        useSuggestedReply(replies[nextIndex], in: context)
+    }
+
+    func prepareHello(in context: ChatContext) {
+        guard draft.isEmpty, !isSending, !conversations.isResponding,
+              context.scenario == nil,
+              conversations.conversation(for: context).messages.isEmpty else { return }
+        draft = "¡Hola! ¿Cómo estás?"
+    }
+
+    func startNewConversation(in context: ChatContext) async {
+        guard !isSending else { return }
+        isSending = true
+        defer { isSending = false }
+        do {
+            try await conversations.startNewConversation(context)
+            error = nil
+            greetingFailed = false
+            visibleTranslationIDs.removeAll()
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
     var profileNotice: String? { conversations.profileNotice }
     func offersNotificationPermission(in context: ChatContext) -> Bool {
         conversations.offersNotificationPermission(in: context)
@@ -140,6 +201,16 @@ final class ChatViewModel {
     }
     func isConversationActive(_ context: ChatContext) -> Bool {
         conversations.isConversationActive(context)
+    }
+
+    func acceptWritingSuggestion(_ suggestion: WritingSuggestion, messageID: UUID, in context: ChatContext) async {
+        guard !isSending else { return }
+        isSending = true
+        error = nil
+        defer { isSending = false }
+        do { try await conversations.acceptWritingSuggestion(suggestion, messageID: messageID, in: context) }
+        catch is CancellationError { }
+        catch { self.error = error.localizedDescription }
     }
 
     func send(in context: ChatContext) async {
