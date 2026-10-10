@@ -88,9 +88,8 @@ private struct DayStreakLaunchView: View {
                             .font(.headline.weight(.bold))
                     }
                     .padding(16)
-                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 24))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(StreakInvitationButtonStyle())
                 .accessibilityLabel("Talk with \(invitation.amigo.name) to earn a doubloon and keep your streak")
             }
             .padding(24)
@@ -103,5 +102,23 @@ private struct DayStreakLaunchView: View {
             }
         }
         .background(.ultraThinMaterial)
+    }
+}
+
+private struct StreakInvitationButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(.ultraThinMaterial)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(.black.opacity(configuration.isPressed ? 0.28 : 0))
+                    }
+            }
+            .contentShape(RoundedRectangle(cornerRadius: 24))
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }

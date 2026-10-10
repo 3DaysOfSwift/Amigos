@@ -45,9 +45,14 @@ struct ConversationsView: View {
                         } label: {
                             amigoRow(amigo)
                         }
-                        .buttonStyle(ConversationRowButtonStyle(pressedBackground: palette.streak.opacity(0.20)))
+                        .buttonStyle(ConversationRowButtonStyle(
+                            background: viewModel.hasUnansweredMessage(from: amigo)
+                                ? palette.streak.opacity(0.08) : .clear,
+                            pressedBackground: palette.streak.opacity(0.20)))
                         .disabled(!viewModel.isLoaded)
                         .accessibilityLabel("Open chat with \(amigo.name)")
+                        .accessibilityValue(viewModel.hasUnansweredMessage(from: amigo)
+                            ? "Unanswered message" : "")
 
                         Rectangle()
                             .fill(palette.mutedText.opacity(0.17))
@@ -138,10 +143,15 @@ struct ConversationsView: View {
                     .multilineTextAlignment(.leading)
             }
             Spacer(minLength: 0)
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.bold))
-                .foregroundStyle(palette.mutedText)
-                .accessibilityHidden(true)
+            if viewModel.showsEarnedDoubloon(for: amigo) {
+                DoubloonIcon(size: 26)
+                    .accessibilityLabel("Doubloon earned today")
+            } else {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(palette.mutedText)
+                    .accessibilityHidden(true)
+            }
         }
         .padding(.horizontal, 32)
         .padding(.vertical, 16)
@@ -151,11 +161,12 @@ struct ConversationsView: View {
 }
 
 private struct ConversationRowButtonStyle: ButtonStyle {
+    let background: Color
     let pressedBackground: Color
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .background(configuration.isPressed ? pressedBackground : .clear)
+            .background(configuration.isPressed ? pressedBackground : background)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }

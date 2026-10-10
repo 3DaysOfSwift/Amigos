@@ -2,7 +2,7 @@ import SwiftUI
 
 extension View {
     func hidesAppTabBar() -> some View {
-        toolbar(.hidden, for: .tabBar)
+        toolbarVisibility(.hidden, for: .tabBar)
     }
 
     func tabBarScrollClearance() -> some View {

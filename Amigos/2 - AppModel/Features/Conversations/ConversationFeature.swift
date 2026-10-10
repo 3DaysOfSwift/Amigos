@@ -27,6 +27,7 @@ protocol ConversationFeature: AnyObject {
     func startSuggestedChat(_ context: ChatContext) async throws
     func conversation(for context: ChatContext) -> Conversation
     func messagesShared(with amigo: Amigo) -> Int
+    func hasEarnedDoubloonToday(with amigo: Amigo) -> Bool
     func amigos(matching query: String) -> [Amigo]
     func canStart(_ context: ChatContext) -> Bool
     func canAuthorizeRolePlay(_ context: ChatContext) -> Bool

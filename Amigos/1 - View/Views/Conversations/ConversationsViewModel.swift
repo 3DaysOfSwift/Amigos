@@ -22,11 +22,22 @@ final class ConversationsViewModel {
     var streakStatusDescription: String {
         guard !hasCompletedDayStreak else { return "Complete" }
         let remaining = conversations.messagesRemainingForDayStreak
-        return "\(remaining) \(remaining == 1 ? "message" : "messages") required"
+        let suffix = remaining <= 5 ? "left" : "required"
+        return "\(remaining) \(remaining == 1 ? "message" : "messages") \(suffix)"
     }
     var currentWeek: [PracticeDay] { conversations.currentWeek }
     var searchText = ""
     var visibleAmigos: [Amigo] { conversations.amigos(matching: searchText) }
+
+    func showsEarnedDoubloon(for amigo: Amigo) -> Bool {
+        conversations.hasEarnedDoubloonToday(with: amigo)
+    }
+
+    func hasUnansweredMessage(from amigo: Amigo) -> Bool {
+        guard isLoaded else { return false }
+        let context = ChatContext(amigo: amigo, scenario: nil)
+        return conversations.conversation(for: context).messages.last?.role == .storyteller
+    }
 
     func preview(for amigo: Amigo) -> String {
         guard isLoaded else { return loadError == nil ? "Loading conversation…" : "Conversation unavailable" }

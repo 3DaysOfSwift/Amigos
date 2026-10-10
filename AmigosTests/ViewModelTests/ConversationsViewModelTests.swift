@@ -5,6 +5,55 @@ import Testing
 @Suite("Conversations screen")
 @MainActor
 struct ConversationsViewModelTests {
+    @Test("Only chats ending with an amigo message are highlighted")
+    func unansweredChatHighlight() async {
+        let alma = Amigo.catalogue[0]
+        let nico = Amigo.catalogue[1]
+        let ines = Amigo.catalogue[2]
+        var archive = PracticeArchive()
+        archive.conversations[ChatContext(amigo: alma, scenario: nil).id] = Conversation(messages: [
+            ChatMessage(role: .learner, text: "Hola"),
+            ChatMessage(role: .storyteller, text: "¿Qué tal?")
+        ])
+        archive.conversations[ChatContext(amigo: nico, scenario: nil).id] = Conversation(messages: [
+            ChatMessage(role: .storyteller, text: "¿Qué tal?"),
+            ChatMessage(role: .learner, text: "Muy bien")
+        ])
+        let manager = await makeTestConversationManager(archive: archive)
+        let viewModel = ConversationsViewModel(conversations: manager)
+        #expect(viewModel.hasUnansweredMessage(from: alma))
+        #expect(!viewModel.hasUnansweredMessage(from: nico))
+        #expect(!viewModel.hasUnansweredMessage(from: ines))
+    }
+
+    @Test("Only the amigo earning today's reward displays a coin")
+    func earnedCoinAccessory() async throws {
+        let manager = await makeTestConversationManager()
+        let viewModel = ConversationsViewModel(conversations: manager)
+        let alma = Amigo.catalogue[0]
+        let nico = Amigo.catalogue[1]
+        let context = ChatContext(amigo: alma, scenario: nil)
+        #expect(!viewModel.showsEarnedDoubloon(for: alma))
+        for _ in 0..<9 { try await manager.send("Hola", in: context) }
+        #expect(!viewModel.showsEarnedDoubloon(for: alma))
+        try await manager.send("Hola", in: context)
+        #expect(viewModel.showsEarnedDoubloon(for: alma))
+        #expect(!viewModel.showsEarnedDoubloon(for: nico))
+        for _ in 0..<40 { try await manager.send("Hola", in: context) }
+        #expect(viewModel.showsEarnedDoubloon(for: alma))
+    }
+
+    @Test("Yesterday's earned coin is not displayed today")
+    func earnedCoinResetsDaily() async {
+        let amigo = Amigo.catalogue[0]
+        var archive = PracticeArchive()
+        archive.dailyAmigoChatProgress = [amigo.id: DailyAmigoChatProgress(
+            day: "2000-01-01", successfulExchanges: 50, awardedDoubloons: 2)]
+        let manager = await makeTestConversationManager(archive: archive)
+        let viewModel = ConversationsViewModel(conversations: manager)
+        #expect(!viewModel.showsEarnedDoubloon(for: amigo))
+    }
+
     @Test("The daily countdown follows the closest amigo and completes after ten exchanges")
     func dailyCountdown() async throws {
         let manager = await makeTestConversationManager()
@@ -16,8 +65,14 @@ struct ConversationsViewModelTests {
         #expect(viewModel.streakStatusDescription == "9 messages required")
         try await manager.send("Hola", in: nico)
         #expect(viewModel.streakStatusDescription == "9 messages required")
-        for _ in 0..<8 { try await manager.send("Hola", in: alma) }
-        #expect(viewModel.streakStatusDescription == "1 message required")
+        for _ in 0..<3 { try await manager.send("Hola", in: alma) }
+        #expect(viewModel.streakStatusDescription == "6 messages required")
+        try await manager.send("Hola", in: alma)
+        #expect(viewModel.streakStatusDescription == "5 messages left")
+        for remaining in stride(from: 4, through: 1, by: -1) {
+            try await manager.send("Hola", in: alma)
+            #expect(viewModel.streakStatusDescription == "\(remaining) \(remaining == 1 ? "message" : "messages") left")
+        }
         try await manager.send("Hola", in: alma)
         #expect(viewModel.streakStatusDescription == "Complete")
         #expect(manager.messagesRemainingForDayStreak == 0)

@@ -7,13 +7,14 @@ struct ChatView: View {
     @State private var viewModel = ChatViewModel()
     @FocusState private var isComposerFocused: Bool
     @Namespace private var admissionCoinAnimation
+    @State private var scrollPosition = ScrollPosition(edge: .bottom)
 
     private var palette: AppPalette { themeManager.currentTheme.palette }
 
     var body: some View {
         let conversation = viewModel.conversation(for: context)
 
-        ScrollViewReader { proxy in
+        Group {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 20) {
                     ChatIntroduction(context: context)
@@ -57,6 +58,15 @@ struct ChatView: View {
                         }
                         ChatBubble(message: message, translation: viewModel.translationDisplay(for: message)) {
                             viewModel.toggleTranslation(for: message)
+                        }
+                        .scaleEffect(reduceMotion || !viewModel.canNudgeOpeningMessage(in: context)
+                                     ? 1 : viewModel.openingMessageScale, anchor: .leading)
+                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18),
+                                   value: viewModel.openingMessageScale)
+                        .task(id: !reduceMotion && viewModel.canNudgeOpeningMessage(in: context)) {
+                            if !reduceMotion && viewModel.canNudgeOpeningMessage(in: context) {
+                                await viewModel.nudgeOpeningMessage(in: context)
+                            }
                         }
                         .id(message.id)
                     }
@@ -118,17 +128,24 @@ struct ChatView: View {
                 .padding(18)
             }
             .defaultScrollAnchor(.bottom, for: .sizeChanges)
-            .onChange(of: conversation.messages.last?.id, initial: true) { _, messageID in
-                if let messageID {
+            .defaultScrollAnchor(.bottom, for: .initialOffset)
+            .scrollPosition($scrollPosition)
+            .onAppear {
+                if !conversation.messages.isEmpty {
+                    scrollPosition.scrollTo(edge: .bottom)
+                }
+            }
+            .onChange(of: conversation.messages.last?.id) { _, messageID in
+                if messageID != nil {
                     withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
-                        proxy.scrollTo(messageID)
+                        scrollPosition.scrollTo(edge: .bottom)
                     }
                 }
             }
             .onChange(of: viewModel.pendingMessage?.id) { _, pendingID in
-                if let messageID = pendingID ?? conversation.messages.last?.id {
+                if pendingID != nil || !conversation.messages.isEmpty {
                     withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
-                        proxy.scrollTo(messageID)
+                        scrollPosition.scrollTo(edge: .bottom)
                     }
                 }
             }
@@ -376,23 +393,23 @@ private struct ChatBubbleShape: Shape {
     let tailOnRight: Bool
 
     func path(in rect: CGRect) -> Path {
-        let tailWidth: CGFloat = 6
+        let tailWidth: CGFloat = 4
         let bubble = CGRect(x: tailOnRight ? 0 : tailWidth,
                             y: 0, width: rect.width - tailWidth, height: rect.height)
         var path = Path(roundedRect: bubble, cornerRadius: 22)
 
         if tailOnRight {
-            path.move(to: CGPoint(x: bubble.maxX - 10, y: bubble.maxY - 9))
-            path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.maxY),
-                              control: CGPoint(x: bubble.maxX, y: bubble.maxY - 1))
-            path.addQuadCurve(to: CGPoint(x: bubble.maxX - 13, y: bubble.maxY - 4),
+            path.move(to: CGPoint(x: bubble.maxX - 10, y: bubble.maxY - 15))
+            path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.maxY - 2),
+                              control: CGPoint(x: bubble.maxX, y: bubble.maxY - 8))
+            path.addQuadCurve(to: CGPoint(x: bubble.maxX - 13, y: bubble.maxY - 3),
                               control: CGPoint(x: bubble.maxX - 2, y: bubble.maxY))
         } else {
-            path.move(to: CGPoint(x: bubble.minX + 13, y: bubble.maxY - 4))
-            path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY),
+            path.move(to: CGPoint(x: bubble.minX + 13, y: bubble.maxY - 3))
+            path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - 2),
                               control: CGPoint(x: bubble.minX + 2, y: bubble.maxY))
-            path.addQuadCurve(to: CGPoint(x: bubble.minX + 10, y: bubble.maxY - 9),
-                              control: CGPoint(x: bubble.minX, y: bubble.maxY - 1))
+            path.addQuadCurve(to: CGPoint(x: bubble.minX + 10, y: bubble.maxY - 15),
+                              control: CGPoint(x: bubble.minX, y: bubble.maxY - 8))
         }
         path.closeSubpath()
         return path

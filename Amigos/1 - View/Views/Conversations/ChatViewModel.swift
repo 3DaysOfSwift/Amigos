@@ -24,6 +24,7 @@ final class ChatViewModel {
     private(set) var pendingMessage: ChatMessage?
     private(set) var admissionPhase: AdmissionPhase = .ready
     private(set) var admissionSuccess = 0
+    private(set) var openingMessageScale = 1.0
 
     init(
         conversations: any ConversationFeature = AppModel.shared.conversationsManager,
@@ -35,6 +36,28 @@ final class ChatViewModel {
 
     func conversation(for context: ChatContext) -> Conversation {
         conversations.conversation(for: context)
+    }
+
+    func canNudgeOpeningMessage(in context: ChatContext) -> Bool {
+        let messages = conversation(for: context).messages
+        return messages.count == 1 && messages.first?.role == .storyteller && !isSending
+    }
+
+    /// The bubble's SwiftUI task owns this animation and cancels it when it leaves.
+    func nudgeOpeningMessage(in context: ChatContext) async {
+        defer { openingMessageScale = 1 }
+        do {
+            try await Task.sleep(for: .milliseconds(600))
+            guard canNudgeOpeningMessage(in: context) else { return }
+            openingMessageScale = 1.04
+            try await Task.sleep(for: .milliseconds(180))
+            openingMessageScale = 0.98
+            try await Task.sleep(for: .milliseconds(180))
+        } catch is CancellationError {
+            // Leaving the chat or sending a message cancels this decorative effect.
+        } catch {
+            // A timing failure must not affect the conversation.
+        }
     }
 
     func startSuggestedChat(_ context: ChatContext) async {

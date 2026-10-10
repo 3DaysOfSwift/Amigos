@@ -354,6 +354,12 @@ final class ConversationManager: ConversationFeature {
         return max(0, 10 - mostExchanges)
     }
 
+    func hasEarnedDoubloonToday(with amigo: Amigo) -> Bool {
+        guard let progress = archive.dailyAmigoChatProgress?[amigo.id] else { return false }
+        let today = streakDayKey(for: currentDate(), archive: archive)
+        return progress.day == today && progress.awardedDoubloons > 0
+    }
+
     var daysSinceFirstUse: Int {
         guard let firstOpenedAt = archive.firstOpenedAt else { return 0 }
         let calendar = Calendar(identifier: .gregorian)

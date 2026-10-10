@@ -54,21 +54,6 @@ struct AmigoBioView: View {
                         .foregroundStyle(palette.accent)
                 }
 
-                NavigationLink {
-                    ChatView(context: ChatContext(amigo: amigo, scenario: nil))
-                } label: {
-                    HStack {
-                        Text("Talk with \(amigo.name)")
-                        Spacer()
-                        Image(systemName: "arrow.right")
-                    }
-                    .font(.headline)
-                    .padding(18)
-                    .foregroundStyle(themeManager.currentTheme.colourScheme == .dark ? Color.black : Color.white)
-                    .background(palette.accent, in: RoundedRectangle(cornerRadius: 18))
-                }
-                .buttonStyle(.plain)
-
                 Text("These are fictional AI characters. Their stories are part of Amigos.")
                     .font(.footnote)
                     .foregroundStyle(palette.mutedText)
