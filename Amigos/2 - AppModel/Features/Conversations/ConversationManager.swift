@@ -92,6 +92,18 @@ final class ConversationManager: ConversationFeature {
         archive = updated
     }
 
+    func clearConversation(_ context: ChatContext) async throws {
+        guard isLoaded, !isMutating else { throw ConversationError.responseInProgress }
+        guard context.scenario == nil else { return }
+        isMutating = true
+        defer { isMutating = false }
+        var updated = archive
+        updated.conversations.removeValue(forKey: context.id)
+        updated.discussionProgress?.activeTopics.removeValue(forKey: context.amigo.id)
+        try await repository.save(updated)
+        archive = updated
+    }
+
     func startSuggestedChat(_ context: ChatContext) async throws {
         guard context.startsWithGreeting, context.scenario == nil, isLoaded else { return }
         let today = streakDayKey(for: currentDate(), archive: archive)
@@ -162,6 +174,7 @@ final class ConversationManager: ConversationFeature {
         let original = current.messages[index]
         var replacement = ChatMessage(id: original.id, role: .learner, text: suggestion.spanish, englishText: suggestion.english)
         replacement.originalText = original.originalText ?? original.text
+        replacement.learningHelpPrepared = true
         var revised = current
         revised.messages[index] = replacement
         if help.kind == .clarification {
@@ -184,6 +197,7 @@ final class ConversationManager: ConversationFeature {
     }
 
     func send(_ draft: String, in context: ChatContext) async throws {
+        let sendStart = ContinuousClock.now
         let message = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !message.isEmpty else { throw ConversationError.emptyMessage }
         guard message.count <= 500 else { throw ConversationError.messageTooLong }
@@ -270,8 +284,11 @@ final class ConversationManager: ConversationFeature {
                 updated.dailyAmigoChatProgress = dailyProgress
             }
         }
+        let saveStart = ContinuousClock.now
         try await repository.save(updated)
         archive = updated
+        isResponding = false
+        Self.logger.info("stage=reply_commit saveDuration=\(String(describing: saveStart.duration(to: .now)), privacy: .public) totalDuration=\(String(describing: sendStart.duration(to: .now)), privacy: .public)")
         if needsPayment { authorizedRolePlayID = nil }
         profileNotice = reply.discardedProfileFactCount > 0
             ? "Some profile details couldn't be remembered. You can add them in Settings → Your profile."
@@ -296,6 +313,35 @@ final class ConversationManager: ConversationFeature {
             do { try await introduceNextAmigo() }
             catch { profileNotice = "Your reply was saved. The next amigo's introduction could not be saved; try again later." }
         }
+    }
+
+    /// Optional teaching is cached on the accepted exchange; it cannot award coins
+    /// or replace chat text. The caller owns cancellation and must await it before sending.
+    func prepareLearningHelp(in context: ChatContext) async throws {
+        try Task.checkCancellation()
+        guard isLoaded, !isMutating else { throw ConversationError.responseInProgress }
+        let current = conversation(for: context)
+        guard !current.finished, let last = current.messages.last, last.role == .storyteller else { return }
+        guard last.learningHelpPrepared != true else { return }
+        isMutating = true
+        defer { isMutating = false }
+        let learner = current.activeMessages.last { $0.role == .learner }
+        let help = try await responder.learningHelp(context: context, learner: learner, reply: last)
+        try Task.checkCancellation()
+        guard conversation(for: context).messages.last?.id == last.id else { return }
+        var updated = archive
+        var revised = current
+        if let index = revised.messages.firstIndex(where: { $0.id == learner?.id }) {
+            revised.messages[index].writingHelp = help.writingHelp
+            revised.messages[index].learningHelpPrepared = true
+        }
+        if let index = revised.messages.firstIndex(where: { $0.id == last.id }) {
+            revised.messages[index].suggestedReplies = help.suggestedReplies
+            revised.messages[index].learningHelpPrepared = true
+        }
+        updated.conversations[context.id] = revised
+        try await repository.save(updated)
+        archive = updated
     }
 
     func introduceFirstAmigo() async throws {

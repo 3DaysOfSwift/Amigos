@@ -6,6 +6,58 @@ import Testing
 struct WritingSupportTests {
     private let context = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
 
+    @Test("Cancelled learning cannot publish late results or block the next exchange", .timeLimit(.minutes(1)))
+    @MainActor
+    func cancelledLearning() async throws {
+        let gate = SuspendedSpanishChat()
+        let feature = ConversationManager(repository: MemoryConversationRepository(archive: PracticeArchive()),
+                                          responder: PausedLearningChat(gate: gate))
+        await feature.loadSavedPractice()
+        try await feature.send("Hola", in: context)
+        let before = feature.conversation(for: context)
+        let task = Task { try await feature.prepareLearningHelp(in: context) }
+        await gate.waitUntilStarted()
+        #expect(!feature.isResponding)
+        await #expect(throws: ConversationError.responseInProgress) { try await feature.send("Bien", in: context) }
+        task.cancel()
+        await gate.complete(with: "Late help")
+        await #expect(throws: CancellationError.self) { try await task.value }
+        #expect(feature.conversation(for: context) == before)
+        try await feature.send("Bien", in: context)
+        #expect(feature.conversation(for: context).messages.count == before.messages.count + 2)
+    }
+
+    @Test("Learning help is requested on demand, cached and does not change rewards")
+    @MainActor
+    func onDemandCache() async throws {
+        let answer = GeneratedAmigoReply(spanish: "Bien, gracias.", english: "Well, thanks.", profileFacts: [])
+        let help = GeneratedAmigoReply(spanish: "", english: "", profileFacts: [],
+            writingHelpKind: "correction", writingSuggestions: [GeneratedWritingSuggestion(
+                spanish: "¿Cómo estás?", english: "How are you?", explanation: "Accents and question marks.")],
+            suggestedReplies: [GeneratedSuggestedReply(spanish: "Me alegro.", english: "I'm glad.")])
+        let generator = ScriptedAmigoGenerator([.success(answer), .success(help), .success(help)])
+        let repository = MemoryConversationRepository(archive: PracticeArchive())
+        let feature = ConversationManager(repository: repository, responder: OnDeviceSpanishChat(generator: generator))
+        await feature.loadSavedPractice()
+        try await feature.send("como estas", in: context)
+        #expect(await generator.calls == 1)
+        let original = feature.conversation(for: context)
+        await repository.failNextSave()
+        await #expect(throws: TestFailure.self) { try await feature.prepareLearningHelp(in: context) }
+        #expect(feature.conversation(for: context) == original)
+        try await feature.prepareLearningHelp(in: context)
+        try await feature.prepareLearningHelp(in: context)
+        #expect(await generator.purposes == [.reply, .learning, .learning])
+        let saved = try #require(await repository.savedArchive())
+        let chat = feature.conversation(for: context)
+        #expect(chat.messages.map(\.text) == original.messages.map(\.text))
+        #expect(chat.messages.first?.writingHelp?.suggestions.first?.spanish == "¿Cómo estás?")
+        #expect(chat.messages.last?.suggestedReplies?.first?.spanish == "Me alegro.")
+        #expect(chat.messages.last?.learningHelpPrepared == true)
+        #expect(saved.dailyAmigoChatProgress?[context.amigo.id]?.successfulExchanges == 1)
+        #expect(feature.doubloons == 10)
+    }
+
     @Test("Polished accents and punctuation survive validation and persistence")
     @MainActor
     func correction() async throws {

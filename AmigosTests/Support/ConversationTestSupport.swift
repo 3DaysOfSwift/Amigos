@@ -61,6 +61,18 @@ struct StubSpanishChat: SpanishChatResponding {
     }
 }
 
+struct PausedLearningChat: SpanishChatResponding {
+    let gate: SuspendedSpanishChat
+    func reply(to message: String, context: ChatContext, history: [ChatMessage]) -> SpanishChatReply {
+        SpanishChatReply(spanish: "¿Qué tal el día?", english: "How is your day?")
+    }
+    func learningHelp(context: ChatContext, learner: ChatMessage?, reply: ChatMessage) async throws -> SpanishChatReply {
+        var help = try await gate.reply(to: learner?.text ?? "", context: context, history: [])
+        help.suggestedReplies = [SuggestedReply(spanish: "Muy bien, gracias.", english: "Very well, thanks.")]
+        return help
+    }
+}
+
 actor SuspendedSpanishChat: SpanishChatResponding {
     private var response: CheckedContinuation<SpanishChatReply, Error>?
     private var started = false

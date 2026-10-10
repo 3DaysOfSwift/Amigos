@@ -10,6 +10,8 @@ struct ChatView: View {
     @State private var scrollPosition = ScrollPosition(edge: .bottom)
     @State private var replyIdeasNudgeCancelled = false
     @State private var replyIdeasBottom: CGFloat = 0
+    @State private var viewportHeight: CGFloat = 0
+    @State private var confirmsClearConversation = false
 
     private var palette: AppPalette { themeManager.currentTheme.palette }
 
@@ -119,9 +121,26 @@ struct ChatView: View {
                                 .id("writing-help-\(message.id)")
                                 .padding(.leading, 56)
                                 .disabled(viewModel.isSending || viewModel.isResponding())
+                            } else if message.role == .learner,
+                                      message.id == conversation.messages.last(where: { $0.role == .learner })?.id,
+                                      !conversation.finished {
+                                if message.learningHelpPrepared == true {
+                                    Label("Writing check complete", systemImage: "checkmark")
+                                        .font(.caption)
+                                        .foregroundStyle(palette.mutedText)
+                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                } else {
+                                    Button("Check my Spanish") {
+                                        Task { await viewModel.prepareLearningHelp(in: context) }
+                                    }
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                    .disabled(viewModel.isSending || viewModel.isResponding() || viewModel.isPreparingLearningHelp)
+                                }
                             }
                         }
-                        if let pending = viewModel.pendingMessage {
+                        if let pending = viewModel.visiblePendingMessage(in: context) {
                             ChatBubble(message: pending, translation: .hidden, onTap: nil)
                                 .id(pending.id)
                         }
@@ -138,7 +157,7 @@ struct ChatView: View {
                             }
                             .disabled(viewModel.isAnsweringNotificationInvitation || viewModel.isSending)
                         }
-                        if viewModel.isResponding() {
+                        if viewModel.isResponding() && viewModel.showsTypingIndicator {
                             HStack {
                                 HStack(spacing: 5) {
                                     ForEach(0..<3) { index in
@@ -196,21 +215,20 @@ struct ChatView: View {
                                 }
                             }
                         }
-                        if let notice = viewModel.profileNotice {
-                            Text(notice)
-                                .font(.footnote)
-                                .foregroundStyle(palette.mutedText)
-                        }
                         // A scroll marker must not add another row's worth of spacing.
                         Color.clear.frame(height: 0)
                             .padding(.vertical, -10)
                             .id("response-end")
                         let suggestions = viewModel.suggestedReplies(in: context)
-                        if !suggestions.isEmpty {
-                                Button("Ideas for your reply") {
+                        if let learningError = viewModel.learningError {
+                            Text(learningError)
+                                .font(.caption).foregroundStyle(palette.mutedText)
+                        }
+                        if !suggestions.isEmpty || viewModel.isPreparingLearningHelp {
+                                Button(viewModel.isPreparingLearningHelp ? "Generating reply ideas…" : (conversation.messages.isEmpty ? "An idea to get started" : "Ideas for your reply")) {
+                                    guard !viewModel.isPreparingLearningHelp else { return }
                                     replyIdeasNudgeCancelled = true
-                                    viewModel.useNextReplyIdea(in: context)
-                                    isComposerFocused = true
+                                    Task { await viewModel.requestNextReplyIdea(in: context) }
                                 }
                                     .buttonStyle(.plain)
                                     .font(.caption.weight(.semibold))
@@ -224,6 +242,26 @@ struct ChatView: View {
                                     .id("reply-ideas-heading")
                                     .accessibilityHint("Fills your message with an idea. Tap again for another, or edit it to make it your own. Nothing is sent.")
                         }
+                        if let notice = viewModel.profileNotice {
+                            Text(notice)
+                                .font(.footnote)
+                                .foregroundStyle(palette.mutedText)
+                        }
+                        if context.scenario == nil && !conversation.messages.isEmpty {
+                            Button("Clear conversation", role: .destructive) {
+                                confirmsClearConversation = true
+                            }
+                            .font(.caption)
+                            .disabled(viewModel.isSending || viewModel.isResponding())
+                            .confirmationDialog("Clear this conversation?", isPresented: $confirmsClearConversation, titleVisibility: .visible) {
+                                Button("Clear conversation", role: .destructive) {
+                                    Task { await viewModel.clearConversation(in: context) }
+                                }
+                                Button("Cancel", role: .cancel) { }
+                            } message: {
+                                Text("This deletes the messages in this chat. Your doubloons, streak and saved profile are kept. This cannot be undone.")
+                            }
+                        }
                     }
                     .padding(18)
                 }
@@ -233,7 +271,7 @@ struct ChatView: View {
                 .onGeometryChange(for: CGRect.self) { geometry in
                     geometry.frame(in: .global)
                 } action: { previousFrame, currentFrame in
-                    guard viewModel.isDisplayingReplyIdea,
+                    guard viewModel.isDisplayingReplyIdea || viewModel.isPreparingLearningHelp,
                           currentFrame.height != previousFrame.height else { return }
                     let composerShrank = currentFrame.height > previousFrame.height
                     guard composerShrank || replyIdeasBottom > currentFrame.maxY else { return }
@@ -244,7 +282,6 @@ struct ChatView: View {
                 .task(id: "\(conversation.messages.last?.id.uuidString ?? "empty")-\(viewModel.suggestedReplies(in: context).isEmpty)") {
                     guard !viewModel.suggestedReplies(in: context).isEmpty else { return }
                     replyIdeasNudgeCancelled = false
-                    proxy.scrollTo("response-end", anchor: .bottom)
                     do {
                         try await Task.sleep(for: .seconds(2))
                     } catch { return }
@@ -261,28 +298,24 @@ struct ChatView: View {
                 .onScrollGeometryChange(for: CGFloat.self) { geometry in
                     geometry.containerSize.height
                 } action: { previousHeight, currentHeight in
-                    // Cycling ideas can resize the composer; keep the reader's position.
-                    if isComposerFocused && !viewModel.isDisplayingReplyIdea && previousHeight != currentHeight {
-                        proxy.scrollTo("response-end", anchor: .bottom)
-                    }
+                    viewportHeight = currentHeight
                 }
                 .onAppear {
                     if !conversation.messages.isEmpty {
                         proxy.scrollTo("response-end", anchor: .bottom)
                     }
                 }
-                .onChange(of: conversation.messages.last?.id) { _, messageID in
-                    if messageID != nil {
-                        withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
-                            proxy.scrollTo("response-end", anchor: .bottom)
-                        }
-                    }
-                }
-                .onChange(of: viewModel.pendingMessage?.id) { _, pendingID in
-                    if pendingID != nil || !conversation.messages.isEmpty {
-                        withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
-                            proxy.scrollTo("response-end", anchor: .bottom)
-                        }
+                .task(id: "\(conversation.messages.last?.id.uuidString ?? "empty")-\(viewModel.visiblePendingMessage(in: context)?.id.uuidString ?? "none")-\(viewModel.showsTypingIndicator)-\(viewportHeight)") {
+                    // Coalesce composer resizing and message insertion before revealing
+                    // the new bottom. Cancellation replaces obsolete scroll requests.
+                    guard !conversation.messages.isEmpty || viewModel.pendingMessage != nil,
+                          !viewModel.isDisplayingReplyIdea,
+                          !viewModel.isPreparingLearningHelp else { return }
+                    do { try await Task.sleep(for: .milliseconds(32)) }
+                    catch { return }
+                    guard !Task.isCancelled else { return }
+                    withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
+                        proxy.scrollTo("response-end", anchor: .bottom)
                     }
                 }
                 if !conversation.finished && !viewModel.showsRolePlayAdmission(context) {
@@ -293,6 +326,9 @@ struct ChatView: View {
         }
         .task(id: context) {
             if context.startsWithGreeting { await viewModel.startSuggestedChat(context) }
+        }
+        .task(id: viewModel.isResponding()) {
+            await viewModel.updateTypingIndicator()
         }
         .overlay(alignment: .bottom) {
             if !conversation.finished && viewModel.showsRolePlayAdmission(context) {
@@ -338,7 +374,10 @@ struct ChatView: View {
             }
         }
         .sensoryFeedback(.success, trigger: viewModel.admissionSuccess)
-        .onDisappear { viewModel.cancelAdmissionAnimation() }
+        .onDisappear {
+            viewModel.cancelAdmissionAnimation()
+            viewModel.cancelOptionalLearningHelp()
+        }
         .background {
             ChatWallpaperView(wallpaper: themeManager.currentWallpaper, palette: palette)
                 .ignoresSafeArea()
@@ -396,6 +435,19 @@ struct ChatView: View {
 
     private var composer: some View {
         VStack(spacing: 10) {
+            if let english = viewModel.suggestedDraftEnglish(in: context) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("ENGLISH")
+                        .font(.caption2.weight(.semibold))
+                    Text(english)
+                        .font(.footnote)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(palette.learnerBubble, in: RoundedRectangle(cornerRadius: 16))
+            }
             if viewModel.canFinishRolePlay(in: context) {
                 Button("Complete Role Play") { Task { await viewModel.finishRolePlay(in: context) } }
                     .buttonStyle(.borderedProminent)

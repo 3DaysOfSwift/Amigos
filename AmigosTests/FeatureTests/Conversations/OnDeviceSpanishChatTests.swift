@@ -9,6 +9,31 @@ struct OnDeviceSpanishChatTests {
         GeneratedAmigoReply(spanish: "¡Claro! ¿Qué has aprendido?", english: "Of course! What have you learned?", profileFacts: [])
     }
 
+    @Test("Summaries are requested every fourth committed reply, never during recovery")
+    func periodicSummary() async throws {
+        let generator = ScriptedAmigoGenerator([.success(valid), .failure(.structuredOutput), .success(valid)])
+        let responder = OnDeviceSpanishChat(generator: generator)
+        _ = try await responder.reply(to: "Hola", context: context, history: [], profile: nil,
+                                      session: ConversationSessionSummary(day: "today", exchangedReplies: 2))
+        _ = try await responder.reply(to: "Hola", context: context, history: [], profile: nil,
+                                      session: ConversationSessionSummary(day: "today", exchangedReplies: 3))
+        #expect(await generator.purposes == [.reply, .summaryReply, .reply])
+    }
+
+    @Test("Translation repair preserves the accepted Spanish and its metadata")
+    func repairsOnlyTranslation() async throws {
+        var original = valid
+        original.english = ""
+        original.suggestedActivity = true
+        let repair = GeneratedAmigoReply(spanish: "Different text that must not replace the reply", english: valid.english, profileFacts: [])
+        let generator = ScriptedAmigoGenerator([.success(original), .success(repair)])
+        let reply = try await OnDeviceSpanishChat(generator: generator).reply(to: "Hola", context: context, history: [])
+        #expect(reply.spanish == original.spanish)
+        #expect(reply.english == repair.english)
+        #expect(reply.suggestedActivity)
+        #expect(await generator.purposes == [.reply, .translation])
+    }
+
     @Test("Every chat and greeting request declares English and Spanish", arguments: [false, true])
     func languageContract(rolePlay: Bool) async throws {
         let chat = ChatContext(amigo: context.amigo,

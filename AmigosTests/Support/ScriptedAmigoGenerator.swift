@@ -6,8 +6,14 @@ actor ScriptedAmigoGenerator: AmigoReplyGenerating {
     private(set) var calls = 0
     private(set) var prompts: [String] = []
     private(set) var instructions: [String] = []
+    private(set) var purposes: [AmigoGenerationPurpose] = []
 
     init(_ outcomes: [Result<GeneratedAmigoReply, OnDeviceChatError>]) { self.outcomes = outcomes }
+
+    func generate(instructions: String, prompt: String, purpose: AmigoGenerationPurpose) throws -> GeneratedAmigoReply {
+        purposes.append(purpose)
+        return try generate(instructions: instructions, prompt: prompt)
+    }
 
     func generate(instructions: String, prompt: String) throws -> GeneratedAmigoReply {
         calls += 1

@@ -6,6 +6,109 @@ import Testing
 struct ChatViewModelTests {
     private let context = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
 
+    @Test("An empty chat offers bilingual starters without an AI request or sending")
+    func startingIdeas() async {
+        let manager = await makeTestConversationManager(reply: .failure(TestFailure.unavailable))
+        let viewModel = ChatViewModel(conversations: manager)
+        #expect(!viewModel.suggestedReplies(in: context).isEmpty)
+        await viewModel.requestNextReplyIdea(in: context)
+        let first = viewModel.draft
+        #expect(!first.isEmpty)
+        #expect(viewModel.suggestedDraftEnglish(in: context) != nil)
+        await viewModel.requestNextReplyIdea(in: context)
+        #expect(viewModel.draft != first)
+        #expect(manager.conversation(for: context).messages.isEmpty)
+        #expect(viewModel.learningError == nil)
+        viewModel.draft = "My own greeting"
+        #expect(viewModel.suggestedReplies(in: context).isEmpty)
+    }
+
+    @Test("Clearing a conversation removes its messages and preserves the draft and balance")
+    func clearConversation() async throws {
+        let manager = await makeTestConversationManager(reply: .success("Hola"))
+        try await manager.send("Hola", in: context)
+        let balance = manager.doubloons
+        let viewModel = ChatViewModel(conversations: manager)
+        viewModel.draft = "Mi mensaje"
+        await viewModel.clearConversation(in: context)
+        #expect(manager.conversation(for: context).messages.isEmpty)
+        #expect(manager.doubloons == balance)
+        #expect(viewModel.draft == "Mi mensaje")
+        #expect(viewModel.error == nil)
+    }
+
+    @Test("Typing appears after its presentation delay without delaying generation")
+    func delayedTypingIndicator() async {
+        let responder = SuspendedSpanishChat()
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: nil), responder: responder)
+        await manager.loadSavedPractice()
+        let viewModel = ChatViewModel(conversations: manager, typingPause: { duration in
+            #expect(duration == .milliseconds(1_400))
+            #expect(manager.isResponding)
+        })
+        viewModel.draft = "Hola"
+        let send = Task { await viewModel.send(in: context) }
+        await responder.waitUntilStarted()
+        #expect(!viewModel.showsTypingIndicator)
+        await viewModel.updateTypingIndicator()
+        #expect(viewModel.showsTypingIndicator)
+        await responder.complete(with: "Hola, ¿cómo estás?")
+        await send.value
+        await viewModel.updateTypingIndicator()
+        #expect(!viewModel.showsTypingIndicator)
+    }
+
+    @Test("A reply completed during the typing delay never shows the dots")
+    func fastReplySkipsTypingIndicator() async {
+        let responder = SuspendedSpanishChat()
+        let manager = ConversationManager(repository: MemoryConversationRepository(archive: nil), responder: responder)
+        await manager.loadSavedPractice()
+        let send = Task { try? await manager.send("Hola", in: context) }
+        await responder.waitUntilStarted()
+        let viewModel = ChatViewModel(conversations: manager, typingPause: { _ in
+            await responder.complete(with: "Hola, ¿cómo estás?")
+            await send.value
+        })
+        await viewModel.updateTypingIndicator()
+        #expect(!viewModel.showsTypingIndicator)
+    }
+
+    @Test("A delayed idea never overwrites text typed while learning help loads", .timeLimit(.minutes(1)))
+    func editingDuringLearning() async throws {
+        let gate = SuspendedSpanishChat()
+        let feature = ConversationManager(repository: MemoryConversationRepository(archive: PracticeArchive()),
+                                          responder: PausedLearningChat(gate: gate))
+        await feature.loadSavedPractice()
+        try await feature.send("Hola", in: context)
+        let viewModel = ChatViewModel(conversations: feature)
+        let task = Task { await viewModel.requestNextReplyIdea(in: context) }
+        await gate.waitUntilStarted()
+        viewModel.draft = "My own words"
+        await gate.complete(with: "Learning help")
+        await task.value
+        #expect(viewModel.draft == "My own words")
+        #expect(!viewModel.isPreparingLearningHelp)
+        #expect(!viewModel.isDisplayingReplyIdea)
+    }
+
+    @Test("Leaving the chat cancels an idea without filling the draft", .timeLimit(.minutes(1)))
+    func cancelledIdea() async throws {
+        let gate = SuspendedSpanishChat()
+        let feature = ConversationManager(repository: MemoryConversationRepository(archive: PracticeArchive()),
+                                          responder: PausedLearningChat(gate: gate))
+        await feature.loadSavedPractice()
+        try await feature.send("Hola", in: context)
+        let viewModel = ChatViewModel(conversations: feature)
+        let task = Task { await viewModel.requestNextReplyIdea(in: context) }
+        await gate.waitUntilStarted()
+        viewModel.cancelOptionalLearningHelp()
+        await gate.complete(with: "Late help")
+        await task.value
+        #expect(viewModel.draft.isEmpty)
+        #expect(viewModel.learningError == nil)
+        #expect(feature.conversation(for: context).messages.last?.learningHelpPrepared != true)
+    }
+
     @Test("Suggested replies fill the draft without sending and hide while typing")
     func suggestedReplyDraft() async throws {
         let option = SuggestedReply(spanish: "Tuve un día tranquilo.", english: "I had a quiet day.")
@@ -21,19 +124,23 @@ struct ChatViewModelTests {
         #expect(viewModel.suggestedReplies(in: context) == [option, another])
         viewModel.useSuggestedReply(option, in: context)
         #expect(viewModel.draft == option.spanish)
+        #expect(viewModel.suggestedDraftEnglish(in: context) == option.english)
         #expect(!viewModel.suggestedReplies(in: context).isEmpty)
         viewModel.useNextReplyIdea(in: context)
         #expect(viewModel.draft == another.spanish)
+        #expect(viewModel.suggestedDraftEnglish(in: context) == another.english)
         viewModel.useNextReplyIdea(in: context)
         #expect(viewModel.draft == option.spanish)
         #expect(manager.conversation(for: context).messages == [message])
         #expect(manager.doubloons == archive.doubloons)
         viewModel.draft = "My own words"
         #expect(viewModel.suggestedReplies(in: context).isEmpty)
+        #expect(viewModel.suggestedDraftEnglish(in: context) == nil)
         viewModel.useSuggestedReply(option, in: context)
         #expect(viewModel.draft == "My own words")
         viewModel.draft = ""
         #expect(viewModel.suggestedReplies(in: context) == [option, another])
+        #expect(viewModel.suggestedDraftEnglish(in: context) == nil)
     }
 
     @Test("Sending clears the composer before the reply and preserves a new draft")

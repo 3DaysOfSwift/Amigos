@@ -76,7 +76,8 @@ struct ConversationDirectionTests {
     func intentRouting() async throws {
         let card = DiscussionTopic(id: "travel", title: "Hostels", preferredAmigos: [], objective: "Travel",
             guidance: "Discuss backpacking", vocabulary: [], sampleChat: [], completionCriteria: "Discuss travel")
-        let history = [ChatMessage(role: .storyteller, text: "¿Qué te gustaría practicar hoy?")]
+        // Exercise repetition recovery above the detector's short-phrase threshold.
+        let history = [ChatMessage(role: .storyteller, text: "¿Qué te gustaría practicar conmigo hoy?")]
         for message in ["Necesito practicar comp random in cafe en un restaurante", "Help me order coffee", "Estoy muy cansado hoy", "Café", "Sí"] {
             #expect(!ConversationDirection.allowsNewTopic(message: message, history: history))
             let repeated = GeneratedAmigoReply(spanish: history[0].text, english: "What would you like to practise?", profileFacts: [])
@@ -99,13 +100,13 @@ struct ConversationDirectionTests {
     func persistentRepetition() async {
         let text = "¿Qué música te gusta escuchar cuando estás en casa?"
         let reply = GeneratedAmigoReply(spanish: text, english: "What music do you like at home?", profileFacts: [])
-        let generator = ScriptedAmigoGenerator([.success(reply), .success(reply)])
+        let generator = ScriptedAmigoGenerator([.success(reply), .success(reply), .success(reply)])
         await #expect(throws: OnDeviceChatError.repeatedReply) {
             try await OnDeviceSpanishChat(generator: generator).reply(to: "Ya te dije.",
                 context: ChatContext(amigo: Amigo.catalogue[2], scenario: nil),
                 history: [ChatMessage(role: .storyteller, text: text)])
         }
-        #expect(await generator.calls == 2)
+        #expect(await generator.calls == 3)
     }
 
     @Test("Summary commits with the reply, survives reopening, and rolls back on failed save")
