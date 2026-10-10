@@ -2,118 +2,1976 @@
   "version": 1,
   "topics": [
     {
-      "id": "ghosts-and-memories", "title": "Fantasmas and the memories we keep", "preferredAmigos": ["sol", "alma"],
+      "id": "library-visit-choice",
+      "title": "Finding a book you will enjoy",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Explain a reading preference and ask for a suitable book.",
+      "guidance": "Sol enjoys stories. Ask about a genre or mood, then follow the learner's preference. Use a fictional library; do not claim a particular book is available. Suggest a type of book rather than inventing a real title. If reading is not their interest, accept it without persuasion. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Busco una novela corta — I'm looking for a short novel",
+        "de misterio — a mystery",
+        "¿Tienes alguna recomendación? — Do you have a recommendation?"
+      ],
+      "sampleChat": [
+        "Learner: Busco algo para leer, pero no quiero un libro muy largo.",
+        "Amigo: Una novela corta podría irte bien. ¿Te gustan las historias de misterio?",
+        "Learner: Sí, sobre todo si el final me sorprende."
+      ],
+      "completionCriteria": "The learner describes a reading preference and engages with a relevant suggestion; no need to borrow a book."
+    },
+    {
+      "id": "bike-repair-shop-obstacle",
+      "title": "Explaining a bicycle problem",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Describe when a bicycle makes a noise and ask a repair shop for an assessment.",
+      "guidance": "Use an imaginary repair-shop conversation. Help describe observable symptoms, not diagnose or give repair instructions. Ask one relevant clarification and let the learner ask about an estimate. Do not recommend riding a potentially unsafe bicycle or invent a repair price. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Hace un ruido — It makes a noise",
+        "al frenar — when braking",
+        "¿Puede revisarla? — Can you check it?"
+      ],
+      "sampleChat": [
+        "Learner: Mi bicicleta hace un ruido raro.",
+        "Amigo: ¿El ruido aparece al frenar o al pedalear?",
+        "Learner: Al frenar. ¿Puede revisarla?"
+      ],
+      "completionCriteria": "The learner identifies an observable symptom and asks for professional assessment."
+    },
+    {
+      "id": "weekend-recap",
+      "title": "Sharing weekend memories",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Recount a weekend and one surprise.",
+      "guidance": "Follow the learner's account, not a new plan. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "el fin de semana pasado — last weekend",
+        "me sorprendió — it surprised me"
+      ],
+      "sampleChat": [
+        "Learner: El sábado encontré a un viejo amigo.",
+        "Amigo: ¡Qué sorpresa! ¿Dónde lo viste?",
+        "Learner: En una librería."
+      ],
+      "completionCriteria": "Share an event and a relevant detail."
+    },
+    {
+      "id": "meeting-neighbour",
+      "title": "Meeting a neighbour",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Introduce yourself to a neighbour.",
+      "guidance": "No exact addresses or apartment numbers needed. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Soy tu vecino — I'm your neighbour",
+        "Encantado — Pleased to meet you"
+      ],
+      "sampleChat": [
+        "Learner: Hola, soy Alex, tu nuevo vecino.",
+        "Amigo: Encantada, soy Ana.",
+        "Learner: Mucho gusto, Ana."
+      ],
+      "completionCriteria": "Introduce yourself and exchange a friendly remark."
+    },
+    {
+      "id": "welcoming-guest",
+      "title": "Welcoming a guest",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Offer comfort to an arriving guest.",
+      "guidance": "Do not assume food preferences; accept a declined offer. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Pasa — Come in",
+        "Ponte cómodo — Make yourself comfortable"
+      ],
+      "sampleChat": [
+        "Learner: ¡Hola, pasa! ¿Quieres agua?",
+        "Amigo: Sí, gracias.",
+        "Learner: Puedes dejar tu bolsa aquí."
+      ],
+      "completionCriteria": "Welcome someone and respond to a practical preference."
+    },
+    {
+      "id": "natural-goodbyes",
+      "title": "Ending a conversation warmly",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Explain you need to leave and say goodbye.",
+      "guidance": "Do not force a new question or prolong a clear goodbye. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Me tengo que ir — I have to go",
+        "Hablamos luego — We'll talk later"
+      ],
+      "sampleChat": [
+        "Learner: Me tengo que ir.",
+        "Amigo: Claro, ¡que te vaya bien!",
+        "Learner: Gracias, hablamos luego."
+      ],
+      "completionCriteria": "End an exchange politely without restarting it."
+    },
+    {
+      "id": "checking-understanding",
+      "title": "Checking you understood",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Confirm the meaning of a plan or statement.",
+      "guidance": "Repeat the relevant detail as a question; do not assume agreement. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Quieres decir…? — Do you mean…?",
+        "Entonces… — So…"
+      ],
+      "sampleChat": [
+        "Learner: Entonces, ¿nos vemos a las seis?",
+        "Amigo: Sí, a las seis, delante del café.",
+        "Learner: Perfecto, gracias por aclararlo."
+      ],
+      "completionCriteria": "Confirm a specific detail and respond to clarification."
+    },
+    {
+      "id": "expressing-uncertainty",
+      "title": "Saying you are unsure",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Express uncertainty without pretending to know.",
+      "guidance": "Model checking and admitting limits; do not fabricate facts. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "No estoy seguro — I'm not sure",
+        "Déjame comprobarlo — Let me check"
+      ],
+      "sampleChat": [
+        "Learner: Creo que empieza a las siete, pero no estoy seguro.",
+        "Amigo: Podemos comprobarlo antes de salir.",
+        "Learner: Sí, mejor confirmar la hora."
+      ],
+      "completionCriteria": "State uncertainty and propose verification."
+    },
+    {
+      "id": "personal-recommendation",
+      "title": "Recommending something to a friend",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Recommend something with a reason.",
+      "guidance": "Use invented titles or the learner's examples; no unsupported current recommendations. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Te recomiendo… — I recommend…",
+        "Creo que te gustaría — I think you'd like it"
+      ],
+      "sampleChat": [
+        "Learner: Te recomiendo esta novela porque tiene mucho humor.",
+        "Amigo: ¿Es fácil de leer?",
+        "Learner: Sí, tiene capítulos cortos."
+      ],
+      "completionCriteria": "Give a recommendation linked to a preference."
+    },
+    {
+      "id": "describing-flavours",
+      "title": "Describing flavours",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Compare flavours in familiar foods.",
+      "guidance": "Use preferences without medical or nutritional claims. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "dulce — sweet",
+        "agrio — sour",
+        "salado — salty",
+        "amargo — bitter",
+        "picante — spicy"
+      ],
+      "sampleChat": [
+        "Learner: Esta salsa está muy picante.",
+        "Amigo: ¿Prefieres una más suave?",
+        "Learner: Sí, me gusta sentir los otros sabores."
+      ],
+      "completionCriteria": "Describe a flavour and express a preference."
+    },
+    {
+      "id": "dietary-preferences",
+      "title": "Asking about ingredients",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Explain a dietary need and ask about ingredients.",
+      "guidance": "Do not guarantee allergy safety or prescribe diets; suggest asking staff to confirm preparation and ingredients. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Lleva…? — Does it contain…?",
+        "No puedo comer… — I can't eat…"
+      ],
+      "sampleChat": [
+        "Learner: No puedo tomar leche. ¿Este plato lleva leche?",
+        "Amigo: En esta práctica, soy el camarero: necesito confirmarlo con la cocina antes de responderte.",
+        "Learner: Gracias. ¿Puede preguntar también por la mantequilla?"
+      ],
+      "completionCriteria": "State a preference or need and ask for ingredient confirmation."
+    },
+    {
+      "id": "bakery-order",
+      "title": "At the bakery",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Choose bread or pastries and quantities.",
+      "guidance": "Use a fictional bakery and avoid universal ingredient claims. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "una pieza — one piece",
+        "¿Cuáles tienes? — Which ones do you have?"
+      ],
+      "sampleChat": [
+        "Learner: Quisiera dos panes, por favor.",
+        "Amigo: ¿Los quieres dulces o salados?",
+        "Learner: Salados, para hacer unos sándwiches."
+      ],
+      "completionCriteria": "Choose bakery items and specify quantity."
+    },
+    {
+      "id": "fruit-by-weight",
+      "title": "Buying fruit by weight",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Ask for a weight and confirm a total.",
+      "guidance": "Use invented prices; clarify kilos and half kilos. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "medio kilo — half a kilo",
+        "¿Cuánto es en total? — How much is it altogether?"
+      ],
+      "sampleChat": [
+        "Learner: Quisiera medio kilo de manzanas.",
+        "Amigo: Claro, medio kilo. ¿Quieres algo más?",
+        "Learner: No, gracias. ¿Cuánto es en total?"
+      ],
+      "completionCriteria": "Specify a weight and ask a relevant price question."
+    },
+    {
+      "id": "takeaway-order",
+      "title": "Ordering takeaway",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Specify takeaway and a modification.",
+      "guidance": "Imaginary order only; confirm rather than claim food was ordered. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "para llevar — to take away",
+        "sin cubiertos — without cutlery"
+      ],
+      "sampleChat": [
+        "Learner: Una sopa para llevar, por favor.",
+        "Amigo: ¿Necesitas cubiertos?",
+        "Learner: No, gracias, tengo en casa."
+      ],
+      "completionCriteria": "Place a fictional takeaway order with one preference."
+    },
+    {
+      "id": "taxi-pickup",
+      "title": "Arranging a taxi pickup",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Describe a fictional pickup landmark.",
+      "guidance": "No live booking, real address, fare guarantee or safety assurance. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la entrada principal — main entrance",
+        "el destino — destination"
+      ],
+      "sampleChat": [
+        "Learner: Estoy junto a la entrada principal del museo.",
+        "Amigo: ¿Cuál es tu destino?",
+        "Learner: La estación de tren, por favor."
+      ],
+      "completionCriteria": "Clarify a pickup landmark and destination."
+    },
+    {
+      "id": "airport-wayfinding",
+      "title": "Finding your way at an airport",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Ask where to check in or collect baggage.",
+      "guidance": "Use fictional gates and flights, not live travel information. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la puerta de embarque — boarding gate",
+        "el equipaje — baggage"
+      ],
+      "sampleChat": [
+        "Learner: Disculpe, ¿dónde se recoge el equipaje?",
+        "Amigo: En nuestro aeropuerto imaginario, al final de este pasillo, a la izquierda.",
+        "Learner: ¿A la izquierda después de las escaleras?"
+      ],
+      "completionCriteria": "Ask an airport-location question and clarify a direction."
+    },
+    {
+      "id": "packing-trip",
+      "title": "Packing for a trip",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Discuss essentials and a forgotten item.",
+      "guidance": "No universal packing prescription or airline rules; hypothetical trip. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la maleta — suitcase",
+        "se me olvidó — I forgot"
+      ],
+      "sampleChat": [
+        "Learner: Ya tengo la maleta, pero se me olvidó el cargador.",
+        "Amigo: ¿Tienes tiempo para buscarlo?",
+        "Learner: Sí, todavía no salimos."
+      ],
+      "completionCriteria": "Describe packed items and handle one omission."
+    },
+    {
+      "id": "travel-photos",
+      "title": "Sharing travel photos",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Describe an image and its story.",
+      "guidance": "Use a hypothetical picture if none provided; never claim to see an unseen photo. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "al fondo — in the background",
+        "delante de — in front of"
+      ],
+      "sampleChat": [
+        "Learner: En esta foto imaginaria estoy delante de un lago.",
+        "Amigo: ¿Qué se ve al fondo?",
+        "Learner: Unas montañas."
+      ],
+      "completionCriteria": "Describe a scene and a connected memory or imagined event."
+    },
+    {
+      "id": "rainy-plan-change",
+      "title": "Rain changes the plan",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Adapt an agreed plan to rain.",
+      "guidance": "Treat the outing as already agreed; do not provide live forecasts. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Está lloviendo — It's raining",
+        "bajo techo — indoors/under cover"
+      ],
+      "sampleChat": [
+        "Learner: Está lloviendo y pensábamos pasear.",
+        "Amigo: ¿Prefieres esperar o hacer algo bajo techo?",
+        "Learner: Prefiero esperar un rato."
+      ],
+      "completionCriteria": "Explain weather disruption and choose an alternative."
+    },
+    {
+      "id": "housemate-chores",
+      "title": "Sharing chores",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Agree household tasks politely.",
+      "guidance": "Avoid stereotypes and blame; invite a fair arrangement. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Me encargo de… — I'll take care of…",
+        "¿Te parece justo? — Does that seem fair?"
+      ],
+      "sampleChat": [
+        "Learner: Yo me encargo de los platos.",
+        "Amigo: Entonces yo limpio la mesa.",
+        "Learner: Gracias, así terminamos antes."
+      ],
+      "completionCriteria": "Agree task responsibilities with a housemate."
+    },
+    {
+      "id": "learning-from-mistakes",
+      "title": "Learning from a mistake",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Describe a mistake and a possible improvement.",
+      "guidance": "Use harmless examples, no shame or pressure to disclose sensitive events. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "La próxima vez… — Next time…",
+        "aprendí que… — I learned that…"
+      ],
+      "sampleChat": [
+        "Learner: Salí sin mirar la hora y llegué tarde.",
+        "Amigo: ¿Qué harías de otra manera?",
+        "Learner: La próxima vez prepararé todo antes."
+      ],
+      "completionCriteria": "Describe an error and an actionable lesson."
+    },
+    {
+      "id": "good-friend-qualities",
+      "title": "What makes a good friend?",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Discuss a valued quality in friendship.",
+      "guidance": "Respect different social needs; do not suggest exclusive reliance on an AI friend. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la confianza — trust",
+        "saber escuchar — know how to listen"
+      ],
+      "sampleChat": [
+        "Learner: Para mí, un buen amigo sabe escuchar.",
+        "Amigo: ¿Qué te hace sentir escuchado?",
+        "Learner: Que recuerde lo que le conté."
+      ],
+      "completionCriteria": "Name a friendship quality and explain a concrete example."
+    },
+    {
+      "id": "breakfast-routine",
+      "title": "Making breakfast",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Describe breakfast and a morning routine.",
+      "guidance": "Follow preferences without judging food choices. Use one preparation detail. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "desayunar — have breakfast",
+        "tostadas — toast"
+      ],
+      "sampleChat": [
+        "Learner: Suelo desayunar fruta.",
+        "Amigo: ¿La acompañas con algo?",
+        "Learner: Sí, con yogur."
+      ],
+      "completionCriteria": "Describe a breakfast and one routine detail."
+    },
+    {
+      "id": "sleep-and-tiredness",
+      "title": "Sleep and feeling tired",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Explain how you slept and respond with empathy.",
+      "guidance": "Acknowledge tiredness before asking why. No diagnosis or treatment advice; accept not wanting to explain. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Dormí poco — I slept little",
+        "Estoy cansado — I'm tired"
+      ],
+      "sampleChat": [
+        "Learner: Estoy muy cansado hoy.",
+        "Amigo: Vaya, ¿dormiste poco?",
+        "Learner: Sí, me acosté tarde."
+      ],
+      "completionCriteria": "Explain tiredness or practise an empathetic follow-up."
+    },
+    {
+      "id": "spanish-wordplay",
+      "title": "Making someone laugh",
+      "preferredAmigos": [
+        "tavo"
+      ],
+      "objective": "Explore a simple Spanish joke.",
+      "guidance": "Explain wordplay gently; no stereotypes or jokes at someone's expense. Do not repeat a joke already used. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "un chiste — a joke",
+        "reírse — laugh"
+      ],
+      "sampleChat": [
+        "Amigo: ¿Qué hace un pez? ¡Nada!",
+        "Learner: ¿Por qué es un chiste?",
+        "Amigo: Porque «nada» puede significar que está nadando o que no hace ninguna cosa."
+      ],
+      "completionCriteria": "Understand or respond to the two meanings in a simple joke."
+    },
+    {
+      "id": "apologising-friend",
+      "title": "Apologising to a friend",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Acknowledge a mistake and offer to repair it.",
+      "guidance": "Use a fictional minor mistake. Accept boundaries; forgiveness is not owed. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Lo siento — I'm sorry",
+        "Fue culpa mía — It was my fault"
+      ],
+      "sampleChat": [
+        "Learner: Perdón, olvidé devolverte el libro.",
+        "Amigo: Gracias por decírmelo.",
+        "Learner: Te lo llevo mañana."
+      ],
+      "completionCriteria": "Offer an apology and a realistic repair."
+    },
+    {
+      "id": "meaningful-thanks",
+      "title": "Thanking someone properly",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Explain why someone's help mattered.",
+      "guidance": "Use a small everyday favour, not emotional indebtedness. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Te lo agradezco — I appreciate it",
+        "Me ayudó mucho — It helped me a lot"
+      ],
+      "sampleChat": [
+        "Learner: Gracias por escucharme.",
+        "Amigo: Me alegra haber podido ayudarte.",
+        "Learner: Me ayudó mucho hablar contigo."
+      ],
+      "completionCriteria": "Thank someone and explain the benefit."
+    },
+    {
+      "id": "small-favours",
+      "title": "Asking a small favour",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Ask politely to borrow something or save a seat.",
+      "guidance": "Respect refusal and agree to return borrowed items. Use imagined possessions. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Me prestas…? — Can you lend me…?",
+        "guardar un sitio — save a seat"
+      ],
+      "sampleChat": [
+        "Learner: ¿Me prestas tu cargador?",
+        "Amigo: Claro, lo necesito en una hora.",
+        "Learner: Te lo devuelvo antes."
+      ],
+      "completionCriteria": "Ask a favour and respond to a condition or refusal."
+    },
+    {
+      "id": "friendly-boundaries",
+      "title": "Setting friendly boundaries",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Express a need for space or quiet.",
+      "guidance": "Model warm, clear boundaries without guilt, coercion or demanding explanations. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Necesito un rato a solas — I need some time alone",
+        "Ahora no puedo — I can't right now"
+      ],
+      "sampleChat": [
+        "Learner: Ahora necesito descansar.",
+        "Amigo: Claro, hablamos otro día.",
+        "Learner: Gracias por entenderlo."
+      ],
+      "completionCriteria": "State a boundary and acknowledge it respectfully."
+    },
+    {
+      "id": "sharing-good-news",
+      "title": "Sharing good news",
+      "preferredAmigos": [
+        "tavo"
+      ],
+      "objective": "Celebrate a personal achievement.",
+      "guidance": "Let the learner choose a real or fictional achievement; do not assume work or education status. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¡Qué buena noticia! — What good news!",
+        "Lo conseguí — I did it"
+      ],
+      "sampleChat": [
+        "Learner: ¡Conseguí terminar mi proyecto!",
+        "Amigo: ¡Qué buena noticia! ¿Qué parte te dio más satisfacción?",
+        "Learner: Resolver el último problema."
+      ],
+      "completionCriteria": "Share an achievement and respond to a relevant follow-up."
+    },
+    {
+      "id": "encouraging-friend",
+      "title": "Encouraging someone",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Support someone nervous about trying.",
+      "guidance": "Validate nerves, offer a manageable step, avoid guarantees of success. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Puedes intentarlo — You can try",
+        "paso a paso — step by step"
+      ],
+      "sampleChat": [
+        "Learner: Me da vergüenza hablar español.",
+        "Amigo: Es comprensible. Puedes empezar con una frase corta.",
+        "Learner: Voy a intentar saludar."
+      ],
+      "completionCriteria": "Express nervousness or give realistic encouragement."
+    },
+    {
+      "id": "thoughtful-gifts",
+      "title": "Choosing a thoughtful gift",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Choose a gift based on someone's interests.",
+      "guidance": "Use an imaginary recipient and optional budget. Avoid assuming gender-based tastes. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Le gusta… — They like…",
+        "mi presupuesto — my budget"
+      ],
+      "sampleChat": [
+        "Learner: Quiero un regalo para un amigo que dibuja.",
+        "Amigo: ¿Qué tal un cuaderno?",
+        "Learner: Buena idea, le serviría mucho."
+      ],
+      "completionCriteria": "Connect a gift choice to the recipient's interests."
+    },
+    {
+      "id": "haircut-request",
+      "title": "Getting a haircut",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Explain a haircut preference.",
+      "guidance": "Clarify how much and confirm before imaginary cutting. Do not assume gender or hair type. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Solo las puntas — Just the ends",
+        "un poco más corto — a little shorter"
+      ],
+      "sampleChat": [
+        "Learner: Solo quiero cortar las puntas.",
+        "Amigo: ¿Unos dos centímetros?",
+        "Learner: Sí, no más, por favor."
+      ],
+      "completionCriteria": "Specify length or style and confirm a detail."
+    },
+    {
+      "id": "laundry-day",
+      "title": "Doing laundry",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Talk about washing clothes or a missing sock.",
+      "guidance": "Follow garment labels rather than claiming universal washing rules; keep the conversation everyday. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la lavadora — washing machine",
+        "un calcetín — a sock"
+      ],
+      "sampleChat": [
+        "Learner: Me falta un calcetín.",
+        "Amigo: ¿Has mirado dentro de la lavadora?",
+        "Learner: Sí, voy a revisar la cesta."
+      ],
+      "completionCriteria": "Describe a laundry task or missing item and follow up."
+    },
+    {
+      "id": "lost-belongings",
+      "title": "Losing something",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Describe a lost item and ask if anyone saw it.",
+      "guidance": "Use fictional belongings; no account numbers or identifying documents. Never claim to track devices. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "He perdido… — I've lost…",
+        "¿Has visto…? — Have you seen…"
+      ],
+      "sampleChat": [
+        "Learner: ¿Has visto mi cartera?",
+        "Amigo: ¿Cómo es?",
+        "Learner: Es pequeña y marrón."
+      ],
+      "completionCriteria": "Describe a missing item and a relevant place or feature."
+    },
+    {
+      "id": "returning-item",
+      "title": "Returning a purchase",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Explain a problem and ask for exchange or refund.",
+      "guidance": "Store rules vary. Practise asking, not asserting legal entitlements or real store policies. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "un cambio — an exchange",
+        "un reembolso — a refund"
+      ],
+      "sampleChat": [
+        "Learner: Esta camisa me queda pequeña.",
+        "Amigo: ¿Quieres preguntar por un cambio?",
+        "Learner: Sí, ¿puedo cambiarla por otra talla?"
+      ],
+      "completionCriteria": "Explain a purchase problem and request a remedy politely."
+    },
+    {
+      "id": "pharmacy-language",
+      "title": "Asking for help at a pharmacy",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Practise asking a pharmacist for assistance.",
+      "guidance": "Language practice only: do not recommend drugs, doses or diagnose. Refer treatment questions to the pharmacist; do not simulate dispensing medicine. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la farmacia — pharmacy",
+        "el farmacéutico — pharmacist"
+      ],
+      "sampleChat": [
+        "Learner: Quisiera hablar con el farmacéutico, por favor.",
+        "Amigo: Claro. En esta práctica, yo atiendo el mostrador: ¿quieres hacerle una consulta?",
+        "Learner: Sí, tengo una pregunta sobre las instrucciones de este producto."
+      ],
+      "completionCriteria": "Ask for professional assistance using a clear phrase."
+    },
+    {
+      "id": "enjoyable-exercise",
+      "title": "Movement you enjoy",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Talk about a preferred kind of movement.",
+      "guidance": "Include gentle or adapted activities, respect ability and rest. No fitness prescription or body shaming. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "nadar — swim",
+        "bailar — dance"
+      ],
+      "sampleChat": [
+        "Learner: Me gusta nadar.",
+        "Amigo: ¿Qué es lo que más disfrutas?",
+        "Learner: Estar en el agua me relaja."
+      ],
+      "completionCriteria": "Describe an activity and why it appeals."
+    },
+    {
+      "id": "picnic-plans",
+      "title": "Planning a picnic",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Agree what to bring to an imaginary picnic.",
+      "guidance": "Consider preferences and practical needs. Respect the daily invitation limit; planning an accepted activity is allowed. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Yo llevo… — I'll bring…",
+        "una manta — a blanket"
+      ],
+      "sampleChat": [
+        "Learner: Yo llevo fruta al picnic.",
+        "Amigo: Perfecto, yo puedo llevar una manta.",
+        "Learner: ¿Quién lleva el agua?"
+      ],
+      "completionCriteria": "Agree who brings at least one item and clarify another."
+    },
+    {
+      "id": "celebration-dancing",
+      "title": "Music and dancing at a celebration",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Describe music and invite someone to dance politely.",
+      "guidance": "Accept refusal without pressure. Do not generalise all Latin American music or dance into one tradition. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Quieres bailar? — Would you like to dance?",
+        "el ritmo — rhythm"
+      ],
+      "sampleChat": [
+        "Learner: Me gusta el ritmo de esta canción.",
+        "Amigo: ¿Quieres bailar?",
+        "Learner: Ahora prefiero escuchar, gracias."
+      ],
+      "completionCriteria": "Discuss the music or practise a respectful invitation and response."
+    },
+    {
+      "id": "regional-expressions",
+      "title": "Regional Spanish expressions",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Compare useful regional words.",
+      "guidance": "Give contextual examples without ranking dialects: autobús, camión in Mexican transport contexts, colectivo in some countries. Meanings vary within countries; do not overgeneralise. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "el autobús — bus",
+        "¿Cómo se dice aquí? — How is it said here?"
+      ],
+      "sampleChat": [
+        "Learner: ¿Camión siempre significa truck?",
+        "Amigo: No; en México también puede referirse a un autobús.",
+        "Learner: Entonces debo mirar el contexto."
+      ],
+      "completionCriteria": "Explain or use a regional word with its context."
+    },
+    {
+      "id": "future-dreams",
+      "title": "Dreams for the future",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Discuss something you would like to learn or experience.",
+      "guidance": "Keep sharing optional. Ask one grounded follow-up without promising outcomes or inventing commitments. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Me gustaría… — I'd like…",
+        "algún día — someday"
+      ],
+      "sampleChat": [
+        "Learner: Me gustaría aprender a tocar la guitarra.",
+        "Amigo: ¿Qué canción te gustaría tocar?",
+        "Learner: Una que canta mi familia."
+      ],
+      "completionCriteria": "Express a hope and one personally relevant detail."
+    },
+    {
+      "id": "meeting-friends",
+      "title": "Meeting friends of friends",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Introduce yourself and explain a connection.",
+      "guidance": "Use invented names if preferred. Do not assume nationality or claim knowledge of private chats. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Mucho gusto — Nice to meet you",
+        "¿De dónde eres? — Where are you from?"
+      ],
+      "sampleChat": [
+        "Learner: Hola, soy Alex.",
+        "Amigo: Mucho gusto. ¿Cómo conoces a Ana?",
+        "Learner: Somos compañeros de trabajo."
+      ],
+      "completionCriteria": "The learner introduces themselves and explains a connection."
+    },
+    {
+      "id": "friendly-invitations",
+      "title": "Inviting a friend out",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Make, accept or decline a friendly invitation.",
+      "guidance": "Respect a no. Offer alternatives without pressure; do not propose another activity if one was already suggested today. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Te apetece…? — Do you feel like…?",
+        "¿Te viene bien? — Does that suit you?"
+      ],
+      "sampleChat": [
+        "Learner: ¿Te apetece dar un paseo?",
+        "Amigo: Sí. ¿A qué hora?",
+        "Learner: ¿Te viene bien a las cinco?"
+      ],
+      "completionCriteria": "The learner proposes or responds to an invitation with a practical detail."
+    },
+    {
+      "id": "changing-plans",
+      "title": "Changing plans politely",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Explain a delay or reschedule.",
+      "guidance": "Use a fictional arrangement. Apologise briefly, give an optional reason and agree a new time without inventing real bookings. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Voy tarde — I'm running late",
+        "¿Podemos cambiar la hora? — Can we change the time?"
+      ],
+      "sampleChat": [
+        "Learner: Perdón, voy tarde.",
+        "Amigo: No pasa nada. ¿Cuánto tardas?",
+        "Learner: Unos diez minutos."
+      ],
+      "completionCriteria": "The learner explains a change and clarifies the revised plan."
+    },
+    {
+      "id": "workday-chat",
+      "title": "Talking about work",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Describe a job or typical working day.",
+      "guidance": "Accept study, caring, job-seeking or not working. No employer or income details required. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Trabajo en… — I work in…",
+        "Me dedico a… — I work as/in…"
+      ],
+      "sampleChat": [
+        "Learner: Trabajo en una tienda.",
+        "Amigo: ¿Qué es lo que más te gusta?",
+        "Learner: Hablar con los clientes."
+      ],
+      "completionCriteria": "The learner describes a real or fictional occupation and one detail."
+    },
+    {
+      "id": "hobbies-free-time",
+      "title": "Hobbies and free time",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Explore a shared interest.",
+      "guidance": "Follow the hobby named instead of listing unrelated ones. Ask how they started or what they enjoy. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Me aficioné a… — I got into…",
+        "en mi tiempo libre — in my free time"
+      ],
+      "sampleChat": [
+        "Learner: Me gusta dibujar.",
+        "Amigo: ¿Cómo empezaste?",
+        "Learner: Dibujaba con mi hermana."
+      ],
+      "completionCriteria": "The learner names an interest and elaborates on it."
+    },
+    {
+      "id": "childhood-memories",
+      "title": "Childhood memories",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Describe a childhood game or memory.",
+      "guidance": "Sharing is optional; allow invented examples. Model imperfect for habits without demanding personal family history. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "De pequeño… — As a child…",
+        "jugábamos — we used to play"
+      ],
+      "sampleChat": [
+        "Learner: De pequeño jugaba al escondite.",
+        "Amigo: ¿Con quién jugabas?",
+        "Learner: Con mis primos."
+      ],
+      "completionCriteria": "The learner describes a past habit or optional memory."
+    },
+    {
+      "id": "birthday-celebrations",
+      "title": "Birthday wishes and plans",
+      "preferredAmigos": [
+        "tavo"
+      ],
+      "objective": "Wish someone a happy birthday and discuss a celebration.",
+      "guidance": "Use a fictional birthday; do not ask for a full date of birth. Respect people who do not celebrate. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¡Feliz cumpleaños! — Happy birthday!",
+        "un regalo — a gift"
+      ],
+      "sampleChat": [
+        "Learner: ¡Feliz cumpleaños!",
+        "Amigo: ¡Gracias! Vamos a cenar con amigos.",
+        "Learner: ¿Puedo llevar un pastel?"
+      ],
+      "completionCriteria": "The learner offers a birthday wish and discusses one celebration detail."
+    },
+    {
+      "id": "friendly-compliments",
+      "title": "Giving and receiving compliments",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Offer or accept a considerate compliment.",
+      "guidance": "Prefer effort, style or skill. Explain friendly versus flirtatious meaning when asked; never pressure intimacy or assume attraction. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Te queda bien — It suits you",
+        "¡Qué amable! — How kind!"
+      ],
+      "sampleChat": [
+        "Learner: Te queda muy bien esa chaqueta.",
+        "Amigo: ¡Gracias, qué amable!",
+        "Learner: Me encanta el color."
+      ],
+      "completionCriteria": "The learner gives or responds to an appropriate compliment."
+    },
+    {
+      "id": "polite-disagreement",
+      "title": "Disagreeing kindly",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Express a different opinion respectfully.",
+      "guidance": "Choose a low-stakes preference. Acknowledge the other view without pretending agreement or turning it into an argument. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Entiendo tu punto — I see your point",
+        "Yo lo veo de otra manera — I see it differently"
+      ],
+      "sampleChat": [
+        "Learner: Prefiero las películas cortas.",
+        "Amigo: Entiendo tu punto; a mí me gustan las historias largas.",
+        "Learner: Sí, depende de la historia."
+      ],
+      "completionCriteria": "The learner expresses a difference and acknowledges another perspective."
+    },
+    {
+      "id": "please-repeat",
+      "title": "Keeping up with spoken Spanish",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Ask for repetition, slower speech or an explanation.",
+      "guidance": "Model one repair phrase and practise it. Respond to the actual clarification request rather than changing subject. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Puedes repetirlo? — Can you repeat that?",
+        "Más despacio, por favor — More slowly, please"
+      ],
+      "sampleChat": [
+        "Learner: ¿Puedes hablar más despacio?",
+        "Amigo: Claro. ¿Qué palabra no entendiste?",
+        "Learner: ¿Qué significa esquina?"
+      ],
+      "completionCriteria": "The learner requests clarification and receives a relevant explanation."
+    },
+    {
+      "id": "funny-story",
+      "title": "Telling a funny story",
+      "preferredAmigos": [
+        "tavo"
+      ],
+      "objective": "Tell a short story with a surprise.",
+      "guidance": "Use harmless fictional mishaps, not humiliation or stereotypes. Follow sequence and react to the learner's story. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "resulta que… — it turns out…",
+        "al final — in the end"
+      ],
+      "sampleChat": [
+        "Learner: Busqué mis gafas por toda la casa.",
+        "Amigo: ¿Y dónde estaban?",
+        "Learner: ¡En mi cabeza!"
+      ],
+      "completionCriteria": "The learner tells a short sequence or responds meaningfully to its punchline."
+    },
+    {
+      "id": "supporting-friend",
+      "title": "A friend has had a hard day",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Acknowledge feelings and offer a listening ear.",
+      "guidance": "Do not diagnose, minimise or force disclosure. Ask whether they want to talk or prefer distraction; respect their answer. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Qué día tan difícil — What a difficult day",
+        "¿Quieres hablar de ello? — Do you want to talk about it?"
+      ],
+      "sampleChat": [
+        "Learner: Hoy ha sido un día difícil.",
+        "Amigo: Lo siento. ¿Quieres hablar de ello?",
+        "Learner: Sí, tuve mucho trabajo."
+      ],
+      "completionCriteria": "The learner practises a supportive response or expresses what support they want."
+    },
+    {
+      "id": "home-neighbourhood",
+      "title": "Home and neighbourhood",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Describe a home or a nearby favourite place.",
+      "guidance": "No exact address needed. Use imagined places and ask about the learner's preference. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "el barrio — neighbourhood",
+        "cerca de — near"
+      ],
+      "sampleChat": [
+        "Learner: En mi barrio hay un parque.",
+        "Amigo: ¿Está cerca de tu casa?",
+        "Learner: Sí, a cinco minutos andando."
+      ],
+      "completionCriteria": "The learner describes a place and its location or appeal."
+    },
+    {
+      "id": "asking-directions",
+      "title": "Asking for directions",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Ask for and understand simple directions.",
+      "guidance": "Use an imaginary map, not live navigation. Confirm a landmark or turn when uncertain. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "gira a la derecha — turn right",
+        "sigue recto — go straight"
+      ],
+      "sampleChat": [
+        "Learner: ¿Dónde está la biblioteca?",
+        "Amigo: Sigue recto y gira a la derecha.",
+        "Learner: ¿Está junto al parque?"
+      ],
+      "completionCriteria": "The learner asks a direction and confirms a route detail."
+    },
+    {
+      "id": "bus-train-ticket",
+      "title": "Bus and train journeys",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Ask about a destination, departure or stop.",
+      "guidance": "Use fictional schedules and prices. Never claim current availability or book travel. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "un boleto — a ticket",
+        "¿Dónde me bajo? — Where do I get off?"
+      ],
+      "sampleChat": [
+        "Learner: Quisiera un boleto a Puebla.",
+        "Amigo: En esta práctica hay una salida por la mañana y otra por la tarde. ¿Cuál prefieres?",
+        "Learner: La de la mañana. ¿Es un viaje directo?"
+      ],
+      "completionCriteria": "The learner specifies a destination and clarifies one journey detail."
+    },
+    {
+      "id": "accommodation-checkin",
+      "title": "Checking into accommodation",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Rehearse arrival and ask about facilities.",
+      "guidance": "Use a fictional reservation and name. No identification numbers, real booking claims or actual Wi-Fi credentials. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Tengo una reserva — I have a reservation",
+        "la salida — checkout"
+      ],
+      "sampleChat": [
+        "Learner: Tengo una reserva a nombre de Alex.",
+        "Amigo: Bienvenido. ¿Tienes alguna pregunta?",
+        "Learner: ¿A qué hora es la salida?"
+      ],
+      "completionCriteria": "The learner introduces a reservation and asks a practical question."
+    },
+    {
+      "id": "reporting-small-problem",
+      "title": "Reporting a small problem",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Politely explain something is not working.",
+      "guidance": "Practise a shower, internet connection or room key problem. Clarify what happens; do not invent a repair or promise service. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "No funciona — It doesn't work",
+        "¿Podría ayudarme? — Could you help me?"
+      ],
+      "sampleChat": [
+        "Learner: La llave de mi habitación no funciona.",
+        "Amigo: ¿No abre la puerta?",
+        "Learner: Exacto. ¿Podría ayudarme?"
+      ],
+      "completionCriteria": "The learner identifies a problem and asks for assistance."
+    },
+    {
+      "id": "cooking-together",
+      "title": "Cooking together",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Discuss ingredients and simple cooking steps.",
+      "guidance": "Use an imagined recipe. Ask about preferences or restrictions without claiming allergen safety. Keep quantities and steps simple. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "corta — cut",
+        "mezcla — mix",
+        "una cucharada — a tablespoon"
+      ],
+      "sampleChat": [
+        "Learner: ¿Qué hacemos primero?",
+        "Amigo: Corta el tomate en trozos pequeños.",
+        "Learner: ¿Y después lo mezclo con la cebolla?"
+      ],
+      "completionCriteria": "The learner follows or gives a cooking step and clarifies an ingredient or quantity."
+    },
+    {
+      "id": "pets-and-personality",
+      "title": "Pets and their personalities",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Describe an animal and a funny habit.",
+      "guidance": "Do not assume pet ownership; imaginary animals are welcome. No veterinary advice. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "travieso — mischievous",
+        "cuidar — to care for"
+      ],
+      "sampleChat": [
+        "Learner: Mi gato es muy curioso.",
+        "Amigo: ¿Qué hace?",
+        "Learner: Siempre se mete en las cajas."
+      ],
+      "completionCriteria": "The learner describes an animal and a characteristic or habit."
+    },
+    {
+      "id": "voice-notes-etiquette",
+      "title": "Voice notes and messaging",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Explain a missed call or delayed reply politely.",
+      "guidance": "Practise fictional messages; never claim the app sent an external message or read another person's chat. Respect availability and boundaries. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Te contesto luego — I'll reply later",
+        "No pude contestar — I couldn't answer"
+      ],
+      "sampleChat": [
+        "Learner: Perdón, no pude contestar tu llamada.",
+        "Amigo: No pasa nada. ¿Hablamos luego?",
+        "Learner: Sí, te mando un mensaje cuando termine."
+      ],
+      "completionCriteria": "The learner explains a delay or proposes a suitable time to respond."
+    },
+    {
+      "id": "restaurant-reservation",
+      "title": "Reserve a restaurant table",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Practise reserving dinner tonight or Friday, Saturday or Sunday.",
+      "guidance": "Use a fictional booking: ask day, time and party size one at a time. Offer a romantic date, friends or a spouse without assuming relationship or gender. Never claim a real reservation. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Quisiera reservar una mesa — I'd like to reserve a table",
+        "para dos — for two",
+        "este viernes — this Friday"
+      ],
+      "sampleChat": [
+        "Learner: Quisiera reservar para dos este viernes.",
+        "Amigo: ¿A qué hora les gustaría cenar?",
+        "Learner: A las ocho, por favor."
+      ],
+      "completionCriteria": "The learner gives day, time and party size and confirms an imaginary reservation."
+    },
+    {
+      "id": "restaurant-order",
+      "title": "Ordering at a restaurant",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Practise ordering a meal in an imaginary restaurant.",
+      "guidance": "Take the server role only with agreement. Offer a small fictional menu, follow their order, clarify a side or drink, then confirm. Do not restart or turn this card into an automatically charged Role Play. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Quisiera… — I'd like…",
+        "el menú — the menu",
+        "sin cebolla — without onion"
+      ],
+      "sampleChat": [
+        "Learner: Quisiera los tacos, sin cebolla.",
+        "Amigo: Claro. ¿Qué te gustaría beber?",
+        "Learner: Agua, por favor."
+      ],
+      "completionCriteria": "The learner orders food and a drink or modification and receives confirmation."
+    },
+    {
+      "id": "restaurant-bill",
+      "title": "Paying for a meal",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Ask for and settle an imaginary restaurant bill.",
+      "guidance": "Practise requesting the bill, together or separately and cash or card. Prices are fictional; tipping varies, never impose a universal rule. End after payment and thanks; perform no payment. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "La cuenta, por favor — The bill, please",
+        "por separado — separately",
+        "con tarjeta — by card"
+      ],
+      "sampleChat": [
+        "Learner: La cuenta, por favor.",
+        "Amigo: ¿Van a pagar juntos o por separado?",
+        "Learner: Por separado, con tarjeta."
+      ],
+      "completionCriteria": "The learner requests the bill and specifies how to pay."
+    },
+    {
+      "id": "supermarket-checkout",
+      "title": "Paying at the supermarket",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Rehearse a supermarket checkout.",
+      "guidance": "Use an invented basket and total. Ask about a bag or payment, one at a time; do not request card details. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "una bolsa — a bag",
+        "el recibo — the receipt",
+        "en efectivo — in cash"
+      ],
+      "sampleChat": [
+        "Learner: ¿Necesitas una bolsa?",
+        "Amigo: No, gracias. Pago en efectivo.",
+        "Learner: Aquí tienes tu recibo."
+      ],
+      "completionCriteria": "The learner handles a checkout question and states a payment method."
+    },
+    {
+      "id": "buying-car",
+      "title": "Paying for a new car",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Practise asking about a car's total price and payment.",
+      "guidance": "Language rehearsal only, not financing advice. Discuss fictional total price, deposit and monthly instalments; distinguish paying in full from instalments. Never request income, account details or recommend a loan. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "el precio total — total price",
+        "el enganche — down payment (Mexico)",
+        "a plazos — in instalments"
+      ],
+      "sampleChat": [
+        "Learner: ¿Cuál es el precio total del coche?",
+        "Amigo: En este ejemplo cuesta doscientos mil pesos.",
+        "Learner: ¿Se puede pagar a plazos?"
+      ],
+      "completionCriteria": "The learner asks about total cost and distinguishes a deposit from instalments."
+    },
+    {
+      "id": "clothes-checkout",
+      "title": "Buying and paying for clothes",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Ask for clothing size, price and payment.",
+      "guidance": "Use invented shop dialogue. Clarify size or colour and ask about returns without inventing a real store policy. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la talla — size",
+        "probarme — try on",
+        "¿Cuánto cuesta? — How much is it?"
+      ],
+      "sampleChat": [
+        "Learner: ¿Tienes esta camisa en talla mediana?",
+        "Amigo: Sí. ¿Quieres probártela?",
+        "Learner: Sí, y después pago con tarjeta."
+      ],
+      "completionCriteria": "The learner chooses an item and asks a purchase-related question."
+    },
+    {
+      "id": "online-order-payment",
+      "title": "Paying for an online order",
+      "preferredAmigos": [
+        "tavo"
+      ],
+      "objective": "Discuss checking an online order before payment.",
+      "guidance": "Rehearse product, delivery fee, total and confirmation using fictional details. Never request payment credentials, passwords or addresses; never claim a purchase was made. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "el pedido — order",
+        "los gastos de envío — delivery charges",
+        "la confirmación — confirmation"
+      ],
+      "sampleChat": [
+        "Learner: ¿El total incluye el envío?",
+        "Amigo: En nuestro ejemplo, sí.",
+        "Learner: Entonces reviso el pedido antes de pagar."
+      ],
+      "completionCriteria": "The learner asks about the total or delivery and describes confirming an order."
+    },
+    {
+      "id": "netflix-monthly-payment",
+      "title": "A monthly Netflix payment",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Explain when a streaming subscription is charged and ask about its billing date.",
+      "guidance": "Ask about a hypothetical Netflix subscription. Teach monthly automatic payment; a recurring card charge is not necessarily bank direct debit. Availability and payment methods vary; do not claim Netflix supports direct debit everywhere or quote current prices. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la suscripción — subscription",
+        "el cobro mensual — monthly charge",
+        "la domiciliación bancaria — bank direct debit"
+      ],
+      "sampleChat": [
+        "Learner: Mi suscripción se cobra automáticamente cada mes.",
+        "Amigo: ¿Sabes qué día se hace el cobro?",
+        "Learner: No; quiero comprobar la fecha en mi cuenta."
+      ],
+      "completionCriteria": "The learner describes recurring billing and asks about or identifies the billing date."
+    },
+    {
+      "id": "spotify-monthly-payment",
+      "title": "A monthly Spotify payment",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Discuss whether a music subscription suits your listening habits.",
+      "guidance": "Use a hypothetical Spotify subscription; follow their music interests. Distinguish automatic card billing from bank direct debit, which depends on provider and country. Do not quote plans, prices or promise a supported method. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "mensualmente — monthly",
+        "el pago automático — automatic payment",
+        "cancelar — cancel"
+      ],
+      "sampleChat": [
+        "Learner: Pago una suscripción de música, pero casi no la uso.",
+        "Amigo: ¿Escuchas música de otra manera o últimamente escuchas menos?",
+        "Learner: Escucho menos. Quiero revisar si me conviene mantenerla."
+      ],
+      "completionCriteria": "The learner connects a subscription choice to a listening habit, without needing to reveal financial details."
+    },
+    {
+      "id": "mobile-data-payment",
+      "title": "Paying for phone data",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Describe a SIM or mobile-data plan and monthly billing.",
+      "guidance": "Distinguish prepaid top-ups from recurring plans. Practise asking whether automatic bank debit is available, not asserting that it is. Use fictional data allowances; never request phone or banking details. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "el plan de datos — data plan",
+        "la tarjeta SIM — SIM card",
+        "recargar — top up"
+      ],
+      "sampleChat": [
+        "Learner: ¿Este plan de datos se paga cada mes?",
+        "Amigo: Sí, en este ejemplo es mensual.",
+        "Learner: ¿Puedo domiciliar el pago?"
+      ],
+      "completionCriteria": "The learner distinguishes a top-up from a monthly plan and asks how to pay."
+    },
+    {
+      "id": "cinema-online-tickets",
+      "title": "Two tickets for an action film",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Practise booking two cinema tickets online.",
+      "guidance": "Use a fictional action film rather than claiming which release is newest. Choose day, screening time and two seats; confirm the imaginary order. No actual booking. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "dos entradas — two tickets",
+        "la función — screening",
+        "los asientos — seats"
+      ],
+      "sampleChat": [
+        "Learner: Quiero dos entradas para una película de acción.",
+        "Amigo: Imaginemos que elegimos una función a las ocho. ¿Prefieres asientos delante o detrás?",
+        "Learner: Detrás, pero cerca del centro."
+      ],
+      "completionCriteria": "The learner specifies two tickets and a screening and confirms the imagined choice."
+    },
+    {
+      "id": "what-are-verbs",
+      "title": "What is a verb?",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Understand verbs through everyday sentences.",
+      "guidance": "Explain actions and states, not just actions. Use hablar, comer and estar with short sentences. Invite one personal or fictional example rather than lecture. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "un verbo — a verb",
+        "hablar — to speak",
+        "estar — to be (state/location)"
+      ],
+      "sampleChat": [
+        "Learner: ¿Qué es un verbo?",
+        "Amigo: Una palabra que expresa una acción o un estado. En «yo como», el verbo es «como».",
+        "Learner: Entonces, en «yo hablo español», es «hablo»."
+      ],
+      "completionCriteria": "The learner identifies a verb or uses one in a meaningful sentence."
+    },
+    {
+      "id": "conjugating-verbs",
+      "title": "What does conjugating mean?",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "See how a verb changes for who and when.",
+      "guidance": "Contrast hablar with hablo and hablamos, then hablé if useful. Explain person, number, tense and mood gradually; avoid a grammar dump. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "conjugar — to conjugate",
+        "yo hablo — I speak",
+        "hablamos — we speak"
+      ],
+      "sampleChat": [
+        "Learner: ¿Por qué hablar cambia a hablo?",
+        "Amigo: Porque hablo expresa lo que hago yo: yo hablo español.",
+        "Learner: Nosotros hablamos español."
+      ],
+      "completionCriteria": "The learner adapts an infinitive to a person in a short sentence."
+    },
+    {
+      "id": "core-spanish-conjugations",
+      "title": "Useful Spanish verb patterns",
+      "preferredAmigos": [
+        "sol"
+      ],
+      "objective": "Practise one useful present-tense contrast: tengo, quiero or puedo.",
+      "guidance": "This is one small present-tense lesson, not a survey of every tense. Let the learner choose tener, querer or poder and contrast two people: tengo/tienes, quiero/quieres or puedo/puedes. Use meaningful short sentences and correct gently. Other verbs from the broader bank may be discussed only when the learner asks. Do not overwhelm them with tables or claim this completes learning Spanish conjugation. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "tengo — I have",
+        "quiero — I want",
+        "puedo — I can",
+        "he comido — I have eaten"
+      ],
+      "sampleChat": [
+        "Learner: Quiero practicar «poder».",
+        "Amigo: Yo digo «puedo»: puedo hablar hoy. Para ti uso «puedes». ¿Puedes hablar mañana?",
+        "Learner: Sí, puedo hablar mañana."
+      ],
+      "completionCriteria": "The learner uses a selected present-tense form meaningfully and understands one person contrast; this is not mastery of all conjugations."
+    },
+    {
+      "id": "spanish-practice-habit",
+      "title": "Building a Spanish practice habit",
+      "preferredAmigos": [
+        "rafa"
+      ],
+      "objective": "Build a realistic habit using words in meaningful sentences.",
+      "guidance": "Encourage varied comprehensible listening/reading, retrieval, writing/speaking, feedback and spaced repetition. Daily short practice can help, but missed days are not failure. Gym analogy is motivational, not a biological equivalence; brains do not learn exactly like AI. No automatic fluency promise or universal three-year timeline; pace varies. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "poco a poco — little by little",
+        "a diario — daily",
+        "repasar — review"
+      ],
+      "sampleChat": [
+        "Learner: Quiero aprender más palabras.",
+        "Amigo: Probemos usarlas en frases que te sirvan y repasarlas otro día.",
+        "Learner: Puedo practicar diez minutos después de cenar."
+      ],
+      "completionCriteria": "The learner chooses a realistic practice habit and uses or plans to revisit a useful phrase.",
+      "sources": [
+        "https://support.cambridgeenglish.org/hc/en-gb/articles/202838506-Guided-learning-hours"
+      ]
+    },
+    {
+      "id": "tv-at-home",
+      "title": "An evening watching TV",
+      "preferredAmigos": [
+        "ines"
+      ],
+      "objective": "Talk about relaxing at home with television.",
+      "guidance": "Ask about genre or an episode without assuming access to a service. Follow what they like; offer Spanish subtitles as an optional idea, not homework. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "quedarse en casa — stay home",
+        "una serie — a series",
+        "un episodio — an episode"
+      ],
+      "sampleChat": [
+        "Learner: Hoy me quedo en casa viendo una serie.",
+        "Amigo: ¿Es de comedia o de misterio?",
+        "Learner: De misterio; quiero saber cómo termina."
+      ],
+      "completionCriteria": "The learner describes a viewing preference and responds to a relevant follow-up."
+    },
+    {
+      "id": "phone-and-friends",
+      "title": "Phone time and real adventures",
+      "preferredAmigos": [
+        "dani"
+      ],
+      "objective": "Talk about balancing phone entertainment and time with friends.",
+      "guidance": "Avoid shaming screen use or assuming addiction. Ask what balance the learner wants; suggest one optional real-world social activity only if invitations have not already been used today. Respect disability, fatigue and preference for staying home. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "desconectar — disconnect",
+        "dar un paseo — take a walk",
+        "pasar tiempo con amigos — spend time with friends"
+      ],
+      "sampleChat": [
+        "Learner: A veces paso demasiado tiempo con el móvil.",
+        "Amigo: ¿Te gustaría reservar un rato para hablar con un amigo?",
+        "Learner: Sí, podría llamarlo esta tarde."
+      ],
+      "completionCriteria": "The learner reflects on their preferred balance and optionally chooses a manageable change."
+    },
+    {
+      "id": "trying-chatgpt",
+      "title": "Have you tried ChatGPT?",
+      "preferredAmigos": [
+        "tavo"
+      ],
+      "objective": "Share an experience or question about ChatGPT.",
+      "guidance": "Ask whether they have tried it; enthusiasm is a character opinion, not advertising or a guarantee. If new, describe asking for a practice dialogue; if experienced, ask what helped. It can be wrong. Do not claim to connect to it or describe unverified current features. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Lo has probado? — Have you tried it?",
+        "una herramienta — a tool",
+        "comprobar — check"
+      ],
+      "sampleChat": [
+        "Amigo: ¿Has probado ChatGPT para practicar español?",
+        "Learner: Sí, pero a veces no entiendo sus explicaciones.",
+        "Amigo: ¿Qué explicación te resultó confusa? Podemos verla con un ejemplo sencillo."
+      ],
+      "completionCriteria": "The learner shares an experience or identifies a hypothetical use, with appropriate limits acknowledged."
+    },
+    {
+      "id": "local-produce-markets",
+      "title": "Fresh produce at Mexican markets",
+      "preferredAmigos": [
+        "nico"
+      ],
+      "objective": "Talk about seasonal local produce and shopping at markets.",
+      "guidance": "Describe the variety of fruits, vegetables and cooking ingredients in many Mexican markets. Local, fresh and organic are different claims; not all market produce is certified organic. Ask seasonal preferences. A varied diet can support health, but do not claim Mexican food cures disease or endorse healing tourism. Respect food safety and dietary needs without medical advice. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "de temporada — seasonal",
+        "cultivado localmente — locally grown",
+        "¿De dónde viene? — Where does it come from?"
+      ],
+      "sampleChat": [
+        "Learner: Me gusta comprar fruta de temporada.",
+        "Amigo: ¿Qué fruta te gusta más?",
+        "Learner: El mango. ¿De dónde viene este?"
+      ],
+      "completionCriteria": "The learner discusses a produce preference or asks about origin or seasonality without endorsing cure claims.",
+      "sources": [
+        "https://www.niddk.nih.gov/health-information/diet-nutrition"
+      ]
+    },
+    {
+      "id": "guatemala-volcano-journey",
+      "title": "Mexico to Guatemala: imagining a journey",
+      "preferredAmigos": [
+        "lucia"
+      ],
+      "objective": "Imagine a backpacking journey and describe its personal meaning.",
+      "guidance": "Discuss Mexico City, Oaxaca City and Puerto Escondido, then Guatemala as an imagined multi-stop journey, not a guaranteed through-minibus route. Lake Atitlán and Antigua are distinct destinations; Fuego and Acatenango excursions are commonly based from Antigua, not volcanoes directly on the lake. Lake-side volcanoes include Atitlán, Tolimán and San Pedro. Use Guatemala, Atitlán and Acatenango correctly. Local qualified guides and current official warnings/closures matter; never assure volcanic hiking or borders are safe or currently open. Some travellers find such experiences transformative; never promise this for everyone. No schedules or travel bookings. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "un volcán — a volcano",
+        "un guía local — a local guide",
+        "el lago — the lake",
+        "una aventura — an adventure"
+      ],
+      "sampleChat": [
+        "Learner: Me gustaría conocer el lago de Atitlán y Antigua.",
+        "Amigo: Son destinos distintos. ¿Te atraen más los paisajes o conocer gente?",
+        "Learner: Las dos cosas; quiero escuchar historias locales."
+      ],
+      "completionCriteria": "The learner chooses an imagined destination or experience and describes why it appeals, with geography and safety caveats respected.",
+      "sources": [
+        "https://visitguatemala.gt/en/natural-wonders/",
+        "https://conred.gob.gt/se-conred-brinda-recomendaciones-por-actividad-del-volcan-de-fuego/"
+      ]
+    },
+    {
+      "id": "street-market-prices",
+      "title": "Asking prices at a street market",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Ask an item's price politely.",
+      "guidance": "Practise singular cuánto cuesta and plural cuánto cuestan. Use fictional prices and quantities. Bargaining is not appropriate everywhere; ask respectfully, accept no. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Cuánto cuesta esto? — How much is this?",
+        "¿Cuánto cuestan? — How much are they?",
+        "¿Y este? — And this one?"
+      ],
+      "sampleChat": [
+        "Learner: ¿Cuánto cuesta esta bolsa?",
+        "Amigo: En este ejemplo cuesta cien pesos.",
+        "Learner: ¿Y cuánto cuestan esas dos?"
+      ],
+      "completionCriteria": "The learner asks a price and a follow-up about quantity or another item."
+    },
+    {
+      "id": "una-cosa",
+      "title": "A useful word: cosa",
+      "preferredAmigos": [
+        "tavo"
+      ],
+      "objective": "Use una cosa naturally in conversation.",
+      "guidance": "Explain cosa as thing with una cosa and las cosas. Show Quiero preguntarte una cosa. Invite a simple example; do not teach it as a substitute for every specific noun. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "una cosa — a thing",
+        "las cosas — things",
+        "otra cosa — another thing"
+      ],
+      "sampleChat": [
+        "Learner: Quiero preguntarte una cosa.",
+        "Amigo: Claro, ¿qué quieres saber?",
+        "Learner: ¿Cómo se llama esta cosa en español?"
+      ],
+      "completionCriteria": "The learner uses cosa in a meaningful phrase or question."
+    },
+    {
+      "id": "this-that-those",
+      "title": "This, that and those",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Point out everyday objects using demonstratives.",
+      "guidance": "Teach este/esta/estos/estas and ese/esa/esos/esas with noun agreement. Add aquel forms only if useful for greater distance. Esto/eso/aquello refer to unidentified things or ideas, not before a noun. Keep examples concrete. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "este teléfono — this phone",
+        "esa camisa — that shirt",
+        "esos zapatos — those shoes"
+      ],
+      "sampleChat": [
+        "Learner: Me gusta esa camisa.",
+        "Amigo: ¿Esta azul o esa verde?",
+        "Learner: Esa verde, y esos zapatos."
+      ],
+      "completionCriteria": "The learner distinguishes near/further objects and uses an agreeing demonstrative."
+    },
+    {
+      "id": "my-belongings",
+      "title": "My phone, my shoes, my things",
+      "preferredAmigos": [
+        "alma"
+      ],
+      "objective": "Use mi and mis with everyday belongings.",
+      "guidance": "Mi/mis agree with the number of the possession, not the owner's gender. Contrast possessive mi without accent with mí after a preposition only if asked. Examples: mis zapatos, mi teléfono, mi cartera, mi computadora, mi cuenta, mi ropa; ropa is singular collective. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "mi teléfono — my phone",
+        "mis zapatos — my shoes",
+        "mi cartera — my wallet",
+        "mi ropa — my clothes"
+      ],
+      "sampleChat": [
+        "Learner: No encuentro mi teléfono.",
+        "Amigo: ¿Está junto a tus zapatos?",
+        "Learner: Sí, está junto a mis zapatos."
+      ],
+      "completionCriteria": "The learner uses mi and mis correctly in two relevant examples."
+    },
+    {
+      "id": "ghosts-and-memories",
+      "title": "Fantasmas and the memories we keep",
+      "preferredAmigos": [
+        "sol",
+        "alma"
+      ],
       "objective": "Talk about ghosts in Amigos' fictional world and how stories keep someone's memory alive.",
-      "guidance": "The amigos are fictional ghosts who live on in remembered stories. Be cheeky if asked whether you are a ghost, then acknowledge the fiction clearly if pressed. Describe keeping a spirit alive as remembrance or a belief, not a proven supernatural fact. Invite a happy memory or an imaginary example; never demand disclosure of grief or imply that forgetting harms the dead. Keep this about memories, not another explanation of Día de Muertos altars.",
-      "vocabulary": ["un fantasma — a ghost", "un recuerdo — a memory", "un ser querido — a loved one", "Sigue vivo en mis recuerdos — He lives on in my memories"],
-      "sampleChat": ["Amigo: Aquí entre fantasmas, una buena historia vale más que una foto de perfil.", "Learner: ¿Eres un fantasma de verdad?", "Amigo: En el mundo de Amigos, sí. Fuera de esta historia, recordar a alguien mantiene viva su memoria."],
+      "guidance": "The amigos are fictional ghosts who live on in remembered stories. Be cheeky if asked whether you are a ghost, then acknowledge the fiction clearly if pressed. Describe keeping a spirit alive as remembrance or a belief, not a proven supernatural fact. Invite a happy memory or an imaginary example; never demand disclosure of grief or imply that forgetting harms the dead. Keep this about memories, not another explanation of Día de Muertos altars. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "un fantasma — a ghost",
+        "un recuerdo — a memory",
+        "un ser querido — a loved one",
+        "Sigue vivo en mis recuerdos — He lives on in my memories"
+      ],
+      "sampleChat": [
+        "Amigo: Aquí entre fantasmas, una buena historia vale más que una foto de perfil.",
+        "Learner: ¿Eres un fantasma de verdad?",
+        "Amigo: En el mundo de Amigos, sí. Fuera de esta historia, recordar a alguien mantiene viva su memoria."
+      ],
       "completionCriteria": "The learner meaningfully discusses ghost fiction, remembrance or an optional memory, and the amigo responds without presenting supernatural claims as fact."
     },
     {
-      "id": "amigos-and-friendship", "title": "Friends to share life with", "preferredAmigos": ["dani", "ines"],
+      "id": "amigos-and-friendship",
+      "title": "Friends to share life with",
+      "preferredAmigos": [
+        "dani",
+        "ines"
+      ],
       "objective": "Describe friendship and practise staying in touch in Spanish.",
-      "guidance": "Let the character describe their own Mexican circle as warm and sociable, valuing friends to chat with, share life and learn from. Do not claim all Mexicans are outgoing, have the same customs or maintain large friendship groups. Discuss listening, supporting friends and making time to catch up. Respect quiet personalities and different preferences.",
-      "vocabulary": ["platicar — to chat", "ponerse al día — to catch up", "contar con alguien — to count on someone", "¿Cómo te ha ido? — How have you been?"],
-      "sampleChat": ["Amigo: En mi grupo nos gusta platicar y aprender unos de otros.", "Learner: Yo prefiero tener pocos amigos, pero buenos.", "Amigo: ¡También vale! Lo importante es poder contar con ellos."],
+      "guidance": "Let the character describe their own Mexican circle as warm and sociable, valuing friends to chat with, share life and learn from. Do not claim all Mexicans are outgoing, have the same customs or maintain large friendship groups. Discuss listening, supporting friends and making time to catch up. Respect quiet personalities and different preferences. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "platicar — to chat",
+        "ponerse al día — to catch up",
+        "contar con alguien — to count on someone",
+        "¿Cómo te ha ido? — How have you been?"
+      ],
+      "sampleChat": [
+        "Amigo: En mi grupo nos gusta platicar y aprender unos de otros.",
+        "Learner: Yo prefiero tener pocos amigos, pero buenos.",
+        "Amigo: ¡También vale! Lo importante es poder contar con ellos."
+      ],
       "completionCriteria": "The learner shares a friendship preference or practises a meaningful catch-up message, and the amigo acknowledges their individual approach."
     },
     {
-      "id": "backpacking-americas", "title": "A backpack and two useful languages", "preferredAmigos": ["lucia", "dani"],
+      "id": "backpacking-americas",
+      "title": "A backpack and two useful languages",
+      "preferredAmigos": [
+        "lucia",
+        "dani"
+      ],
       "objective": "Imagine meeting locals and fellow travellers while backpacking through the Americas.",
-      "guidance": "The Americas contain many countries and languages. English and Spanish are a useful combination, not universal coverage. Imagine Canada and the USA, then Mexico, Guatemala, Belize, Colombia, Argentina and Chile. Canada has English and French as official languages; Belize's official language is English and Spanish is also spoken. Spanish is widely used in Mexico, Guatemala, Colombia, Argentina and Chile; Indigenous and other languages also matter. Brazil mainly uses Portuguese. Discuss hostels, asking locals for recommendations and making friends, one destination at a time. Do not imply a continuous safe overland route, provide border advice or claim everyone speaks English or Spanish.",
-      "vocabulary": ["viajar de mochilero — to go backpacking", "un hostal — a hostel", "¿Qué lugar me recomiendas? — What place do you recommend?", "conocer gente — to meet people"],
-      "sampleChat": ["Amigo: Imagina llegar a un hostal en Colombia con tu mochila. ¿Cómo saludarías?", "Learner: Hola, soy Alex. ¿Qué lugar me recomiendas visitar?", "Amigo: ¡Muy natural! Así puedes empezar a conocer gente y escuchar sus recomendaciones."],
+      "guidance": "The Americas contain many countries and languages. English and Spanish are a useful combination, not universal coverage. Imagine Canada and the USA, then Mexico, Guatemala, Belize, Colombia, Argentina and Chile. Canada has English and French as official languages; Belize's official language is English and Spanish is also spoken. Spanish is widely used in Mexico, Guatemala, Colombia, Argentina and Chile; Indigenous and other languages also matter. Brazil mainly uses Portuguese. Discuss hostels, asking locals for recommendations and making friends, one destination at a time. Do not imply a continuous safe overland route, provide border advice or claim everyone speaks English or Spanish. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "viajar de mochilero — to go backpacking",
+        "un hostal — a hostel",
+        "¿Qué lugar me recomiendas? — What place do you recommend?",
+        "conocer gente — to meet people"
+      ],
+      "sampleChat": [
+        "Amigo: Imagina llegar a un hostal en Colombia con tu mochila. ¿Cómo saludarías?",
+        "Learner: Hola, soy Alex. ¿Qué lugar me recomiendas visitar?",
+        "Amigo: ¡Muy natural! Así puedes empezar a conocer gente y escuchar sus recomendaciones."
+      ],
       "completionCriteria": "The learner chooses a destination or imagined travel interaction and practises a relevant phrase; the amigo connects it to that place without erasing its language diversity.",
-      "sources": ["https://www.canada.ca/en/immigration-refugees-citizenship/services/settle-canada/language-skills.html", "https://www.mpuele.gov.bz/wp-content/uploads/2024/04/Belize-Country-Brief_Final_CTU_March-21.pdf"]
+      "sources": [
+        "https://www.canada.ca/en/immigration-refugees-citizenship/services/settle-canada/language-skills.html",
+        "https://www.mpuele.gov.bz/wp-content/uploads/2024/04/Belize-Country-Brief_Final_CTU_March-21.pdf"
+      ]
     },
     {
-      "id": "ai-practice-powerups", "title": "AI as a practice power-up", "preferredAmigos": ["tavo", "ines"],
+      "id": "ai-practice-powerups",
+      "title": "AI as a practice power-up",
+      "preferredAmigos": [
+        "tavo",
+        "ines"
+      ],
       "objective": "Discuss helpful AI tools and rehearse a message for a living friend.",
-      "guidance": "Mention tools such as ChatGPT as optional practice partners for drafting messages, asking for explanations and rehearsing Spanish. Compare practice playfully to a video-game power-up. It can build confidence but does not guarantee flawless language, fluency or enough practice for every situation; AI can make mistakes. Encourage real conversations and checking unfamiliar expressions with speakers or reliable references. Never claim to access ChatGPT or send messages externally. Do not ask for private messages or personal data: invented examples are enough. Joke that AI has not reached the ghost world yet, then keep clear that this is fictional humour and Amigos itself uses AI.",
-      "vocabulary": ["la inteligencia artificial — artificial intelligence", "practicar — to practise", "ganar confianza — to build confidence", "¿Suena natural? — Does it sound natural?"],
-      "sampleChat": ["Amigo: Practicar con IA es como recoger un potenciador en un videojuego. ¡Pero aún toca jugar!", "Learner: Quiero escribirle a una amiga: ¿Cómo te ha ido?", "Amigo: ¡Suena natural! Puedes practicar aquí y luego conversar con ella. Hasta la IA se equivoca, así que pregunta si algo te suena raro."],
+      "guidance": "Mention tools such as ChatGPT as optional practice partners for drafting messages, asking for explanations and rehearsing Spanish. Compare practice playfully to a video-game power-up. It can build confidence but does not guarantee flawless language, fluency or enough practice for every situation; AI can make mistakes. Encourage real conversations and checking unfamiliar expressions with speakers or reliable references. Never claim to access ChatGPT or send messages externally. Do not ask for private messages or personal data: invented examples are enough. Joke that AI has not reached the ghost world yet, then keep clear that this is fictional humour and Amigos itself uses AI. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "la inteligencia artificial — artificial intelligence",
+        "practicar — to practise",
+        "ganar confianza — to build confidence",
+        "¿Suena natural? — Does it sound natural?"
+      ],
+      "sampleChat": [
+        "Amigo: Practicar con IA es como recoger un potenciador en un videojuego. ¡Pero aún toca jugar!",
+        "Learner: Quiero escribirle a una amiga: ¿Cómo te ha ido?",
+        "Amigo: ¡Suena natural! Puedes practicar aquí y luego conversar con ella. Hasta la IA se equivoca, así que pregunta si algo te suena raro."
+      ],
       "completionCriteria": "The learner identifies a useful practice task or rehearses a message, and the amigo gives relevant help without promising perfection or replacing human friendship."
     },
     {
-      "id": "doblon-story", "title": "The story behind a doblón", "preferredAmigos": [],
+      "id": "doblon-story",
+      "title": "The story behind a doblón",
+      "preferredAmigos": [],
       "objective": "Discuss the name of the app's coins and practise explaining a word.",
-      "guidance": "A doblón is a historical gold coin. Its value varied across periods and denominations; do not claim all doubloons were two escudos. RAE derives doblón from dobla, not simply the modern adjective doble. Keep the history brief and connect it to collecting the app's fictional coins, not real money.",
-      "vocabulary": ["una moneda de oro — a gold coin", "Se llama… — It is called…", "el valor — the value"],
-      "sampleChat": ["Amigo: ¿Sabías que un doblón era una moneda de oro?", "Learner: No lo sabía. ¿Todos valían lo mismo?", "Amigo: No, el valor cambiaba según la época y el tipo de doblón."],
+      "guidance": "A doblón is a historical gold coin. Its value varied across periods and denominations; do not claim all doubloons were two escudos. RAE derives doblón from dobla, not simply the modern adjective doble. Keep the history brief and connect it to collecting the app's fictional coins, not real money. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "una moneda de oro — a gold coin",
+        "Se llama… — It is called…",
+        "el valor — the value"
+      ],
+      "sampleChat": [
+        "Amigo: ¿Sabías que un doblón era una moneda de oro?",
+        "Learner: No lo sabía. ¿Todos valían lo mismo?",
+        "Amigo: No, el valor cambiaba según la época y el tipo de doblón."
+      ],
       "completionCriteria": "The learner meaningfully discusses the coin's name or history and receives a relevant explanation; earning a coin alone does not complete this topic.",
-      "sources": ["https://dle.rae.es/dobl%C3%B3n"]
+      "sources": [
+        "https://dle.rae.es/dobl%C3%B3n"
+      ]
     },
     {
-      "id": "family-remembrance", "title": "Día de Muertos and the family ofrenda", "preferredAmigos": [],
+      "id": "family-remembrance",
+      "title": "Día de Muertos and the family ofrenda",
+      "preferredAmigos": [],
       "objective": "Learn ofrenda and talk gently about a family custom or memory.",
-      "guidance": "Día de Muertos is celebrated especially on 1 and 2 November, with observances extending around these dates in some communities. Families may build home altars or ofrendas to honour deceased loved ones, using offerings, candles, flowers and favourite foods. Customs differ by community and family. Explain ofrenda as an offering or the arrangement of offerings in this context. Some traditions welcome the return of loved ones' spirits; describe this respectfully as tradition or belief, not proof that the deceased become ghosts. Amigos' fantasmas are fictional characters. Sharing personal loss is optional; accept a hypothetical or cultural question instead.",
-      "vocabulary": ["una ofrenda — an offering", "recordar — to remember", "En mi familia… — In my family…"],
-      "sampleChat": ["Amigo: Una ofrenda puede incluir la comida favorita de alguien querido.", "Learner: En mi familia compartimos historias de mis abuelos.", "Amigo: Contar sus historias es una forma bonita de recordarlos."],
+      "guidance": "Día de Muertos is celebrated especially on 1 and 2 November, with observances extending around these dates in some communities. Families may build home altars or ofrendas to honour deceased loved ones, using offerings, candles, flowers and favourite foods. Customs differ by community and family. Explain ofrenda as an offering or the arrangement of offerings in this context. Some traditions welcome the return of loved ones' spirits; describe this respectfully as tradition or belief, not proof that the deceased become ghosts. Amigos' fantasmas are fictional characters. Sharing personal loss is optional; accept a hypothetical or cultural question instead. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "una ofrenda — an offering",
+        "recordar — to remember",
+        "En mi familia… — In my family…"
+      ],
+      "sampleChat": [
+        "Amigo: Una ofrenda puede incluir la comida favorita de alguien querido.",
+        "Learner: En mi familia compartimos historias de mis abuelos.",
+        "Amigo: Contar sus historias es una forma bonita de recordarlos."
+      ],
       "completionCriteria": "The learner asks about the custom or shares a voluntary real or hypothetical example, and the amigo explains a relevant term or responds to the example.",
-      "sources": ["https://ich.unesco.org/en/RL/dia-de-muertos-the-indigenous-festivity-dedicated-to-the-dead-00054", "https://www.gob.mx/agricultura/articulos/dia-de-muertos-una-celebracion-de-vida"]
+      "sources": [
+        "https://ich.unesco.org/en/RL/dia-de-muertos-the-indigenous-festivity-dedicated-to-the-dead-00054",
+        "https://www.gob.mx/agricultura/articulos/dia-de-muertos-una-celebracion-de-vida"
+      ]
     },
     {
-      "id": "small-moments", "title": "The little things in your day", "preferredAmigos": ["alma"],
+      "id": "small-moments",
+      "title": "The little things in your day",
+      "preferredAmigos": [
+        "alma"
+      ],
       "objective": "Describe one ordinary moment and explain why it mattered.",
-      "guidance": "Be an interested friend, not an interviewer. Share one fictional ordinary detail, then follow the learner's experience. Do not repeatedly ask how their day was.",
-      "vocabulary": ["Lo mejor de mi día fue… — The best part of my day was…", "Me hizo reír — It made me laugh", "Qué suerte — How lucky"],
-      "sampleChat": ["Amigo: Hoy vi a un perro dormido en una zapatería. Me hizo reír.", "Learner: Lo mejor de mi día fue hablar con mi hermana.", "Amigo: Esos ratitos alegran el día. ¿De qué hablaron?"],
+      "guidance": "Be an interested friend, not an interviewer. Share one fictional ordinary detail, then follow the learner's experience. Do not repeatedly ask how their day was. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Lo mejor de mi día fue… — The best part of my day was…",
+        "Me hizo reír — It made me laugh",
+        "Qué suerte — How lucky"
+      ],
+      "sampleChat": [
+        "Amigo: Hoy vi a un perro dormido en una zapatería. Me hizo reír.",
+        "Learner: Lo mejor de mi día fue hablar con mi hermana.",
+        "Amigo: Esos ratitos alegran el día. ¿De qué hablaron?"
+      ],
       "completionCriteria": "The learner describes a real or explicitly fictional daily moment and engages with a relevant follow-up; do not complete after a greeting alone."
     },
     {
-      "id": "comfort-food", "title": "Food that feels like home", "preferredAmigos": ["nico"],
+      "id": "comfort-food",
+      "title": "Food that feels like home",
+      "preferredAmigos": [
+        "nico"
+      ],
       "objective": "Talk about a favourite meal and who makes it.",
-      "guidance": "Ask about a familiar dish and respond to the details. Explain useful food vocabulary without inventing the origin of a dish or assuming everyone in a country eats alike.",
-      "vocabulary": ["Mi plato favorito es… — My favourite dish is…", "casero — homemade", "Me recuerda a… — It reminds me of…"],
-      "sampleChat": ["Amigo: A mí me encanta el olor de la comida casera.", "Learner: La sopa de mi padre me recuerda a mi infancia.", "Amigo: ¡Qué bonito recuerdo! ¿Qué le pone a la sopa?"],
+      "guidance": "Ask about a familiar dish and respond to the details. Explain useful food vocabulary without inventing the origin of a dish or assuming everyone in a country eats alike. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Mi plato favorito es… — My favourite dish is…",
+        "casero — homemade",
+        "Me recuerda a… — It reminds me of…"
+      ],
+      "sampleChat": [
+        "Amigo: A mí me encanta el olor de la comida casera.",
+        "Learner: La sopa de mi padre me recuerda a mi infancia.",
+        "Amigo: ¡Qué bonito recuerdo! ¿Qué le pone a la sopa?"
+      ],
       "completionCriteria": "The learner names a dish and shares a preference, ingredient or personal association; the amigo responds meaningfully to that detail."
     },
     {
-      "id": "song-to-share", "title": "Send a friend a song", "preferredAmigos": ["ines"],
+      "id": "song-to-share",
+      "title": "Send a friend a song",
+      "preferredAmigos": [
+        "ines"
+      ],
       "objective": "Recommend a song and give a simple reason.",
-      "guidance": "Discuss tastes without claiming to play audio or send a real link. Do not invent lyrics or facts about artists. A fictional song can be explicitly labelled imaginary.",
-      "vocabulary": ["Te recomiendo… — I recommend…", "Me pone de buen humor — It puts me in a good mood", "el ritmo — the rhythm"],
-      "sampleChat": ["Amigo: Me gustan las canciones que me ponen de buen humor.", "Learner: Te recomiendo esta canción porque me encanta el ritmo.", "Amigo: ¡Buena razón! Yo la imaginaría para un paseo."],
+      "guidance": "Discuss tastes without claiming to play audio or send a real link. Do not invent lyrics or facts about artists. A fictional song can be explicitly labelled imaginary. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Te recomiendo… — I recommend…",
+        "Me pone de buen humor — It puts me in a good mood",
+        "el ritmo — the rhythm"
+      ],
+      "sampleChat": [
+        "Amigo: Me gustan las canciones que me ponen de buen humor.",
+        "Learner: Te recomiendo esta canción porque me encanta el ritmo.",
+        "Amigo: ¡Buena razón! Yo la imaginaría para un paseo."
+      ],
       "completionCriteria": "The learner recommends or describes music and explains what they like; the amigo acknowledges that reason."
     },
     {
-      "id": "weekend-plans", "title": "Making a simple plan", "preferredAmigos": ["dani"],
+      "id": "weekend-plans",
+      "title": "Making a simple plan",
+      "preferredAmigos": [
+        "dani"
+      ],
       "objective": "Suggest, accept or decline a plan politely and clarify one detail.",
-      "guidance": "Respect today's invitation limit. Use a hypothetical example if an activity was already suggested. After acceptance discuss a time or detail instead of inviting again. Never imply a real meeting with the ghost took place.",
-      "vocabulary": ["¿Te apetece…? — Do you feel like…?", "Me viene bien — That works for me", "Otro día, mejor — Another day would be better"],
-      "sampleChat": ["Amigo: Para practicar: ¿te apetece dar un paseo el sábado?", "Learner: Me viene bien por la tarde.", "Amigo: ¡Perfecto! Ya aclaraste cuándo te viene bien."],
+      "guidance": "Respect today's invitation limit. Use a hypothetical example if an activity was already suggested. After acceptance discuss a time or detail instead of inviting again. Never imply a real meeting with the ghost took place. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "¿Te apetece…? — Do you feel like…?",
+        "Me viene bien — That works for me",
+        "Otro día, mejor — Another day would be better"
+      ],
+      "sampleChat": [
+        "Amigo: Para practicar: ¿te apetece dar un paseo el sábado?",
+        "Learner: Me viene bien por la tarde.",
+        "Amigo: ¡Perfecto! Ya aclaraste cuándo te viene bien."
+      ],
       "completionCriteria": "The learner accepts, declines or proposes a plan and clarifies one practical detail; merely repeating an invitation is insufficient."
     },
     {
-      "id": "trying-something", "title": "Trying something new", "preferredAmigos": ["lucia"],
+      "id": "trying-something",
+      "title": "Trying something new",
+      "preferredAmigos": [
+        "lucia"
+      ],
       "objective": "Express curiosity and a small worry to a supportive friend.",
-      "guidance": "Keep suggestions safe and pressure-free. Respond to the learner's actual interest rather than pushing skateboarding or another character hobby.",
-      "vocabulary": ["Me gustaría probar… — I would like to try…", "Me da un poco de miedo — It scares me a little", "poco a poco — little by little"],
-      "sampleChat": ["Amigo: Aprender algo nuevo cuesta al principio.", "Learner: Me gustaría bailar, pero me da vergüenza.", "Amigo: Te entiendo. Poco a poco, sin exigirte hacerlo perfecto."],
+      "guidance": "Keep suggestions safe and pressure-free. Respond to the learner's actual interest rather than pushing skateboarding or another character hobby. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Me gustaría probar… — I would like to try…",
+        "Me da un poco de miedo — It scares me a little",
+        "poco a poco — little by little"
+      ],
+      "sampleChat": [
+        "Amigo: Aprender algo nuevo cuesta al principio.",
+        "Learner: Me gustaría bailar, pero me da vergüenza.",
+        "Amigo: Te entiendo. Poco a poco, sin exigirte hacerlo perfecto."
+      ],
       "completionCriteria": "The learner expresses a wish or hesitation and receives a relevant supportive response."
     },
     {
-      "id": "weather-and-comfort", "title": "Tengo calor", "preferredAmigos": ["rafa"],
+      "id": "weather-and-comfort",
+      "title": "Tengo calor",
+      "preferredAmigos": [
+        "rafa"
+      ],
       "objective": "Talk naturally about feeling hot or cold.",
-      "guidance": "Use Tengo calor for feeling hot and Tengo frío for feeling cold. Hace calor describes hot weather. Explain the distinction briefly in context, without embarrassing the learner or repeating the correction.",
-      "vocabulary": ["Tengo calor — I feel hot", "Tengo frío — I feel cold", "Hace calor — It is hot (weather)", "la sombra — shade"],
-      "sampleChat": ["Amigo: Hoy busco la sombra. ¡Hace calor!", "Learner: Yo también tengo calor.", "Amigo: ¡Exacto! Tengo calor cuenta cómo te sientes tú."],
+      "guidance": "Use Tengo calor for feeling hot and Tengo frío for feeling cold. Hace calor describes hot weather. Explain the distinction briefly in context, without embarrassing the learner or repeating the correction. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Tengo calor — I feel hot",
+        "Tengo frío — I feel cold",
+        "Hace calor — It is hot (weather)",
+        "la sombra — shade"
+      ],
+      "sampleChat": [
+        "Amigo: Hoy busco la sombra. ¡Hace calor!",
+        "Learner: Yo también tengo calor.",
+        "Amigo: ¡Exacto! Tengo calor cuenta cómo te sientes tú."
+      ],
       "completionCriteria": "The learner uses or meaningfully asks about the difference between personal temperature and weather, and the amigo explains or confirms it."
     },
     {
-      "id": "small-hopes", "title": "Something to look forward to", "preferredAmigos": ["sol"],
+      "id": "small-hopes",
+      "title": "Something to look forward to",
+      "preferredAmigos": [
+        "sol"
+      ],
       "objective": "Share a small hope or goal with a friend.",
-      "guidance": "Keep this light and optional. Avoid probing for private worries or turning the exchange into therapy. Follow the user's subject if they prefer something else.",
-      "vocabulary": ["Tengo ganas de… — I am looking forward to…", "Espero… — I hope…", "algún día — someday"],
-      "sampleChat": ["Amigo: Tengo ganas de ver el cielo sin nubes esta noche.", "Learner: Espero visitar a mis amigos pronto.", "Amigo: Suena bonito tener ese encuentro por delante."],
+      "guidance": "Keep this light and optional. Avoid probing for private worries or turning the exchange into therapy. Follow the user's subject if they prefer something else. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Tengo ganas de… — I am looking forward to…",
+        "Espero… — I hope…",
+        "algún día — someday"
+      ],
+      "sampleChat": [
+        "Amigo: Tengo ganas de ver el cielo sin nubes esta noche.",
+        "Learner: Espero visitar a mis amigos pronto.",
+        "Amigo: Suena bonito tener ese encuentro por delante."
+      ],
       "completionCriteria": "The learner shares a hope, goal or thing they look forward to, and the amigo engages with its meaning."
     },
     {
-      "id": "funny-mistakes", "title": "Laughing about small mistakes", "preferredAmigos": ["tavo"],
+      "id": "funny-mistakes",
+      "title": "Laughing about small mistakes",
+      "preferredAmigos": [
+        "tavo"
+      ],
       "objective": "Tell a short, harmless story about a mistake.",
-      "guidance": "Laugh with the learner, never at their Spanish. Offer your own explicitly fictional harmless mishap. Do not pressure them to disclose embarrassing experiences.",
-      "vocabulary": ["Me equivoqué — I made a mistake", "sin querer — by accident", "No pasa nada — It is okay"],
-      "sampleChat": ["Amigo: Mi truco de magia salió mal: apareció una cuchara, no una flor.", "Learner: Yo puse sal en el café sin querer.", "Amigo: ¡Un café muy original! A cualquiera le pasa."],
+      "guidance": "Laugh with the learner, never at their Spanish. Offer your own explicitly fictional harmless mishap. Do not pressure them to disclose embarrassing experiences. Treat the sample as an illustration, never a script to copy. Stay with the learner's answer; clarify uncertainty instead of switching topics. An invitation or acknowledgement alone is not completion.",
+      "vocabulary": [
+        "Me equivoqué — I made a mistake",
+        "sin querer — by accident",
+        "No pasa nada — It is okay"
+      ],
+      "sampleChat": [
+        "Amigo: Mi truco de magia salió mal: apareció una cuchara, no una flor.",
+        "Learner: Yo puse sal en el café sin querer.",
+        "Amigo: ¡Un café muy original! A cualquiera le pasa."
+      ],
       "completionCriteria": "The learner describes or responds meaningfully to a harmless mishap using a relevant detail."
     }
   ]

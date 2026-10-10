@@ -6,6 +6,32 @@ later. No remote fetch, new repository or extra generation request is required.
 
 ## Authoring cards
 
+The active library contains 100 editorially curated cards. Another 400 are
+preserved in `ContentDrafts/DiscussionTopics.draft.json`, outside the app target's
+resource directory. The runtime reads only `DiscussionTopics.json`; drafts are
+not eligible for selection. Existing IDs remain stable and saved progress is
+not erased. A retired active topic simply ceases to be offered.
+
+The 100 retain the individually authored topics and two rewritten situations:
+finding a library book and describing a bicycle problem. The six-template
+expansion is otherwise held as drafts. Samples were corrected where speaker
+labels were reversed or dialogue described the exercise instead of responding.
+Subscription cards now distinguish billing dates, listening habits and mobile
+plans. The large conjugation survey is narrowed to one useful present-tense
+contrast per conversation.
+
+These cards are not yet release-certified. Native-speaker review and live-model
+evaluation are outstanding; structural validation does not prove teaching quality.
+Before release, exercise each card with a relevant answer, a typo-filled answer,
+an English answer, a clarification, an unrelated learner request and a goodbye.
+Record whether the reply acknowledges the user, remains accurate, avoids repeated
+questions, honours the goodbye and completes only after meaningful engagement.
+Do not promote a draft merely to reach a numerical target.
+
+Only the selected card (or existing-discussion metadata) enters a generation
+request. A replacement card is supplied separately on an eligible recovery turn;
+the full library is never put into the model prompt.
+
 Each card has a stable ID, title, preferred amigos, learning objective, bounded
 background guidance, bilingual vocabulary, illustrative sample chat and completion
 criteria. Add primary-source URLs for historical or cultural claims. Samples are

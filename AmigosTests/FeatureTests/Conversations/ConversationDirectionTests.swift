@@ -27,13 +27,14 @@ struct ConversationDirectionTests {
         #expect(summary.exchangedReplies == 1)
     }
 
-    @Test("A repeated coffee invitation is corrected once before delivery")
+    @Test("A repeated coffee invitation changes topic once before delivery")
     func repeatedCoffeeReply() async throws {
         let coffee = "¿Qué tal si nos tomamos un café y me cuentas un poco de tu día?"
         let repeated = GeneratedAmigoReply(spanish: coffee, english: "Shall we have coffee and talk about your day?", profileFacts: [])
-        let corrected = GeneratedAmigoReply(spanish: "¡Vamos! Yo prefiero el café de olla, con canela.",
-            english: "Let's go! I prefer café de olla, with cinnamon.", profileFacts: [],
-            sessionRecap: "Coffee accepted; café de olla introduced. Do not invite again.")
+        let corrected = GeneratedAmigoReply(spanish: "Me encanta fotografiar flores. ¿Cuál es tu flor favorita?",
+            english: "I love photographing flowers. What is your favourite flower?", profileFacts: [],
+            sessionRecap: "Coffee accepted; changed to flowers and photography.",
+            discussionTopicID: "unused-card", discussionAction: "complete")
         let generator = ScriptedAmigoGenerator([.success(repeated), .success(corrected)])
         let responder = OnDeviceSpanishChat(generator: generator)
         let context = ChatContext(amigo: Amigo.catalogue[0], scenario: nil)
@@ -43,10 +44,55 @@ struct ConversationDirectionTests {
         #expect(result.spanish == corrected.spanish)
         #expect(result.sessionRecap == corrected.sessionRecap)
         #expect(await generator.calls == 2)
+        #expect(result.discussionUpdate == nil)
+        let instructions = await generator.instructions
+        #expect(instructions.first?.contains("REPETITION RECOVERY") == false)
+        #expect(instructions.last?.contains("Never invent a new topic") == true)
+        #expect(instructions.last?.contains("FOLLOW THE LEARNER'S CURRENT INTENT") == true)
         for prompt in await generator.prompts {
             #expect(prompt.contains("Coffee was suggested."))
             #expect(prompt.contains("yes; do not suggest another"))
         }
+    }
+
+    @Test("Repetition recovery keeps role play inside its scenario")
+    func rolePlayRecovery() async throws {
+        let text = "¿Qué bebida quieres pedir en esta cafetería?"
+        let repeated = GeneratedAmigoReply(spanish: text, english: "What drink would you like?", profileFacts: [])
+        let fresh = GeneratedAmigoReply(spanish: "Tenemos dos tamaños. ¿Prefieres una taza pequeña?",
+            english: "We have two sizes. Would you prefer a small cup?", profileFacts: [])
+        let generator = ScriptedAmigoGenerator([.success(repeated), .success(fresh)])
+        let reply = try await OnDeviceSpanishChat(generator: generator).reply(to: "Un café.",
+            context: ChatContext(amigo: Amigo.catalogue[0], scenario: RolePlayScenario.catalogue[0]),
+            history: [ChatMessage(role: .storyteller, text: text)])
+        #expect(reply.spanish == fresh.spanish)
+        let instructions = await generator.instructions
+        #expect(instructions.last?.contains("Stay inside this situation") == true)
+        #expect(instructions.last?.contains("Change to a different topic") == false)
+        #expect(await generator.calls == 2)
+    }
+
+    @Test("Learner requests and statements exclude unrelated cards on both attempts")
+    func intentRouting() async throws {
+        let card = DiscussionTopic(id: "travel", title: "Hostels", preferredAmigos: [], objective: "Travel",
+            guidance: "Discuss backpacking", vocabulary: [], sampleChat: [], completionCriteria: "Discuss travel")
+        let history = [ChatMessage(role: .storyteller, text: "¿Qué te gustaría practicar hoy?")]
+        for message in ["Necesito practicar comp random in cafe en un restaurante", "Help me order coffee", "Estoy muy cansado hoy", "Café", "Sí"] {
+            #expect(!ConversationDirection.allowsNewTopic(message: message, history: history))
+            let repeated = GeneratedAmigoReply(spanish: history[0].text, english: "What would you like to practise?", profileFacts: [])
+            let fresh = GeneratedAmigoReply(spanish: "¿Quieres practicar cómo pedir un café?", english: "Would you like to practise ordering coffee?", profileFacts: [])
+            let generator = ScriptedAmigoGenerator([.success(repeated), .success(fresh)])
+            _ = try await OnDeviceSpanishChat(generator: generator).directedReply(to: message,
+                context: ChatContext(amigo: Amigo.catalogue[3], scenario: nil), history: history, profile: nil,
+                session: ConversationSessionSummary(day: "today"), topic: card, recoveryTopic: card)
+            for prompt in await generator.prompts {
+                #expect(!prompt.contains("Hostels"))
+                #expect(prompt.contains(message))
+            }
+            #expect(await generator.calls == 2)
+        }
+        #expect(ConversationDirection.allowsNewTopic(message: "Otro tema", history: history))
+        #expect(!ConversationDirection.allowsNewTopic(message: "Gracias", history: history))
     }
 
     @Test("Persistent repetition remains a specific bounded failure")

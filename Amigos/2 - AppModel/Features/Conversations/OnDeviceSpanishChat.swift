@@ -15,9 +15,10 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
     init(generator: any AmigoReplyGenerating = OnDeviceAmigoReplyGenerator()) {
         self.generator = generator
     }
-    func directedReply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary, topic: DiscussionTopic?) async throws -> SpanishChatReply {
+    func directedReply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary, topic: DiscussionTopic?, recoveryTopic: DiscussionTopic? = nil) async throws -> SpanishChatReply {
         try await generate(message: message, context: context, history: history, profile: profile,
-                           session: session, topic: context.scenario == nil ? topic : nil)
+                           session: session, topic: context.scenario == nil ? topic : nil,
+                           recoveryTopic: context.scenario == nil ? recoveryTopic : nil)
     }
     func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary) async throws -> SpanishChatReply {
         try await generate(message: message, context: context, history: history, profile: profile, session: session)
@@ -41,19 +42,28 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
         try await generate(message: nil, context: context, history: history)
     }
 
-    private func generate(message: String?, context: ChatContext, history: [ChatMessage], profile: LearnerProfile? = nil, session: ConversationSessionSummary? = nil, topic: DiscussionTopic? = nil) async throws -> SpanishChatReply {
+    private func generate(message: String?, context: ChatContext, history: [ChatMessage], profile: LearnerProfile? = nil, session: ConversationSessionSummary? = nil, topic: DiscussionTopic? = nil, recoveryTopic: DiscussionTopic? = nil) async throws -> SpanishChatReply {
         let requestID = UUID().uuidString
+        let allowsNewTopic = context.scenario == nil && ConversationDirection.allowsNewTopic(message: message, history: history)
+        var recoveryReason: OnDeviceChatError?
         for attempt in 0...1 {
             try Task.checkCancellation()
+            let changingTopic = recoveryReason == .repeatedReply && allowsNewTopic
+            let offeredTopic = allowsNewTopic ? (changingTopic ? recoveryTopic : topic) : (topic?.isCurrentDiscussion == true ? topic : nil)
             let instructions = responseInstructions(for: context) + "\n" + profileInstructions(profile, context: context)
-                + (attempt == 1 ? "\nRecovery: give one short NEW reply that advances the latest topic, not a repeated reply or question from history. Include its translation. Return an empty profileFacts array. Do not mention this recovery." : "")
+                + (changingTopic ? "\n" + ConversationDirection.topicChangeInstructions(isRolePlay: context.scenario != nil)
+                   : (attempt == 1 ? "\nRecovery: give one short NEW reply that advances the latest topic, not a repeated reply or question from history. Include its translation. Return an empty profileFacts array. Do not mention this recovery." : ""))
+                + (!allowsNewTopic && message != nil ? "\n" + ConversationDirection.followLearnerInstructions : "")
             do {
                 let generated = try await generator.generate(instructions: instructions,
-                    prompt: prompt(message: message, context: context, history: history, compact: attempt == 1)
+                    prompt: prompt(message: message, context: context, history: history, compact: attempt == 1 && !changingTopic)
                         + "\n" + ConversationDirection.context(session)
-                        + "\n" + DiscussionFeature.prompt(for: topic))
+                        + "\n" + (offeredTopic?.isCurrentDiscussion == true && !allowsNewTopic
+                            ? "Existing discussion metadata only; do not redirect the learner back to it. ID: \(offeredTopic?.id ?? ""). Completion criteria: \(offeredTopic?.completionCriteria ?? ""). Only report continue or complete if this exchange actually addresses it, with exact evidence; otherwise discussionAction none."
+                            : DiscussionFeature.prompt(for: offeredTopic)))
                 try Task.checkCancellation()
-                let reply = try validate(generated, for: context, latestMessage: message)
+                var reply = try validate(generated, for: context, latestMessage: message)
+                if reply.discussionUpdate?.topicID != offeredTopic?.id { reply.discussionUpdate = nil }
                 if ConversationDirection.repeatsRecentReply(reply.spanish, history: history) {
                     throw OnDeviceChatError.repeatedReply
                 }
@@ -69,6 +79,7 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
                 // Categories only: never log prompts, replies, profile facts or raw model errors.
                 Self.logger.error("request=\(requestID, privacy: .public) attempt=\(attempt + 1) reason=\(failure.rawValue, privacy: .public)")
                 guard attempt == 0, failure.canRecover else { throw failure }
+                recoveryReason = failure
             }
         }
         throw OnDeviceChatError.generationFailed

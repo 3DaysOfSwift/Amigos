@@ -147,16 +147,18 @@ final class ConversationManager: ConversationFeature {
         let discussionProgress = archive.discussionProgress ?? DiscussionProgress()
         let topic = context.scenario == nil ? discussionFeature?.requestTopic(
             for: context.amigo.id, day: sessionDay, progress: discussionProgress) : nil
+        let recoveryTopic = context.scenario == nil ? discussionFeature?.requestTopic(
+            for: context.amigo.id, day: sessionDay, progress: discussionProgress, excluding: topic?.id) : nil
         let reply = try await responder.directedReply(to: message, context: context,
             history: current.messages + [learnerMessage], profile: profileFeature?.profile,
-            session: session, topic: topic)
+            session: session, topic: topic, recoveryTopic: recoveryTopic)
         try Task.checkCancellation()
 
         var updated = archive
         var conversation = updated.conversations[context.id] ?? Conversation()
         if context.scenario == nil, let discussionFeature {
             updated.discussionProgress = discussionFeature.record(reply.discussionUpdate,
-                offered: topic, amigoID: context.amigo.id, day: sessionDay,
+                offered: [topic, recoveryTopic].compactMap { $0 }.first { $0.id == reply.discussionUpdate?.topicID }, amigoID: context.amigo.id, day: sessionDay,
                 learnerMessage: message, reply: reply.spanish, progress: discussionProgress)
         }
         guard !conversation.finished else { throw ConversationError.conversationFinished }

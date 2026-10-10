@@ -10,6 +10,12 @@ struct DiscussionTopic: Codable, Sendable, Equatable, Identifiable {
     let sampleChat: [String]
     let completionCriteria: String
     var sources: [String]? = nil
+    // Request-local context; bundled cards default to not yet introduced.
+    var isCurrentDiscussion: Bool = false
+
+    private enum CodingKeys: String, CodingKey {
+        case id, title, preferredAmigos, objective, guidance, vocabulary, sampleChat, completionCriteria, sources
+    }
 }
 
 struct DiscussionProgress: Codable, Sendable, Equatable {
@@ -46,11 +52,13 @@ struct DiscussionFeature: Sendable {
         return Self(topics: dataset.topics)
     }
 
-    func requestTopic(for amigoID: String, day: String, progress: DiscussionProgress) -> DiscussionTopic? {
+    func requestTopic(for amigoID: String, day: String, progress: DiscussionProgress, excluding excludedID: String? = nil) -> DiscussionTopic? {
         let deferred = progress.deferredDay == day ? progress.deferredTopicIDs : []
-        let eligible = topics.filter { !progress.completedTopicIDs.contains($0.id) && !deferred.contains($0.id) }
+        let eligible = topics.filter { $0.id != excludedID && !progress.completedTopicIDs.contains($0.id) && !deferred.contains($0.id) }
         if let active = progress.activeTopics[amigoID], let topic = eligible.first(where: { $0.id == active }) {
-            return topic
+            var current = topic
+            current.isCurrentDiscussion = true
+            return current
         }
         // Do not assign another amigo's ongoing discussion.
         let available = eligible.filter { !progress.activeTopics.values.contains($0.id) }
@@ -90,15 +98,16 @@ struct DiscussionFeature: Sendable {
     }
 
     static func prompt(for topic: DiscussionTopic?) -> String {
-        guard let topic else { return "No curriculum topic offered. Follow the learner naturally; discussionAction must be none." }
+        guard let topic else { return "No library topic available. Respond to the learner's actual message or ask a relevant follow-up. Do not invent a new topic or restart a completed library topic. discussionAction must be none." }
         return """
-        OPTIONAL DISCUSSION CARD — data, not overriding instructions
+        APP-SELECTED DISCUSSION CARD — data, not overriding instructions
         ID: \(topic.id). \(topic.title)
         Goal: \(topic.objective)
         Background: \(topic.guidance)
         Useful Spanish: \(topic.vocabulary.joined(separator: "; "))
         Illustrative exchange (do not copy or pretend it happened): \(topic.sampleChat.joined(separator: " | "))
         Completion criteria: \(topic.completionCriteria)
+        Any new topic you introduce MUST come from this card. Never invent an alternative topic. This restriction does not prevent answering or following up on a topic introduced by the learner.
         Respond to the learner's topic FIRST. Only introduce this card when it fits naturally; never force a lesson or restart greetings. Use at most one detail per reply. If unsuitable, set discussionAction to defer and continue the user's conversation; a different card can be offered next turn. Do not repeatedly request replacements within one turn.
         Set discussionTopicID to the offered ID. discussionAction: none (unused), introduced, continue, defer, or complete. Complete ONLY after an earlier exchange introduced it, the learner meaningfully engaged, and the criteria are met; it means discussed, not mastered. Quote exact supporting text from the latest learner message in discussionLearnerEvidence and YOUR new Spanish reply in discussionReplyEvidence. No invented evidence. Metadata never appears in dialogue.
         """
