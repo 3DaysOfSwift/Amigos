@@ -15,6 +15,10 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
     init(generator: any AmigoReplyGenerating = OnDeviceAmigoReplyGenerator()) {
         self.generator = generator
     }
+    func directedReply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary, topic: DiscussionTopic?) async throws -> SpanishChatReply {
+        try await generate(message: message, context: context, history: history, profile: profile,
+                           session: session, topic: context.scenario == nil ? topic : nil)
+    }
     func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary) async throws -> SpanishChatReply {
         try await generate(message: message, context: context, history: history, profile: profile, session: session)
     }
@@ -37,7 +41,7 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
         try await generate(message: nil, context: context, history: history)
     }
 
-    private func generate(message: String?, context: ChatContext, history: [ChatMessage], profile: LearnerProfile? = nil, session: ConversationSessionSummary? = nil) async throws -> SpanishChatReply {
+    private func generate(message: String?, context: ChatContext, history: [ChatMessage], profile: LearnerProfile? = nil, session: ConversationSessionSummary? = nil, topic: DiscussionTopic? = nil) async throws -> SpanishChatReply {
         let requestID = UUID().uuidString
         for attempt in 0...1 {
             try Task.checkCancellation()
@@ -46,7 +50,8 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
             do {
                 let generated = try await generator.generate(instructions: instructions,
                     prompt: prompt(message: message, context: context, history: history, compact: attempt == 1)
-                        + "\n" + ConversationDirection.context(session))
+                        + "\n" + ConversationDirection.context(session)
+                        + "\n" + DiscussionFeature.prompt(for: topic))
                 try Task.checkCancellation()
                 let reply = try validate(generated, for: context, latestMessage: message)
                 if ConversationDirection.repeatsRecentReply(reply.spanish, history: history) {
@@ -72,7 +77,7 @@ struct OnDeviceSpanishChat: SpanishChatResponding {
     func prompt(message: String?, context: ChatContext, history: [ChatMessage], compact: Bool) -> String {
         var prior = history
         if let message, prior.last?.role == .learner, prior.last?.text == message { prior.removeLast() }
-        var remaining = compact ? 700 : 2000
+        var remaining = compact ? 400 : 1200
         var recent: [String] = []
         for item in prior.suffix(8).reversed() {
             let line = "\(item.role == .learner ? "Learner" : context.amigo.name): «\(item.text)»"
@@ -139,6 +144,11 @@ extension OnDeviceSpanishChat {
         // Invalid optional notes must not discard an otherwise valid reply.
         if !recap.isEmpty && recap.count <= 700 { reply.sessionRecap = recap }
         reply.suggestedActivity = content.suggestedActivity
+        if !content.discussionTopicID.isEmpty {
+            reply.discussionUpdate = DiscussionUpdate(topicID: content.discussionTopicID,
+                action: content.discussionAction, learnerEvidence: content.discussionLearnerEvidence,
+                replyEvidence: content.discussionReplyEvidence)
+        }
         guard !containsTranscript(reply, for: context) else { throw OnDeviceChatError.transcriptResponse }
         if context.scenario == nil, let latestMessage {
             for fact in content.profileFacts {

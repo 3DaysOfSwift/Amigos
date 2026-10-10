@@ -23,6 +23,7 @@ struct SpanishChatReply: Sendable, Equatable {
     var discardedProfileFactCount: Int = 0
     var sessionRecap: String? = nil
     var suggestedActivity = false
+    var discussionUpdate: DiscussionUpdate? = nil
 }
 
 struct Conversation: Codable, Sendable, Equatable {
@@ -141,6 +142,7 @@ struct ChatContext: Hashable, Sendable {
 }
 
 struct PracticeArchive: Codable, Sendable {
+    var discussionProgress: DiscussionProgress? = nil
     var introducedAmigoIDs: [String]? = nil
     var hasExplainedDoubloons: Bool? = nil
     var hasAnsweredNotificationInvitation: Bool? = nil

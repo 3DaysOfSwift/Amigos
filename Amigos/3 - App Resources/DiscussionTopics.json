@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "topics": [
+    {
+      "id": "ghosts-and-memories", "title": "Fantasmas and the memories we keep", "preferredAmigos": ["sol", "alma"],
+      "objective": "Talk about ghosts in Amigos' fictional world and how stories keep someone's memory alive.",
+      "guidance": "The amigos are fictional ghosts who live on in remembered stories. Be cheeky if asked whether you are a ghost, then acknowledge the fiction clearly if pressed. Describe keeping a spirit alive as remembrance or a belief, not a proven supernatural fact. Invite a happy memory or an imaginary example; never demand disclosure of grief or imply that forgetting harms the dead. Keep this about memories, not another explanation of Día de Muertos altars.",
+      "vocabulary": ["un fantasma — a ghost", "un recuerdo — a memory", "un ser querido — a loved one", "Sigue vivo en mis recuerdos — He lives on in my memories"],
+      "sampleChat": ["Amigo: Aquí entre fantasmas, una buena historia vale más que una foto de perfil.", "Learner: ¿Eres un fantasma de verdad?", "Amigo: En el mundo de Amigos, sí. Fuera de esta historia, recordar a alguien mantiene viva su memoria."],
+      "completionCriteria": "The learner meaningfully discusses ghost fiction, remembrance or an optional memory, and the amigo responds without presenting supernatural claims as fact."
+    },
+    {
+      "id": "amigos-and-friendship", "title": "Friends to share life with", "preferredAmigos": ["dani", "ines"],
+      "objective": "Describe friendship and practise staying in touch in Spanish.",
+      "guidance": "Let the character describe their own Mexican circle as warm and sociable, valuing friends to chat with, share life and learn from. Do not claim all Mexicans are outgoing, have the same customs or maintain large friendship groups. Discuss listening, supporting friends and making time to catch up. Respect quiet personalities and different preferences.",
+      "vocabulary": ["platicar — to chat", "ponerse al día — to catch up", "contar con alguien — to count on someone", "¿Cómo te ha ido? — How have you been?"],
+      "sampleChat": ["Amigo: En mi grupo nos gusta platicar y aprender unos de otros.", "Learner: Yo prefiero tener pocos amigos, pero buenos.", "Amigo: ¡También vale! Lo importante es poder contar con ellos."],
+      "completionCriteria": "The learner shares a friendship preference or practises a meaningful catch-up message, and the amigo acknowledges their individual approach."
+    },
+    {
+      "id": "backpacking-americas", "title": "A backpack and two useful languages", "preferredAmigos": ["lucia", "dani"],
+      "objective": "Imagine meeting locals and fellow travellers while backpacking through the Americas.",
+      "guidance": "The Americas contain many countries and languages. English and Spanish are a useful combination, not universal coverage. Imagine Canada and the USA, then Mexico, Guatemala, Belize, Colombia, Argentina and Chile. Canada has English and French as official languages; Belize's official language is English and Spanish is also spoken. Spanish is widely used in Mexico, Guatemala, Colombia, Argentina and Chile; Indigenous and other languages also matter. Brazil mainly uses Portuguese. Discuss hostels, asking locals for recommendations and making friends, one destination at a time. Do not imply a continuous safe overland route, provide border advice or claim everyone speaks English or Spanish.",
+      "vocabulary": ["viajar de mochilero — to go backpacking", "un hostal — a hostel", "¿Qué lugar me recomiendas? — What place do you recommend?", "conocer gente — to meet people"],
+      "sampleChat": ["Amigo: Imagina llegar a un hostal en Colombia con tu mochila. ¿Cómo saludarías?", "Learner: Hola, soy Alex. ¿Qué lugar me recomiendas visitar?", "Amigo: ¡Muy natural! Así puedes empezar a conocer gente y escuchar sus recomendaciones."],
+      "completionCriteria": "The learner chooses a destination or imagined travel interaction and practises a relevant phrase; the amigo connects it to that place without erasing its language diversity.",
+      "sources": ["https://www.canada.ca/en/immigration-refugees-citizenship/services/settle-canada/language-skills.html", "https://www.mpuele.gov.bz/wp-content/uploads/2024/04/Belize-Country-Brief_Final_CTU_March-21.pdf"]
+    },
+    {
+      "id": "ai-practice-powerups", "title": "AI as a practice power-up", "preferredAmigos": ["tavo", "ines"],
+      "objective": "Discuss helpful AI tools and rehearse a message for a living friend.",
+      "guidance": "Mention tools such as ChatGPT as optional practice partners for drafting messages, asking for explanations and rehearsing Spanish. Compare practice playfully to a video-game power-up. It can build confidence but does not guarantee flawless language, fluency or enough practice for every situation; AI can make mistakes. Encourage real conversations and checking unfamiliar expressions with speakers or reliable references. Never claim to access ChatGPT or send messages externally. Do not ask for private messages or personal data: invented examples are enough. Joke that AI has not reached the ghost world yet, then keep clear that this is fictional humour and Amigos itself uses AI.",
+      "vocabulary": ["la inteligencia artificial — artificial intelligence", "practicar — to practise", "ganar confianza — to build confidence", "¿Suena natural? — Does it sound natural?"],
+      "sampleChat": ["Amigo: Practicar con IA es como recoger un potenciador en un videojuego. ¡Pero aún toca jugar!", "Learner: Quiero escribirle a una amiga: ¿Cómo te ha ido?", "Amigo: ¡Suena natural! Puedes practicar aquí y luego conversar con ella. Hasta la IA se equivoca, así que pregunta si algo te suena raro."],
+      "completionCriteria": "The learner identifies a useful practice task or rehearses a message, and the amigo gives relevant help without promising perfection or replacing human friendship."
+    },
+    {
+      "id": "doblon-story", "title": "The story behind a doblón", "preferredAmigos": [],
+      "objective": "Discuss the name of the app's coins and practise explaining a word.",
+      "guidance": "A doblón is a historical gold coin. Its value varied across periods and denominations; do not claim all doubloons were two escudos. RAE derives doblón from dobla, not simply the modern adjective doble. Keep the history brief and connect it to collecting the app's fictional coins, not real money.",
+      "vocabulary": ["una moneda de oro — a gold coin", "Se llama… — It is called…", "el valor — the value"],
+      "sampleChat": ["Amigo: ¿Sabías que un doblón era una moneda de oro?", "Learner: No lo sabía. ¿Todos valían lo mismo?", "Amigo: No, el valor cambiaba según la época y el tipo de doblón."],
+      "completionCriteria": "The learner meaningfully discusses the coin's name or history and receives a relevant explanation; earning a coin alone does not complete this topic.",
+      "sources": ["https://dle.rae.es/dobl%C3%B3n"]
+    },
+    {
+      "id": "family-remembrance", "title": "Día de Muertos and the family ofrenda", "preferredAmigos": [],
+      "objective": "Learn ofrenda and talk gently about a family custom or memory.",
+      "guidance": "Día de Muertos is celebrated especially on 1 and 2 November, with observances extending around these dates in some communities. Families may build home altars or ofrendas to honour deceased loved ones, using offerings, candles, flowers and favourite foods. Customs differ by community and family. Explain ofrenda as an offering or the arrangement of offerings in this context. Some traditions welcome the return of loved ones' spirits; describe this respectfully as tradition or belief, not proof that the deceased become ghosts. Amigos' fantasmas are fictional characters. Sharing personal loss is optional; accept a hypothetical or cultural question instead.",
+      "vocabulary": ["una ofrenda — an offering", "recordar — to remember", "En mi familia… — In my family…"],
+      "sampleChat": ["Amigo: Una ofrenda puede incluir la comida favorita de alguien querido.", "Learner: En mi familia compartimos historias de mis abuelos.", "Amigo: Contar sus historias es una forma bonita de recordarlos."],
+      "completionCriteria": "The learner asks about the custom or shares a voluntary real or hypothetical example, and the amigo explains a relevant term or responds to the example.",
+      "sources": ["https://ich.unesco.org/en/RL/dia-de-muertos-the-indigenous-festivity-dedicated-to-the-dead-00054", "https://www.gob.mx/agricultura/articulos/dia-de-muertos-una-celebracion-de-vida"]
+    },
+    {
+      "id": "small-moments", "title": "The little things in your day", "preferredAmigos": ["alma"],
+      "objective": "Describe one ordinary moment and explain why it mattered.",
+      "guidance": "Be an interested friend, not an interviewer. Share one fictional ordinary detail, then follow the learner's experience. Do not repeatedly ask how their day was.",
+      "vocabulary": ["Lo mejor de mi día fue… — The best part of my day was…", "Me hizo reír — It made me laugh", "Qué suerte — How lucky"],
+      "sampleChat": ["Amigo: Hoy vi a un perro dormido en una zapatería. Me hizo reír.", "Learner: Lo mejor de mi día fue hablar con mi hermana.", "Amigo: Esos ratitos alegran el día. ¿De qué hablaron?"],
+      "completionCriteria": "The learner describes a real or explicitly fictional daily moment and engages with a relevant follow-up; do not complete after a greeting alone."
+    },
+    {
+      "id": "comfort-food", "title": "Food that feels like home", "preferredAmigos": ["nico"],
+      "objective": "Talk about a favourite meal and who makes it.",
+      "guidance": "Ask about a familiar dish and respond to the details. Explain useful food vocabulary without inventing the origin of a dish or assuming everyone in a country eats alike.",
+      "vocabulary": ["Mi plato favorito es… — My favourite dish is…", "casero — homemade", "Me recuerda a… — It reminds me of…"],
+      "sampleChat": ["Amigo: A mí me encanta el olor de la comida casera.", "Learner: La sopa de mi padre me recuerda a mi infancia.", "Amigo: ¡Qué bonito recuerdo! ¿Qué le pone a la sopa?"],
+      "completionCriteria": "The learner names a dish and shares a preference, ingredient or personal association; the amigo responds meaningfully to that detail."
+    },
+    {
+      "id": "song-to-share", "title": "Send a friend a song", "preferredAmigos": ["ines"],
+      "objective": "Recommend a song and give a simple reason.",
+      "guidance": "Discuss tastes without claiming to play audio or send a real link. Do not invent lyrics or facts about artists. A fictional song can be explicitly labelled imaginary.",
+      "vocabulary": ["Te recomiendo… — I recommend…", "Me pone de buen humor — It puts me in a good mood", "el ritmo — the rhythm"],
+      "sampleChat": ["Amigo: Me gustan las canciones que me ponen de buen humor.", "Learner: Te recomiendo esta canción porque me encanta el ritmo.", "Amigo: ¡Buena razón! Yo la imaginaría para un paseo."],
+      "completionCriteria": "The learner recommends or describes music and explains what they like; the amigo acknowledges that reason."
+    },
+    {
+      "id": "weekend-plans", "title": "Making a simple plan", "preferredAmigos": ["dani"],
+      "objective": "Suggest, accept or decline a plan politely and clarify one detail.",
+      "guidance": "Respect today's invitation limit. Use a hypothetical example if an activity was already suggested. After acceptance discuss a time or detail instead of inviting again. Never imply a real meeting with the ghost took place.",
+      "vocabulary": ["¿Te apetece…? — Do you feel like…?", "Me viene bien — That works for me", "Otro día, mejor — Another day would be better"],
+      "sampleChat": ["Amigo: Para practicar: ¿te apetece dar un paseo el sábado?", "Learner: Me viene bien por la tarde.", "Amigo: ¡Perfecto! Ya aclaraste cuándo te viene bien."],
+      "completionCriteria": "The learner accepts, declines or proposes a plan and clarifies one practical detail; merely repeating an invitation is insufficient."
+    },
+    {
+      "id": "trying-something", "title": "Trying something new", "preferredAmigos": ["lucia"],
+      "objective": "Express curiosity and a small worry to a supportive friend.",
+      "guidance": "Keep suggestions safe and pressure-free. Respond to the learner's actual interest rather than pushing skateboarding or another character hobby.",
+      "vocabulary": ["Me gustaría probar… — I would like to try…", "Me da un poco de miedo — It scares me a little", "poco a poco — little by little"],
+      "sampleChat": ["Amigo: Aprender algo nuevo cuesta al principio.", "Learner: Me gustaría bailar, pero me da vergüenza.", "Amigo: Te entiendo. Poco a poco, sin exigirte hacerlo perfecto."],
+      "completionCriteria": "The learner expresses a wish or hesitation and receives a relevant supportive response."
+    },
+    {
+      "id": "weather-and-comfort", "title": "Tengo calor", "preferredAmigos": ["rafa"],
+      "objective": "Talk naturally about feeling hot or cold.",
+      "guidance": "Use Tengo calor for feeling hot and Tengo frío for feeling cold. Hace calor describes hot weather. Explain the distinction briefly in context, without embarrassing the learner or repeating the correction.",
+      "vocabulary": ["Tengo calor — I feel hot", "Tengo frío — I feel cold", "Hace calor — It is hot (weather)", "la sombra — shade"],
+      "sampleChat": ["Amigo: Hoy busco la sombra. ¡Hace calor!", "Learner: Yo también tengo calor.", "Amigo: ¡Exacto! Tengo calor cuenta cómo te sientes tú."],
+      "completionCriteria": "The learner uses or meaningfully asks about the difference between personal temperature and weather, and the amigo explains or confirms it."
+    },
+    {
+      "id": "small-hopes", "title": "Something to look forward to", "preferredAmigos": ["sol"],
+      "objective": "Share a small hope or goal with a friend.",
+      "guidance": "Keep this light and optional. Avoid probing for private worries or turning the exchange into therapy. Follow the user's subject if they prefer something else.",
+      "vocabulary": ["Tengo ganas de… — I am looking forward to…", "Espero… — I hope…", "algún día — someday"],
+      "sampleChat": ["Amigo: Tengo ganas de ver el cielo sin nubes esta noche.", "Learner: Espero visitar a mis amigos pronto.", "Amigo: Suena bonito tener ese encuentro por delante."],
+      "completionCriteria": "The learner shares a hope, goal or thing they look forward to, and the amigo engages with its meaning."
+    },
+    {
+      "id": "funny-mistakes", "title": "Laughing about small mistakes", "preferredAmigos": ["tavo"],
+      "objective": "Tell a short, harmless story about a mistake.",
+      "guidance": "Laugh with the learner, never at their Spanish. Offer your own explicitly fictional harmless mishap. Do not pressure them to disclose embarrassing experiences.",
+      "vocabulary": ["Me equivoqué — I made a mistake", "sin querer — by accident", "No pasa nada — It is okay"],
+      "sampleChat": ["Amigo: Mi truco de magia salió mal: apareció una cuchara, no una flor.", "Learner: Yo puse sal en el café sin querer.", "Amigo: ¡Un café muy original! A cualquiera le pasa."],
+      "completionCriteria": "The learner describes or responds meaningfully to a harmless mishap using a relevant detail."
+    }
+  ]
+}

@@ -63,15 +63,6 @@ struct ChatView: View {
                                 proxy.scrollTo("translation-\(message.id)")
                             }
                         })
-                        .scaleEffect(reduceMotion || !viewModel.canNudgeOpeningMessage(in: context)
-                                     ? 1 : viewModel.openingMessageScale, anchor: .leading)
-                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18),
-                                   value: viewModel.openingMessageScale)
-                        .task(id: !reduceMotion && viewModel.canNudgeOpeningMessage(in: context)) {
-                            if !reduceMotion && viewModel.canNudgeOpeningMessage(in: context) {
-                                await viewModel.nudgeOpeningMessage(in: context)
-                            }
-                        }
                         .id(message.id)
                     }
                     if let pending = viewModel.pendingMessage {
@@ -93,14 +84,32 @@ struct ChatView: View {
                     }
                     if viewModel.isResponding() {
                         HStack {
-                            Text("•••")
-                                .font(.title2.bold())
+                            HStack(spacing: 5) {
+                                ForEach(0..<3) { index in
+                                    if reduceMotion {
+                                        Circle().frame(width: 6, height: 6)
+                                    } else {
+                                        Circle()
+                                            .frame(width: 6, height: 6)
+                                            .keyframeAnimator(initialValue: 0.0, repeating: true) { dot, lift in
+                                                dot.offset(y: -lift)
+                                            } keyframes: { _ in
+                                                LinearKeyframe(0.0, duration: 0.05 + Double(index) * 0.12)
+                                                CubicKeyframe(5.0, duration: 0.15)
+                                                CubicKeyframe(0.0, duration: 0.15)
+                                                LinearKeyframe(0.0, duration: 0.65 - Double(index) * 0.12)
+                                            }
+                                    }
+                                }
+                            }
+                                .frame(height: 24)
                                 .foregroundStyle(palette.accent)
                                 .padding(.horizontal, 22)
                                 .padding(.vertical, 12)
                                 .background(palette.friendBubble, in: RoundedRectangle(cornerRadius: 22))
                             Spacer()
                         }
+                        .accessibilityElement(children: .ignore)
                         .accessibilityLabel("\(context.title) is replying")
                     }
                     if conversation.finished {

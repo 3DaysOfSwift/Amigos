@@ -15,6 +15,7 @@ final class ConversationManager: ConversationFeature {
     private var archive = PracticeArchive()
     private var isMutating = false
     private var authorizedRolePlayID: String?
+    private var discussionFeature: DiscussionFeature?
 
     private(set) var isLoaded = false
     private(set) var isResponding = false
@@ -27,13 +28,15 @@ final class ConversationManager: ConversationFeature {
         responder: any SpanishChatResponding,
         currentDate: @escaping @MainActor () -> Date = { .now },
         profileFeature: (any ProfileFeature)? = nil,
-        notifications: (any AmigoMessageNotifying)? = nil
+        notifications: (any AmigoMessageNotifying)? = nil,
+        discussionFeature: DiscussionFeature? = nil
     ) {
         self.repository = repository
         self.responder = responder
         self.currentDate = currentDate
         self.profileFeature = profileFeature
         self.notifications = notifications
+        self.discussionFeature = discussionFeature
     }
 
     var doubloons: Int { archive.doubloons }
@@ -50,6 +53,7 @@ final class ConversationManager: ConversationFeature {
     func loadSavedPractice() async {
         guard !isLoaded else { return }
         do {
+            if discussionFeature == nil { discussionFeature = try DiscussionFeature.bundled() }
             var savedPractice = try await repository.load() ?? PracticeArchive()
             if savedPractice.firstOpenedAt == nil {
                 savedPractice.firstOpenedAt = currentDate()
@@ -140,11 +144,21 @@ final class ConversationManager: ConversationFeature {
         let learnerMessage = ChatMessage(role: .learner, text: message)
         let sessionDay = streakDayKey(for: currentDate(), archive: archive)
         var session = current.sessionSummary?.forDay(sessionDay) ?? ConversationSessionSummary(day: sessionDay)
-        let reply = try await responder.reply(to: message, context: context, history: current.messages + [learnerMessage], profile: profileFeature?.profile, session: session)
+        let discussionProgress = archive.discussionProgress ?? DiscussionProgress()
+        let topic = context.scenario == nil ? discussionFeature?.requestTopic(
+            for: context.amigo.id, day: sessionDay, progress: discussionProgress) : nil
+        let reply = try await responder.directedReply(to: message, context: context,
+            history: current.messages + [learnerMessage], profile: profileFeature?.profile,
+            session: session, topic: topic)
         try Task.checkCancellation()
 
         var updated = archive
         var conversation = updated.conversations[context.id] ?? Conversation()
+        if context.scenario == nil, let discussionFeature {
+            updated.discussionProgress = discussionFeature.record(reply.discussionUpdate,
+                offered: topic, amigoID: context.amigo.id, day: sessionDay,
+                learnerMessage: message, reply: reply.spanish, progress: discussionProgress)
+        }
         guard !conversation.finished else { throw ConversationError.conversationFinished }
         if context.scenario != nil && !conversation.canContinue(until: currentDate()) {
             guard updated.doubloons >= context.cost else { throw ConversationError.insufficientDoubloons }

@@ -14,6 +14,14 @@ struct GeneratedAmigoReply: Sendable {
     var sessionRecap: String = ""
     @Guide(description: "True only if this new reply suggests doing an activity together.")
     var suggestedActivity: Bool = false
+    @Guide(description: "Offered discussion card ID, or empty if none.")
+    var discussionTopicID: String = ""
+    @Guide(description: "One of: none, introduced, continue, defer, complete. Completion requires earlier introduction and meaningful learner engagement.")
+    var discussionAction: String = "none"
+    @Guide(description: "Exact supporting quote from latest learner message, or empty.")
+    var discussionLearnerEvidence: String = ""
+    @Guide(description: "Exact supporting quote from this new Spanish reply, or empty.")
+    var discussionReplyEvidence: String = ""
 }
 
 @Generable
