@@ -21,9 +21,12 @@ struct SpanishChatReply: Sendable, Equatable {
     let english: String
     var profileFacts: [ProfileFact] = []
     var discardedProfileFactCount: Int = 0
+    var sessionRecap: String? = nil
+    var suggestedActivity = false
 }
 
 struct Conversation: Codable, Sendable, Equatable {
+    var sessionSummary: ConversationSessionSummary? = nil
     var lastGreetingDay: String? = nil
     var messages: [ChatMessage] = []
     var paidAt: Date? = nil

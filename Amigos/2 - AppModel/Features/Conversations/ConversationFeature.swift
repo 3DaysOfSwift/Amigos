@@ -42,6 +42,8 @@ protocol ConversationFeature: AnyObject {
 }
 
 protocol SpanishChatResponding: Sendable {
+    func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary) async throws -> SpanishChatReply
+    func greeting(context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary) async throws -> SpanishChatReply
     func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?) async throws -> SpanishChatReply
     func greeting(context: ChatContext, history: [ChatMessage], profile: LearnerProfile?) async throws -> SpanishChatReply
     func greeting(context: ChatContext, history: [ChatMessage]) async throws -> SpanishChatReply
@@ -49,6 +51,13 @@ protocol SpanishChatResponding: Sendable {
 }
 
 extension SpanishChatResponding {
+    func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary) async throws -> SpanishChatReply {
+        try await reply(to: message, context: context, history: history, profile: profile)
+    }
+
+    func greeting(context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary) async throws -> SpanishChatReply {
+        try await greeting(context: context, history: history, profile: profile)
+    }
     func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?) async throws -> SpanishChatReply {
         try await reply(to: message, context: context, history: history)
     }

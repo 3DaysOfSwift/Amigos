@@ -183,6 +183,27 @@ and the final visual experience at extreme text sizes.
 
 ### Chat response reliability
 
+### Conversation direction and session notes
+
+`ConversationDirection` supplies shared friendship, Spanish-practice, ghost-fiction,
+cultural teaching and forward-progress rules alongside each amigo's personality.
+Replies include compact English continuity notes (maximum 700 characters) in the
+same generation request, not a second AI call. Notes cover topics, answered/open
+questions and plans without treating a proposed activity as a completed event.
+
+The Conversations feature saves notes atomically with the successful exchange.
+Each chat and Role Play has separate notes. The streak-calendar day scopes the
+reply count and activity-suggestion flag; notes survive a new day. The invitation
+flag is monotonic within a day, but its detection is model-reported, not a guarantee.
+Notes are fallible local conversation data, never trusted instructions or verified
+profile facts. Invalid or oversized notes leave the previous notes intact.
+
+A conservative check catches long replies repeated verbatim apart from case,
+accents, whitespace and punctuation against the last six amigo replies. It permits
+one corrective retry within the existing two-attempt limit and reports a specific
+repetition error if recovery fails. Semantic paraphrases and natural topic movement
+still require live-model evaluation; the framework does not guarantee loop-free AI.
+
 Apple guided generation supplies typed Spanish, English and optional profile
 facts in one response; the app no longer parses hand-written XML tags or JSON.
 English and mixed-language learner messages are accepted, while the amigo

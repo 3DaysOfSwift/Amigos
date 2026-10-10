@@ -17,7 +17,6 @@ struct RolePlayView: View {
                 .font(.subheadline)
                 .padding(.vertical, 14)
                 .padding(.horizontal, 18)
-                .background(palette.surface, in: RoundedRectangle(cornerRadius: 20))
 
                 LazyVStack(spacing: 12) {
                     ForEach(viewModel.options) { option in

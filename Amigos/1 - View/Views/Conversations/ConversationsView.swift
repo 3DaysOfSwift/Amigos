@@ -9,20 +9,17 @@ struct ConversationsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                Group {
-                    if viewModel.isLoaded {
-                        chatsHeader
-                    } else if let error = viewModel.loadError {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(error)
-                            Button("Try again", action: viewModel.retryLoading)
-                                .disabled(viewModel.isRetrying)
-                        }
-                    } else {
-                        ProgressView("Loading chats…")
+                chatsHeader
+                    .padding(.horizontal, 18)
+
+                if let error = viewModel.loadError {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(error)
+                        Button("Try again", action: viewModel.retryLoading)
+                            .disabled(viewModel.isRetrying)
                     }
+                    .padding(.horizontal, 18)
                 }
-                .padding(.horizontal, 18)
 
                 if let error = viewModel.introductionError {
                     VStack(alignment: .leading, spacing: 8) {

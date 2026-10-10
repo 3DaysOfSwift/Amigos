@@ -9,7 +9,6 @@ struct RolePlayAdmissionView: View {
     @ScaledMetric(relativeTo: .headline) private var handleSize: CGFloat = 58
 
     let cost: Int
-    let balance: Int
     let canConfirm: Bool
     let phase: ChatViewModel.AdmissionPhase
     let coinAnimation: Namespace.ID
@@ -17,20 +16,16 @@ struct RolePlayAdmissionView: View {
 
     var body: some View {
         let palette = themeManager.currentTheme.palette
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 10) {
-                DoubloonIcon(size: 34)
-                VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 20) {
+            HStack(spacing: 14) {
+                DoubloonIcon(size: 46)
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Cost: \(cost) doubloons")
-                        .font(.headline)
-                    Text("Charged after your first successful reply")
-                        .font(.caption)
+                        .font(.title3.weight(.bold))
+                    Text("Put your Spanish into practice")
+                        .font(.subheadline)
                         .foregroundStyle(palette.mutedText)
                 }
-                Spacer()
-                Text("\(balance) owned")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(palette.mutedText)
             }
             .opacity(phase == .accepted || phase == .ready ? 1 : 0)
             GeometryReader { geometry in
@@ -67,6 +62,15 @@ struct RolePlayAdmissionView: View {
                 .opacity(phase == .accepted || phase == .ready ? 1 : 0)
             }
             .frame(height: handleSize + 12)
+
+            Text("Your doubloons are charged only after your first successful reply. Slide to begin a real-life conversation with your amigo.")
+                .font(.footnote)
+                .foregroundStyle(palette.mutedText)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 8)
+                .opacity(phase == .accepted || phase == .ready ? 1 : 0)
         }
         .opacity(canConfirm || phase != .ready ? 1 : 0.5)
         .allowsHitTesting(canConfirm && phase == .ready)

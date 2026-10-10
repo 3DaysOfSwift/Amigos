@@ -9,6 +9,27 @@ struct OnDeviceSpanishChatTests {
         GeneratedAmigoReply(spanish: "¡Claro! ¿Qué has aprendido?", english: "Of course! What have you learned?", profileFacts: [])
     }
 
+    @Test("Every chat and greeting request declares English and Spanish", arguments: [false, true])
+    func languageContract(rolePlay: Bool) async throws {
+        let chat = ChatContext(amigo: context.amigo,
+                               scenario: rolePlay ? RolePlayScenario.catalogue[0] : nil)
+        let generator = ScriptedAmigoGenerator([
+            .failure(.structuredOutput), .success(valid), .success(valid)
+        ])
+        let responder = OnDeviceSpanishChat(generator: generator)
+        _ = try await responder.reply(to: "Escucha bien.", context: chat, history: [])
+        _ = try await responder.greeting(context: chat, history: [])
+        let prompts = await generator.prompts
+        #expect(prompts.count == 3)
+        for prompt in prompts {
+            #expect(prompt.contains("Expected conversation languages: English (en) and Spanish (es)."))
+            #expect(prompt.contains("Spanish (es-MX) in the spanish field"))
+            #expect(prompt.contains("English (en) in the english field"))
+        }
+        #expect(responder.responseInstructions(for: chat).contains(
+            "Expected conversation languages: English (en) and Spanish (es)."))
+    }
+
     @Test("Invalid optional facts cannot discard a valid bilingual reply")
     func independentProfileValidation() throws {
         var generated = valid

@@ -77,7 +77,8 @@ final class ConversationManager: ConversationFeature {
         isMutating = true
         isResponding = true
         defer { isMutating = false; isResponding = false }
-        let reply = try await responder.greeting(context: context, history: existing.messages, profile: profileFeature?.profile)
+        var session = existing.sessionSummary?.forDay(today) ?? ConversationSessionSummary(day: today)
+        let reply = try await responder.greeting(context: context, history: existing.messages, profile: profileFeature?.profile, session: session)
         try Task.checkCancellation()
         var updated = archive
         var conversation = existing
@@ -85,6 +86,8 @@ final class ConversationManager: ConversationFeature {
         greeting.startsNewConversation = !existing.messages.isEmpty
         conversation.messages.append(greeting)
         conversation.lastGreetingDay = today
+        session.record(reply)
+        conversation.sessionSummary = session
         updated.conversations[context.id] = conversation
         try await repository.save(updated)
         archive = updated
@@ -135,7 +138,9 @@ final class ConversationManager: ConversationFeature {
         defer { isMutating = false; isResponding = false }
 
         let learnerMessage = ChatMessage(role: .learner, text: message)
-        let reply = try await responder.reply(to: message, context: context, history: current.messages + [learnerMessage], profile: profileFeature?.profile)
+        let sessionDay = streakDayKey(for: currentDate(), archive: archive)
+        var session = current.sessionSummary?.forDay(sessionDay) ?? ConversationSessionSummary(day: sessionDay)
+        let reply = try await responder.reply(to: message, context: context, history: current.messages + [learnerMessage], profile: profileFeature?.profile, session: session)
         try Task.checkCancellation()
 
         var updated = archive
@@ -149,6 +154,8 @@ final class ConversationManager: ConversationFeature {
         }
         conversation.messages.append(learnerMessage)
         conversation.messages.append(ChatMessage(role: .storyteller, text: reply.spanish, englishText: reply.english))
+        session.record(reply)
+        conversation.sessionSummary = session
         updated.conversations[context.id] = conversation
         let words = message.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
         updated.typedWordCount = (updated.typedWordCount ?? 0) + words.count

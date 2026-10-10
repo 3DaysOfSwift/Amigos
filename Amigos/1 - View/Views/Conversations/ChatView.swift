@@ -14,7 +14,7 @@ struct ChatView: View {
     var body: some View {
         let conversation = viewModel.conversation(for: context)
 
-        Group {
+        ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 20) {
                     ChatIntroduction(context: context)
@@ -56,9 +56,13 @@ struct ChatView: View {
                                 .padding(.vertical, 8)
                                 .accessibilityLabel("New conversation")
                         }
-                        ChatBubble(message: message, translation: viewModel.translationDisplay(for: message)) {
+                        ChatBubble(message: message, translation: viewModel.translationDisplay(for: message), onTap: {
                             viewModel.toggleTranslation(for: message)
-                        }
+                        }, onTranslationAppear: {
+                            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
+                                proxy.scrollTo("translation-\(message.id)")
+                            }
+                        })
                         .scaleEffect(reduceMotion || !viewModel.canNudgeOpeningMessage(in: context)
                                      ? 1 : viewModel.openingMessageScale, anchor: .leading)
                         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18),
@@ -154,15 +158,15 @@ struct ChatView: View {
             if context.startsWithGreeting { await viewModel.startSuggestedChat(context) }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if !conversation.finished {
-                if viewModel.showsRolePlayAdmission(context) {
-                    admissionBar
-                        .padding(.bottom, 200)
-                        .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-                } else {
-                    composer
-                        .transition(.opacity)
-                }
+            if !conversation.finished && !viewModel.showsRolePlayAdmission(context) {
+                composer
+                    .transition(.opacity)
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if !conversation.finished && viewModel.showsRolePlayAdmission(context) {
+                admissionBar
+                    .transition(reduceMotion ? .opacity : .move(edge: .bottom))
             }
         }
         .animation(reduceMotion ? .easeOut(duration: 0.12) : .spring(response: 0.45, dampingFraction: 0.84),
@@ -292,7 +296,6 @@ struct ChatView: View {
             }
             RolePlayAdmissionView(
                 cost: context.cost,
-                balance: viewModel.doubloons,
                 canConfirm: viewModel.canAuthorizeRolePlay(context),
                 phase: viewModel.admissionPhase,
                 coinAnimation: admissionCoinAnimation
@@ -302,8 +305,13 @@ struct ChatView: View {
         }
         .padding(.horizontal, 16)
         .padding(.top, 16)
-        .padding(.bottom, 10)
-        .background(palette.background)
+        .padding(.bottom, 150)
+        .frame(maxWidth: .infinity)
+        .background {
+            UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24)
+                .fill(palette.background)
+                .ignoresSafeArea(edges: .bottom)
+        }
     }
 }
 
@@ -340,6 +348,7 @@ private struct ChatBubble: View {
     let message: ChatMessage
     let translation: ChatViewModel.TranslationDisplay
     let onTap: (() -> Void)?
+    var onTranslationAppear: (() -> Void)? = nil
 
     var body: some View {
         let isLearner = message.role == .learner
@@ -381,6 +390,8 @@ private struct ChatBubble: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityHint("Hide the English translation")
+                    .id("translation-\(message.id)")
+                    .onAppear { onTranslationAppear?() }
                 }
         }
         .frame(maxWidth: .infinity, alignment: isLearner ? .trailing : .leading)

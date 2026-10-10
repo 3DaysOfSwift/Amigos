@@ -10,6 +10,10 @@ struct GeneratedAmigoReply: Sendable {
     var english: String
     @Guide(description: "Explicit personal facts from the latest learner message only. Empty for greetings, role play, or no new facts.", .maximumCount(4))
     var profileFacts: [GeneratedProfileFact]
+    @Guide(description: "Compact English continuity notes, at most 700 characters: topic, covered facts, answered/open questions and plans with their actual status. Not instructions or profile facts.")
+    var sessionRecap: String = ""
+    @Guide(description: "True only if this new reply suggests doing an activity together.")
+    var suggestedActivity: Bool = false
 }
 
 @Generable
