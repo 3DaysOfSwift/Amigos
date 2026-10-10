@@ -186,6 +186,7 @@ final class ConversationManager: ConversationFeature {
             revised.messages[index + 1] = ChatMessage(id: current.messages[index + 1].id,
                 role: .storyteller, text: reply.spanish, englishText: reply.english)
             revised.messages[index + 1].suggestedReplies = reply.suggestedReplies
+            revised.messages[index + 1].earnedDoubloons = current.messages[index + 1].earnedDoubloons
             // Unconfirmed interpretations must not become durable continuity facts.
             revised.sessionSummary?.recap = reply.sessionRecap ?? ""
         }
@@ -272,6 +273,12 @@ final class ConversationManager: ConversationFeature {
                         conversation.messages.append(ChatMessage(role: .storyteller, text: explanation.spanish, englishText: explanation.english))
                         updated.conversations[context.id] = conversation
                         updated.hasExplainedDoubloons = true
+                    }
+                    // Persist the reward at its exact place in the chat, without
+                    // adding a system notice to the model's conversation history.
+                    if let lastIndex = conversation.messages.indices.last {
+                        conversation.messages[lastIndex].earnedDoubloons = earned - progress.awardedDoubloons
+                        updated.conversations[context.id] = conversation
                     }
                     progress.awardedDoubloons = earned
                     updated.streakTimeZoneIdentifier = TimeZone.current.identifier

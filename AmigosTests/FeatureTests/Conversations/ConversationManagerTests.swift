@@ -388,13 +388,17 @@ struct ConversationManagerTests {
         let (manager, repository) = await makeManager()
         for _ in 0..<49 { try await manager.send("Hola", in: friend) }
         #expect(manager.doubloons == 11)
+        #expect(manager.conversation(for: friend).messages.compactMap(\.earnedDoubloons) == [1])
         #expect(await repository.savedArchive()?.dailyAmigoChatProgress?[friend.amigo.id]?.successfulExchanges == 49)
         try await manager.send("Cincuenta", in: friend)
         #expect(manager.doubloons == 12)
+        #expect(manager.conversation(for: friend).messages.last?.earnedDoubloons == 1)
         for _ in 0..<39 { try await manager.send("Hola", in: friend) }
         #expect(manager.doubloons == 12)
         try await manager.send("Noventa", in: friend)
         #expect(manager.doubloons == 13)
+        #expect(manager.conversation(for: friend).messages.compactMap(\.earnedDoubloons) == [1, 1, 1])
+        #expect(await repository.savedArchive()?.conversations[friend.id]?.messages.compactMap(\.earnedDoubloons) == [1, 1, 1])
     }
 
     @Test("An unsaved tenth exchange neither advances progress nor pays a doubloon")

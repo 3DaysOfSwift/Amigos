@@ -7,7 +7,8 @@ struct ChatView: View {
     @State private var viewModel = ChatViewModel()
     @FocusState private var isComposerFocused: Bool
     @Namespace private var admissionCoinAnimation
-    @State private var scrollPosition = ScrollPosition(edge: .bottom)
+    @State private var contentHeight: CGFloat = 0
+    @State private var isUserScrolling = false
     @State private var replyIdeasNudgeCancelled = false
     @State private var replyIdeasBottom: CGFloat = 0
     @State private var viewportHeight: CGFloat = 0
@@ -83,6 +84,19 @@ struct ChatView: View {
                                 }
                             })
                             .id(message.id)
+                            if let earned = message.earnedDoubloons, earned > 0 {
+                                VStack(spacing: 8) {
+                                    HStack(spacing: 12) {
+                                        Rectangle().fill(palette.mutedText.opacity(0.4)).frame(height: 1)
+                                        DoubloonIcon(size: 28)
+                                        Rectangle().fill(palette.mutedText.opacity(0.4)).frame(height: 1)
+                                    }
+                                    Text(earned == 1 ? "You earned a doubloon!" : "You earned \(earned) doubloons!")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(palette.accent)
+                                }
+                                .accessibilityElement(children: .combine)
+                            }
                             if let help = message.writingHelp,
                                message.id == conversation.messages.last(where: { $0.role == .learner })?.id,
                                !conversation.finished {
@@ -216,8 +230,8 @@ struct ChatView: View {
                             }
                         }
                         // A scroll marker must not add another row's worth of spacing.
-                        Color.clear.frame(height: 0)
-                            .padding(.vertical, -10)
+                        Color.clear.frame(height: 1)
+                            .padding(.vertical, -9.5)
                             .id("response-end")
                         let suggestions = viewModel.suggestedReplies(in: context)
                         if let learningError = viewModel.learningError {
@@ -267,7 +281,6 @@ struct ChatView: View {
                 }
                 .defaultScrollAnchor(.top, for: .sizeChanges)
                 .defaultScrollAnchor(.bottom, for: .initialOffset)
-                .scrollPosition($scrollPosition)
                 .onGeometryChange(for: CGRect.self) { geometry in
                     geometry.frame(in: .global)
                 } action: { previousFrame, currentFrame in
@@ -287,13 +300,19 @@ struct ChatView: View {
                     } catch { return }
                     guard !Task.isCancelled, !replyIdeasNudgeCancelled else { return }
                     withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.25)) {
-                        scrollPosition.scrollTo(id: "reply-ideas-heading", anchor: .bottom)
+                        proxy.scrollTo("reply-ideas-heading", anchor: .bottom)
                     }
                 }
                 .onScrollPhaseChange { _, phase in
+                    isUserScrolling = phase == .tracking || phase == .interacting || phase == .decelerating
                     if phase == .tracking || phase == .interacting || phase == .decelerating {
                         replyIdeasNudgeCancelled = true
                     }
+                }
+                .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                    geometry.contentSize.height
+                } action: { _, height in
+                    contentHeight = height
                 }
                 .onScrollGeometryChange(for: CGFloat.self) { geometry in
                     geometry.containerSize.height
@@ -305,15 +324,16 @@ struct ChatView: View {
                         proxy.scrollTo("response-end", anchor: .bottom)
                     }
                 }
-                .task(id: "\(conversation.messages.last?.id.uuidString ?? "empty")-\(viewModel.visiblePendingMessage(in: context)?.id.uuidString ?? "none")-\(viewModel.showsTypingIndicator)-\(viewportHeight)") {
+                .task(id: "\(conversation.messages.last?.id.uuidString ?? "empty")-\(viewModel.visiblePendingMessage(in: context)?.id.uuidString ?? "none")-\(viewModel.showsTypingIndicator)-\(viewportHeight)-\(contentHeight)") {
                     // Coalesce composer resizing and message insertion before revealing
                     // the new bottom. Cancellation replaces obsolete scroll requests.
                     guard !conversation.messages.isEmpty || viewModel.pendingMessage != nil,
+                          !isUserScrolling,
                           !viewModel.isDisplayingReplyIdea,
                           !viewModel.isPreparingLearningHelp else { return }
                     do { try await Task.sleep(for: .milliseconds(32)) }
                     catch { return }
-                    guard !Task.isCancelled else { return }
+                    guard !Task.isCancelled, !isUserScrolling else { return }
                     withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
                         proxy.scrollTo("response-end", anchor: .bottom)
                     }

@@ -82,6 +82,7 @@ final class ChatViewModel {
             insertedReplyIdea = nil
             replyIdeaMessageID = nil
             learningError = nil
+            await startSuggestedChat(context)
         } catch {
             self.error = error.localizedDescription
         }
@@ -90,7 +91,9 @@ final class ChatViewModel {
     func startSuggestedChat(_ context: ChatContext) async {
         greetingFailed = false
         error = nil
-        do { try await conversations.startSuggestedChat(context) }
+        var greetingContext = context
+        greetingContext.startsWithGreeting = true
+        do { try await conversations.startSuggestedChat(greetingContext) }
         catch is CancellationError { }
         catch {
             greetingFailed = true

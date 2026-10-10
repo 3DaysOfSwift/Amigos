@@ -11,6 +11,7 @@ struct ChatMessage: Codable, Identifiable, Sendable, Equatable {
     var writingHelp: WritingHelp? = nil
     var suggestedReplies: [SuggestedReply]? = nil
     var learningHelpPrepared: Bool? = nil
+    var earnedDoubloons: Int? = nil
 
     init(id: UUID = UUID(), role: Role, text: String, englishText: String? = nil) {
         self.id = id

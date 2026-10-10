@@ -23,7 +23,7 @@ struct ChatViewModelTests {
         #expect(viewModel.suggestedReplies(in: context).isEmpty)
     }
 
-    @Test("Clearing a conversation removes its messages and preserves the draft and balance")
+    @Test("Clearing a conversation replaces its messages with an AI greeting and preserves the draft and balance")
     func clearConversation() async throws {
         let manager = await makeTestConversationManager(reply: .success("Hola"))
         try await manager.send("Hola", in: context)
@@ -31,10 +31,23 @@ struct ChatViewModelTests {
         let viewModel = ChatViewModel(conversations: manager)
         viewModel.draft = "Mi mensaje"
         await viewModel.clearConversation(in: context)
-        #expect(manager.conversation(for: context).messages.isEmpty)
+        #expect(manager.conversation(for: context).messages.count == 1)
+        #expect(manager.conversation(for: context).messages.first?.role == .storyteller)
         #expect(manager.doubloons == balance)
         #expect(viewModel.draft == "Mi mensaje")
         #expect(viewModel.error == nil)
+    }
+
+    @Test("A failed greeting after clearing offers retry and preserves the draft")
+    func clearedGreetingFailure() async {
+        let manager = await makeTestConversationManager(reply: .failure(TestFailure.unavailable))
+        let viewModel = ChatViewModel(conversations: manager)
+        viewModel.draft = "Hola"
+        await viewModel.clearConversation(in: context)
+        #expect(viewModel.greetingFailed)
+        #expect(viewModel.error != nil)
+        #expect(viewModel.draft == "Hola")
+        #expect(manager.conversation(for: context).messages.isEmpty)
     }
 
     @Test("Typing appears after its presentation delay without delaying generation")
