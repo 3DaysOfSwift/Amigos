@@ -77,13 +77,19 @@ struct ChatView: View {
                                     .accessibilityLabel("New conversation")
                             }
                             ChatBubble(message: message, translation: viewModel.translationDisplay(for: message), onTap: {
-                                viewModel.toggleTranslation(for: message)
+                                Task { await viewModel.revealTranslation(for: message, in: context) }
                             }, onTranslationAppear: {
                                 withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
                                     proxy.scrollTo("translation-\(message.id)")
                                 }
                             })
                             .id(message.id)
+                            if viewModel.translatingMessageID == message.id {
+                                Text("Preparing English translation…")
+                                    .font(.caption)
+                                    .foregroundStyle(palette.mutedText)
+                                    .frame(maxWidth: .infinity, alignment: message.role == .learner ? .trailing : .leading)
+                            }
                             if let earned = message.earnedDoubloons, earned > 0 {
                                 VStack(spacing: 8) {
                                     HStack(spacing: 12) {
@@ -614,7 +620,7 @@ private struct ChatBubble: View {
                             Text("ENGLISH")
                                 .font(.caption2.weight(.bold))
                                 .tracking(1)
-                                .foregroundStyle(palette.accent)
+                                .foregroundStyle(isLearner ? Color.primary : palette.accent)
                             Text(english)
                                 .font(.subheadline)
                                 .multilineTextAlignment(.leading)
@@ -622,7 +628,7 @@ private struct ChatBubble: View {
                         }
                         .padding(13)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(palette.accent.opacity(0.18), in: RoundedRectangle(cornerRadius: 15))
+                        .background(isLearner ? palette.learnerBubble : palette.accent.opacity(0.18), in: RoundedRectangle(cornerRadius: 15))
                     }
                     .buttonStyle(.plain)
                     .accessibilityHint("Hide the English translation")

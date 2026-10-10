@@ -20,6 +20,7 @@ final class ChatViewModel {
     private var learningTask: Task<Bool, Never>?
     private(set) var isPreparingLearningHelp = false
     private(set) var learningError: String?
+    private(set) var translatingMessageID: UUID?
     private var visibleTranslationIDs: Set<UUID> = []
     private var insertedReplyIdea: String?
     private var replyIdeaMessageID: UUID?
@@ -297,6 +298,23 @@ final class ChatViewModel {
         } else {
             visibleTranslationIDs.insert(message.id)
         }
+    }
+    func revealTranslation(for message: ChatMessage, in context: ChatContext) async {
+        if message.englishText != nil {
+            toggleTranslation(for: message)
+            return
+        }
+        guard translatingMessageID == nil, !isSending, !isResponding() else { return }
+        translatingMessageID = message.id
+        isSending = true
+        error = nil
+        defer { translatingMessageID = nil; isSending = false }
+        do {
+            await cancelLearningHelp()
+            try await conversations.translateMessage(message.id, in: context)
+            visibleTranslationIDs.insert(message.id)
+        } catch is CancellationError { }
+        catch { self.error = error.localizedDescription }
     }
     func isConversationActive(_ context: ChatContext) -> Bool {
         conversations.isConversationActive(context)

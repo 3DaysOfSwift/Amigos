@@ -5,7 +5,7 @@ struct ChatMessage: Codable, Identifiable, Sendable, Equatable {
     let id: UUID
     let role: Role
     let text: String
-    let englishText: String?
+    var englishText: String?
     var startsNewConversation: Bool? = nil
     var originalText: String? = nil
     var writingHelp: WritingHelp? = nil

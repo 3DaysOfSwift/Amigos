@@ -27,6 +27,7 @@ protocol ConversationFeature: AnyObject {
     func startSuggestedChat(_ context: ChatContext) async throws
     func startNewConversation(_ context: ChatContext) async throws
     func clearConversation(_ context: ChatContext) async throws
+    func translateMessage(_ id: UUID, in context: ChatContext) async throws
     func conversation(for context: ChatContext) -> Conversation
     func messagesShared(with amigo: Amigo) -> Int
     func hasEarnedDoubloonToday(with amigo: Amigo) -> Bool
@@ -46,6 +47,7 @@ protocol ConversationFeature: AnyObject {
 }
 
 protocol SpanishChatResponding: Sendable {
+    func translateToEnglish(_ text: String) async throws -> String
     func learningHelp(context: ChatContext, learner: ChatMessage?, reply: ChatMessage) async throws -> SpanishChatReply
     func directedReply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary, topic: DiscussionTopic?, recoveryTopic: DiscussionTopic?) async throws -> SpanishChatReply
     func reply(to message: String, context: ChatContext, history: [ChatMessage], profile: LearnerProfile?, session: ConversationSessionSummary) async throws -> SpanishChatReply
@@ -57,6 +59,9 @@ protocol SpanishChatResponding: Sendable {
 }
 
 extension SpanishChatResponding {
+    func translateToEnglish(_ text: String) async throws -> String {
+        throw OnDeviceChatError.generationFailed
+    }
     func learningHelp(context: ChatContext, learner: ChatMessage?, reply: ChatMessage) async throws -> SpanishChatReply {
         throw OnDeviceChatError.generationFailed
     }

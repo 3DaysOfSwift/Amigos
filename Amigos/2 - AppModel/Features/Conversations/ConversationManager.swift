@@ -104,6 +104,21 @@ final class ConversationManager: ConversationFeature {
         archive = updated
     }
 
+    func translateMessage(_ id: UUID, in context: ChatContext) async throws {
+        guard isLoaded, !isMutating else { throw ConversationError.responseInProgress }
+        guard let message = conversation(for: context).messages.first(where: { $0.id == id }),
+              message.englishText == nil else { return }
+        isMutating = true
+        defer { isMutating = false }
+        let english = try await responder.translateToEnglish(message.text)
+        try Task.checkCancellation()
+        var updated = archive
+        guard let index = updated.conversations[context.id]?.messages.firstIndex(where: { $0.id == id }) else { return }
+        updated.conversations[context.id]?.messages[index].englishText = english
+        try await repository.save(updated)
+        archive = updated
+    }
+
     func startSuggestedChat(_ context: ChatContext) async throws {
         guard context.startsWithGreeting, context.scenario == nil, isLoaded else { return }
         let today = streakDayKey(for: currentDate(), archive: archive)
